@@ -57,6 +57,8 @@ int pointerSector = 0;
 int jumpLECR = 0;
 int AmountSector = 0;
 int AmountSectorT = 0;
+int NextLenghtLess20 = 0;
+int NextPoint = 0;
 
 uint16_t * str;
 char buffer[6];
@@ -461,8 +463,15 @@ int main(void)
 
   //****************** check dot****************
 
-  printf("Status 115200 ok \r\n");
-  printf("ok");
+  printf("---------------- \r\n");
+	
+	j=0x53;
+	for(i=0;i<255;i++){
+		if(unicodeTable[(char)i]==j)
+			break;
+	}
+  printf("%c",(char)i);
+	
   while (1) {
     //createFile();
     //appendFile();
@@ -891,14 +900,16 @@ void ReadFile() { //readf
           //while(1){}
 
           endReadFile = 1;
-          for (i = pointer22char; SST25_buffer99[i] != 0x0d; i++) {
-            buffer22Char[i - pointer22char] = SST25_buffer99[i];
+          for (NextPoint = pointer22char; SST25_buffer99[NextPoint] != 0x0d; NextPoint++) {
+            buffer22Char[NextPoint - pointer22char] = SST25_buffer99[NextPoint];
           }
           stringToUnicodeAndSendToDisplay(buffer22Char);
-          pointer22char += 23;
+          pointer22char += NextPoint+2;
           printf("\r\n----------------------end---%d-----------------------\r\n", addressWriteFlashTemp);
+					
 					AmountSector = addressWriteFlashTemp/4096;
 					AmountSectorT = addressWriteFlashTemp%4096;
+					
           printf("d::::%s---**\r\n", SST25_buffer99);
           while (endReadFile == 1) { //readfe
             menu_s();
@@ -1176,22 +1187,8 @@ void menu_s() {
           }   //prepareNameToOpen
         } else {
           if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
-
-            for (i = pointer22char; i < (pointer22char + 22 < addressWriteFlashTemp ? pointer22char + 22 : addressWriteFlashTemp-pointer22char)&&SST25_buffer99[i]!=0x0a ; i++) {
-              if (SST25_buffer99[i] != NULL) {
-                buffer22Char[i - pointer22char] = SST25_buffer99[i];
-                printf("%c/", SST25_buffer99[i]);
-              }
-            }
-
-            stringToUnicodeAndSendToDisplay(buffer22Char);
-            printf("send: %d %s -\r\n", pointer22char, buffer22Char);
-            if (keyCode == 40) {
-						/* if(pointer22char+22<4096&&pointer22char<addressWriteFlashTemp){
-							pointer22char+=22;
-						 }else{
-							pointer22char+=4096-pointer22char;
-						 }*/
+						if (keyCode == 40) {
+						 pointer22char+=NextPoint-pointer22char;
 							/*
 							countSector
 							pointer22char
@@ -1204,6 +1201,21 @@ void menu_s() {
               }
             }
 
+            for (NextPoint = pointer22char; NextPoint < (pointer22char + 22 < addressWriteFlashTemp ? pointer22char + 22 : addressWriteFlashTemp-pointer22char) ; NextPoint++) {
+              if (NextPoint <addressWriteFlashTemp) {
+								if(SST25_buffer99[NextPoint]==0x0d){ //next value-> 0x0a
+									  NextPoint+=2;
+										break;
+								}
+								//NextLenghtLess20
+                buffer22Char[NextPoint - pointer22char] = SST25_buffer99[NextPoint];
+                printf("%c/", SST25_buffer99[NextPoint]);
+              }
+            }
+
+            stringToUnicodeAndSendToDisplay(buffer22Char);
+            printf("send: %d %s -\r\n", pointer22char, buffer22Char);
+            
             //buffer22Char[]
             /*for(i = 0; i < countSector+1;i++){ //----------------end read file form rom-------------------
               SPI_FLASH_CS_LOW();

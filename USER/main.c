@@ -59,6 +59,7 @@ int AmountSector = 0;
 int AmountSectorT = 0;
 int NextLenghtLess20 = 0;
 int NextPoint = 0;
+int maxLengthLoopL22 = 22;
 
 uint16_t * str;
 char buffer[6];
@@ -1188,7 +1189,13 @@ void menu_s() {
         } else {
           if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
 						if (keyCode == 40) {
-						 pointer22char+=NextPoint-pointer22char;
+								pointer22char+=NextPoint-pointer22char;
+							
+							  if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
+									 maxLengthLoopL22 = maxLengthLoopL22;
+								else
+									maxLengthLoopL22 = addressWriteFlashTemp-maxLengthLoopL22;
+						
 							/*
 							countSector
 							pointer22char
@@ -1201,9 +1208,10 @@ void menu_s() {
               }
             }
 
-            for (NextPoint = pointer22char; NextPoint < (pointer22char + 22 < addressWriteFlashTemp ? pointer22char + 22 : addressWriteFlashTemp-pointer22char) ; NextPoint++) {
+            for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22) ; NextPoint++) {
               if (NextPoint <addressWriteFlashTemp) {
 								if(SST25_buffer99[NextPoint]==0x0d){ //next value-> 0x0a
+									  jumpLECR= pointer22char+20-NextPoint; //store index value whene amount string less than 20
 									  NextPoint+=2;
 										break;
 								}
@@ -1212,9 +1220,12 @@ void menu_s() {
                 printf("%c/", SST25_buffer99[NextPoint]);
               }
             }
-
+						for(i = 20 - jumpLECR; i < 20; i++){ //clear another character 
+							buffer22Char[i] = 0;
+						}
+						//check string buffer before push to display when < less than 20 charactor
             stringToUnicodeAndSendToDisplay(buffer22Char);
-            printf("send: %d %s -\r\n", pointer22char, buffer22Char);
+            printf("// %d //send: %d %s -\r\n",jumpLECR, NextPoint, buffer22Char);
             
             //buffer22Char[]
             /*for(i = 0; i < countSector+1;i++){ //----------------end read file form rom-------------------

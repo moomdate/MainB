@@ -25,15 +25,17 @@
 
 #### Serial config 
 ```c
-  UART4_Configuration(); //9600
-  USART2_Configuration(); //115200
-  USART1_Configuration(); //115200
-  USART3_Configuration(); //9600
+  UART4_Configuration(); //9600 connect to bluetooth module
+  USART2_Configuration(); //115200 connect with keyboard
+  USART1_Configuration(); //115200 defualt serial
+  USART3_Configuration(); //9600 connect to ch376 (sd card module)
 ```
 
 #### Output Function
 ```c
    printDot(brailleUnicodeByte, sizeof(brailleUnicodeByte)); //send data to dot
+   stringToUnicodeAndSendToDisplay("String here"); // send string to dot 
+
 ```
 
 

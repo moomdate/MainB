@@ -74,7 +74,30 @@
      }
   }
 ```
+#### Mode (in void main)
 
+###### Bluetooth Mode
+```c
+   while (mode == 5) { // while in bluetooth mode
+      BluetoothMode(); // 
+      // keyboardMode();
+      if (becon == 0) { 
+        menu_s();
+      }
+      else {
+        keyboardMode();  //connected use keyboard for bluetooth
+      }
+    }
+```
+###### Read Mode
+```c
+    while (mode == 3 && openFileStatus == 0) { //if enter to mode 3 search file and display
+      searchFile();
+    }
+    while (mode == 3 && openFileStatus == 1) { //if open file 
+      ReadFile();
+    }
+```
 
 ####  -------ตายๆๆๆๆ-----------------30/ มิถุนา------------------
 :cold_sweat: :neutral_face: :neutral_face::neutral_face::neutral_face:

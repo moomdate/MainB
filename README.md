@@ -23,12 +23,17 @@
 
 
 
-#### function 
+#### Serial config 
 ```c
   UART4_Configuration(); //9600
   USART2_Configuration(); //115200
   USART1_Configuration(); //115200
   USART3_Configuration(); //9600
+```
+
+#### Output Function
+```c
+   printDot(brailleUnicodeByte, sizeof(brailleUnicodeByte)); //send data to dot
 ```
 
 

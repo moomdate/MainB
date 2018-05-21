@@ -60,7 +60,8 @@ int AmountSectorT = 0;
 int NextLenghtLess20 = 0;
 int NextPoint = 0;
 int maxLengthLoopL22 = 22;
-
+int countLFTwoStep = 0;
+	
 uint16_t * str;
 char buffer[6];
 unsigned int BLEConBuffer[30];
@@ -906,13 +907,14 @@ void ReadFile() { //readf
           }
           stringToUnicodeAndSendToDisplay(buffer22Char);
           pointer22char += NextPoint+2;
+					NextPoint = pointer22char;
           printf("\r\n----------------------end---%d-----------------------\r\n", addressWriteFlashTemp);
 					
 					AmountSector = addressWriteFlashTemp/4096;
 					AmountSectorT = addressWriteFlashTemp%4096;
 					
           printf("d::::%s---**\r\n", SST25_buffer99);
-          while (endReadFile == 1) { //readfe
+          while (endReadFile == 1) { //4 readfe
             menu_s();
           }
 
@@ -1190,11 +1192,10 @@ void menu_s() {
           if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
 						if (keyCode == 40) {
 								pointer22char+=NextPoint-pointer22char;
-							
 							  if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
 									 maxLengthLoopL22 = maxLengthLoopL22;
-								else
-									maxLengthLoopL22 = addressWriteFlashTemp-maxLengthLoopL22;
+								else 
+									maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
 						
 							/*
 							countSector
@@ -1202,14 +1203,45 @@ void menu_s() {
 							addressWriteFlashTemp
 							*/
             
-            } else if (keyCode == 38) {
-              if (pointer22char >= 22) {
-                pointer22char -= 22;
-              }
+            } else if (keyCode == 38) { //prev line pointer22char
+								
+						   
+								//NextPoint
+								//pointer22char
+								//maxLengthLoopL22
+								
+							for(j = pointer22char; j>0;j--){
+								if(j==1){
+									pointer22char = NextPoint = 0;
+									countLFTwoStep = 0;
+									if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
+											 maxLengthLoopL22 = maxLengthLoopL22;
+										else 
+											maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
+										//-- end find mx length --
+										break;
+								}
+								else if(SST25_buffer99[j]==0x0d){
+									countLFTwoStep++;
+									if(countLFTwoStep>=2){ //check 0x0d 0x0a two event
+										NextPoint = j+2;
+										pointer22char = NextPoint;
+										countLFTwoStep = 0;
+										
+										// -- find max length --
+										if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
+											 maxLengthLoopL22 = maxLengthLoopL22;
+										else 
+											maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
+										//-- end find mx length --
+										break;
+									}
+								}
+								printf("%c=",SST25_buffer99[j]);
+							}
             }
-
-            for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22) ; NextPoint++) {
-              if (NextPoint <addressWriteFlashTemp) {
+            for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) {
+              if (NextPoint < addressWriteFlashTemp) {
 								if(SST25_buffer99[NextPoint]==0x0d){ //next value-> 0x0a
 									  jumpLECR= pointer22char+20-NextPoint; //store index value whene amount string less than 20
 									  NextPoint+=2;

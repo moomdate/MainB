@@ -8,7 +8,7 @@
   - เลื่อนบรรทัด ไป/กลับ (ไม่เกิน 4096 ตัวอักษร)
   - โหมดบลูทูธ
     - เชื่อมต่อกับอุปกรณ์ android ทำงานเป็น navigator 
-    - Read text ผ่านด้วย Talkback และแสดงผ่านจุดเบรลล์
+    - Read text ด้วย Talkback และแสดงผ่านจุดเบรลล์
     - Keyboard Braille  
 ##### ที่กำลังทำ :open_mouth: :sleeping:
   - อ่านไฟล์ sector ถัดไป Charator>4096 
@@ -20,5 +20,18 @@
   - อ่านไฟล์ช้ามากๆ
   - Refresh dot ช้าาาามากๆๆๆๆๆ 
   
+
+
+
+#### function 
+```c
+  UART4_Configuration(); //9600
+  USART2_Configuration(); //115200
+  USART1_Configuration(); //115200
+  USART3_Configuration(); //9600
+```
+
+
+
 ####  -------ตายๆๆๆๆ-----------------30/ มิถุนา------------------
 :cold_sweat: :neutral_face: :neutral_face::neutral_face::neutral_face:

@@ -13,9 +13,10 @@
   - โหมดพิมพ์ (เหมือน notepad)
   - ยังเปิดและดูไฟล์ในโฟลเดอร์ไม่ได้
 
-#### ปัญหา :grimacing: :rage:
+#### ปัญหา :grimacing: :rage: :thumbsdown:
   - ไม่สามารถปรับ baud rate จาก 9600 115200 ขณะรันโปรแกรม ใน STM32 ได้
   - อ่านไฟล์ช้ามากๆ
   - Refresh dot ช้าาาามากๆๆๆๆๆ 
   
 ####  -------ตายๆๆๆๆ-----------------30/ มิถุนา------------------
+:cold_sweat: :neutral_face: :neutral_face::neutral_face::neutral_face:

@@ -37,7 +37,43 @@
    stringToUnicodeAndSendToDisplay("String here"); // send string to dot 
 
 ```
+#### Keyboard Input 
+```c
+    if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
+    //----------------------------- uart to key--------------------------------
+    uart2Buffer = USART_ReceiveData(USART2);                                //-
+    if (uart2Buffer == 0xff && SeeHead == 0) {                              //-
+      SeeHead = 1;                                                          //-
+      countKey = 0;                                                         //-
+    }                                                                       //-
 
+    if (countKey >= 4 && countKey <= 6) {                                   //-
+      bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
+    }
+    if (countKey == 2) //checkKeyError
+    {
+      checkKeyError = uart2Buffer;
+    }
+    countKey++;
+    // ---------------------------- end uart to key ----------------------------
+  }
+  if (countKey >= maxData) { //Recieve & checking key
+    seeHead = 0;
+    printf("See key %x,%d,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    //printf("checkKey :%x\r\n",checkKeyError);
+    if (checkKeyError == 0xff) { //check error key
+      //printf("Key Error");
+      countKey = 0;
+      SeeHead = 0;
+    }
+     if (bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0) {
+      // ---------------------------- to key code -----------------------------
+      if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20) { // check key array mapping to 'keyCode'
+        keyCode = 40; // arrow down
+      }
+     }
+  }
+```
 
 
 ####  -------ตายๆๆๆๆ-----------------30/ มิถุนา------------------

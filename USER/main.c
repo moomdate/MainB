@@ -61,6 +61,8 @@ int NextLenghtLess20 = 0;
 int NextPoint = 0;
 int maxLengthLoopL22 = 22;
 int countLFTwoStep = 0;
+
+int seeCur = 0;
 	
 uint16_t * str;
 char buffer[6];
@@ -1026,7 +1028,9 @@ void menu_s() {
       SeeHead = 1;                                                          //-
       countKey = 0;                                                         //-
     }                                                                       //-
-
+		if(countKey == 2 && uart2Buffer == 0xa4){
+			seeCur = 1;
+		}
     if (countKey >= 4 && countKey <= 6) {                                   //-
       bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
     }
@@ -1040,13 +1044,20 @@ void menu_s() {
   }
   if (countKey >= maxData) { //Recieve & checking key
     seeHead = 0;
-    printf("See key %x,%d,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+		
+		if(seeCur==1){
+			printf("see cur \r\n");
+		}else{
+			printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+		}
     //printf("checkKey :%x\r\n",checkKeyError);
     if (checkKeyError == 0xff) { //check error key
       //printf("Key Error");
       countKey = 0;
       SeeHead = 0;
+			
     }
+		
     printf("current mode:%d\r\n", mode);
     //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
     //////////////////////////////////menu selector ///////////////////////////////////
@@ -1193,7 +1204,7 @@ void menu_s() {
 						if (keyCode == 40) {
 								pointer22char+=NextPoint-pointer22char;
 							  if(pointer22char+22<addressWriteFlashTemp)
-									 maxLengthLoopL22 = maxLengthLoopL22;
+									 maxLengthLoopL22 = 22;
 								else 
 									maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
 							/*
@@ -1201,31 +1212,29 @@ void menu_s() {
 							pointer22char
 							addressWriteFlashTemp
 							*/
-            } else if (keyCode == 38) { //prev line pointer22char			   
-								//NextPoint
+            } else if (keyCode == 38) { //prev line pointer22char			
+							printf("\r\n \r\n pointer22char %d \r\n \r\n",pointer22char);
 								//pointer22char
 								//maxLengthLoopL22
-							for(j = pointer22char; j>0;j--){
-								if(j==1){ //if start point
-									pointer22char = NextPoint = 0;
+							for(k = pointer22char; k>0;k--){
+								if(k==1){ //if start point
+									pointer22char = 0;
 									countLFTwoStep = 0;
-									if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
-											 maxLengthLoopL22 = maxLengthLoopL22;
+									if(pointer22char+22<addressWriteFlashTemp)
+											 maxLengthLoopL22 = 22;
 										else 
 											maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
 										//-- end find mx length --
 										break;
 								}
-								else if(SST25_buffer99[j]==0x0a){ //
+								else if(SST25_buffer99[k]==0x0a){ //
 									countLFTwoStep++;
 									if(countLFTwoStep>1){ //check 0x0d 0x0a two event
-										NextPoint = j+1;
-										pointer22char = NextPoint;
+										pointer22char = k+1;
 										countLFTwoStep = 0;
-										
 										// -- find max length --
-										if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
-											 maxLengthLoopL22 = maxLengthLoopL22;
+										if(pointer22char+22<addressWriteFlashTemp)
+											 maxLengthLoopL22 = 22;
 										else 
 											maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
 										//-- end find mx length --
@@ -1245,14 +1254,16 @@ void menu_s() {
 								//NextLenghtLess20
                 buffer22Char[NextPoint - pointer22char] = SST25_buffer99[NextPoint];
                 printf("%c/", SST25_buffer99[NextPoint]);
-              }
+              }else{
+								break;
+							}
             }
 						for(i = 20 - jumpLECR; i < 20; i++){ //clear another character 
 							buffer22Char[i] = 0;
 						}
 						//check string buffer before push to display when < less than 20 charactor
             stringToUnicodeAndSendToDisplay(buffer22Char);
-            printf("// %d //send: %d %s -\r\n",jumpLECR, NextPoint, buffer22Char);
+            printf("// %d //send: %d-- %s -\r\n",jumpLECR, pointer22char, buffer22Char);
             
             //buffer22Char[]
             /*for(i = 0; i < countSector+1;i++){ //----------------end read file form rom-------------------
@@ -1284,6 +1295,7 @@ void menu_s() {
     //------------------------------ end case menu ------------------------
     countKey = 0;
     keyCode = 0;
+		seeCur = 0;
   }
 }
 void caseMenu(int count_menu) {

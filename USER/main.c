@@ -1192,26 +1192,21 @@ void menu_s() {
           if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
 						if (keyCode == 40) {
 								pointer22char+=NextPoint-pointer22char;
-							  if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
+							  if(pointer22char+22<addressWriteFlashTemp)
 									 maxLengthLoopL22 = maxLengthLoopL22;
 								else 
 									maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
-						
 							/*
 							countSector
 							pointer22char
 							addressWriteFlashTemp
 							*/
-            
-            } else if (keyCode == 38) { //prev line pointer22char
-								
-						   
+            } else if (keyCode == 38) { //prev line pointer22char			   
 								//NextPoint
 								//pointer22char
 								//maxLengthLoopL22
-								
 							for(j = pointer22char; j>0;j--){
-								if(j==1){
+								if(j==1){ //if start point
 									pointer22char = NextPoint = 0;
 									countLFTwoStep = 0;
 									if(pointer22char+maxLengthLoopL22<addressWriteFlashTemp)
@@ -1221,10 +1216,10 @@ void menu_s() {
 										//-- end find mx length --
 										break;
 								}
-								else if(SST25_buffer99[j]==0x0d){
+								else if(SST25_buffer99[j]==0x0a){ //
 									countLFTwoStep++;
-									if(countLFTwoStep>=2){ //check 0x0d 0x0a two event
-										NextPoint = j+2;
+									if(countLFTwoStep>1){ //check 0x0d 0x0a two event
+										NextPoint = j+1;
 										pointer22char = NextPoint;
 										countLFTwoStep = 0;
 										
@@ -1237,7 +1232,7 @@ void menu_s() {
 										break;
 									}
 								}
-								printf("%c=",SST25_buffer99[j]);
+							///	printf("%c=",SST25_buffer99[j]);
 							}
             }
             for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) {

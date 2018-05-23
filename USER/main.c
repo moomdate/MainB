@@ -61,7 +61,9 @@ int NextLenghtLess20 = 0;
 int NextPoint = 0;
 int maxLengthLoopL22 = 22;
 int countLFTwoStep = 0;
-
+int TempPointer22char =0;
+int varForLoop = 0;
+	
 int seeCur = 0;
 	
 uint16_t * str;
@@ -1181,7 +1183,7 @@ void menu_s() {
         break;
       case 3: //mode 3 read mode
 
-        if (endReadFile != 1) {
+        if (endReadFile != 1) { //select files
           if (keyCode == 38) { //up
             if (countMenuInReadMode > 1) {
               countMenuInReadMode -= 1;
@@ -1191,7 +1193,6 @@ void menu_s() {
               countMenuInReadMode += 1;
             }
           }
-
           if (countMenuInReadMode == 0) {
             stringToUnicodeAndSendToDisplay("Read mode");
             printf("******print (Read mode) to dot *********\r\n");
@@ -1201,50 +1202,40 @@ void menu_s() {
           }   //prepareNameToOpen
         } else {
           if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
-						if (keyCode == 40) {
+						if (keyCode == 40) { //next line
 								pointer22char+=NextPoint-pointer22char;
 							  if(pointer22char+22<addressWriteFlashTemp)
 									 maxLengthLoopL22 = 22;
 								else 
 									maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
-							/*
-							countSector
-							pointer22char
-							addressWriteFlashTemp
-							*/
-            } else if (keyCode == 38) { //prev line pointer22char			
+            } else if (keyCode == 38) { //prev line pointer22char		bug***	
 							printf("\r\n \r\n pointer22char %d \r\n \r\n",pointer22char);
-								//pointer22char
-								//maxLengthLoopL22
-							for(k = pointer22char; k>0;k--){
-								if(k==1){ //if start point
-									pointer22char = 0;
-									countLFTwoStep = 0;
-									if(pointer22char+22<addressWriteFlashTemp)
-											 maxLengthLoopL22 = 22;
-										else 
-											maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
-										//-- end find mx length --
-										break;
-								}
-								else if(SST25_buffer99[k]==0x0a){ //
-									countLFTwoStep++;
-									if(countLFTwoStep>1){ //check 0x0d 0x0a two event
-										pointer22char = k+1;
-										countLFTwoStep = 0;
-										// -- find max length --
-										if(pointer22char+22<addressWriteFlashTemp)
-											 maxLengthLoopL22 = 22;
-										else 
-											maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
-										//-- end find mx length --
-										break;
+					   	TempPointer22char = pointer22char;
+							for(varForLoop = TempPointer22char; varForLoop>0;varForLoop--){
+								if(varForLoop>0){
+									if(SST25_buffer99[varForLoop]==0x0a){ //
+										countLFTwoStep++;
+										if(countLFTwoStep==2){ //check 0x0d 0x0a two event
+											pointer22char = varForLoop+1;
+											countLFTwoStep = 0;
+											// -- find max length --
+											if(pointer22char+22<addressWriteFlashTemp)
+												 maxLengthLoopL22 = 22;
+											else 
+												maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
+											//-- end find mx length --
+											break;
+										}
 									}
 								}
+								else{
+									break;
+								}
+								
 							///	printf("%c=",SST25_buffer99[j]);
 							}
             }
-            for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) {
+            for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) { //query line
               if (NextPoint < addressWriteFlashTemp) {
 								if(SST25_buffer99[NextPoint]==0x0d){ //next value-> 0x0a
 									  jumpLECR= pointer22char+20-NextPoint; //store index value whene amount string less than 20
@@ -1264,27 +1255,6 @@ void menu_s() {
 						//check string buffer before push to display when < less than 20 charactor
             stringToUnicodeAndSendToDisplay(buffer22Char);
             printf("// %d //send: %d-- %s -\r\n",jumpLECR, pointer22char, buffer22Char);
-            
-            //buffer22Char[]
-            /*for(i = 0; i < countSector+1;i++){ //----------------end read file form rom-------------------
-              SPI_FLASH_CS_LOW();
-              SST25_R_BLOCK(i*4096, SST25_buffer99, 4096);
-              SPI_FLASH_CS_HIGH();
-              Delay(0xffff);
-              if(i==countSector){
-                  for(j=0;j<(addressWriteFlashTemp-(countSector*4096))-1;j++){
-                    printf("%c",SST25_buffer99[j]);
-                  }
-                  //printf("12121212121212121212end @@@@@@@@@@@@@@@@@@@\r\n");
-              }
-              else{
-                  printf("%s\r\n---------------------------------------\r\n",SST25_buffer99);
-
-              }
-              //for(i=0;i<countdataTemp512;i++){
-              //printf("---asd-%s", SST25_buffer99);
-              }//
-            */
           }
         }
         break;

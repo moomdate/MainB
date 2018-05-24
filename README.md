@@ -18,7 +18,7 @@
 #### ปัญหา :grimacing: :rage: :thumbsdown:
   - ไม่สามารถปรับ baud rate จาก 9600 115200 ขณะรันโปรแกรม ใน STM32 ได้
   - อ่านไฟล์ช้ามากๆ
-  - Refresh dot ช้าาาามากๆๆๆๆๆ 
+  - Refresh dot ช้าา
   
 
 

@@ -99,5 +99,4 @@
     }
 ```
 
-####  -------ตายๆๆๆๆ-----------------30/ มิถุนา------------------
 :cold_sweat: :neutral_face: :neutral_face::neutral_face::neutral_face:

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed May 23 14:58:13 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu May 24 11:39:52 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -345,6 +345,7 @@ Global Symbols
 </UL>
 <P><STRONG><a name="[6b]"></a>Delay</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.Delay))
 <BR><BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadFile
@@ -383,6 +384,7 @@ Global Symbols
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadFile
@@ -397,6 +399,7 @@ Global Symbols
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadFile
@@ -526,7 +529,8 @@ Global Symbols
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 </UL>
-<BR>[Called By]<UL><LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadFile
+<BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
+<LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadFile
 </UL>
 
 <P><STRONG><a name="[71]"></a>SST25_W_BLOCK</STRONG> (Thumb, 172 bytes, Stack size 0 bytes, spi_flash.o(i.SST25_W_BLOCK))
@@ -742,6 +746,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadFile
 </UL>
 
@@ -759,6 +764,7 @@ Global Symbols
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CounterCmd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;menu_s
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ReadFile
 </UL>
@@ -809,11 +815,17 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[69]"></a>menu_s</STRONG> (Thumb, 1788 bytes, Stack size 0 bytes, main.o(i.menu_s))
-<BR><BR>[Calls]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
+<P><STRONG><a name="[69]"></a>menu_s</STRONG> (Thumb, 1932 bytes, Stack size 0 bytes, main.o(i.menu_s))
+<BR><BR>[Calls]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
+<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
+<LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 <LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
+<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configFlash
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;caseMenu
+<LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 </UL>

@@ -54,6 +54,7 @@ int endReadFile = 0;
 char buffer22Char[22];
 int pointer22char = 0;
 int pointerSector = 0;
+int pointerSectorStatus = 0;
 int jumpLECR = 0;
 int AmountSector = 0;
 int AmountSectorT = 0;
@@ -1204,19 +1205,28 @@ void menu_s() {
           if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
 						if (keyCode == 40) { //next line
 								pointer22char+=NextPoint-pointer22char;
-							  if(pointer22char+22<addressWriteFlashTemp)
+								if(pointer22char+22>4096&&pointer22char+22<addressWriteFlashTemp){
+									
+									pointerSectorStatus = 1;
+									printf("change sector\r\n");
+								}
+							  else if(pointer22char+22<addressWriteFlashTemp)
 									 maxLengthLoopL22 = 22;
 								else 
 									maxLengthLoopL22 = addressWriteFlashTemp-pointer22char; //last value
             } else if (keyCode == 38) { //prev line pointer22char		bug***	
 							printf("\r\n \r\n pointer22char %d \r\n \r\n",pointer22char);
+							//NextPoint
 					   	TempPointer22char = pointer22char;
 							for(varForLoop = TempPointer22char; varForLoop>0;varForLoop--){
+								if(0){
+								
+								}
 								if(varForLoop>0){
-									if(SST25_buffer99[varForLoop]==0x0a){ //
+									if(SST25_buffer99[varForLoop]==0x0d){ //
 										countLFTwoStep++;
 										if(countLFTwoStep==2){ //check 0x0d 0x0a two event
-											pointer22char = varForLoop+1;
+											pointer22char = varForLoop+2;
 											countLFTwoStep = 0;
 											// -- find max length --
 											if(pointer22char+22<addressWriteFlashTemp)
@@ -1236,7 +1246,7 @@ void menu_s() {
 							}
             }
             for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) { //query line
-              if (NextPoint < addressWriteFlashTemp) {
+              if (NextPoint+(pointerSector*4096) < addressWriteFlashTemp) {
 								if(SST25_buffer99[NextPoint]==0x0d){ //next value-> 0x0a
 									  jumpLECR= pointer22char+20-NextPoint; //store index value whene amount string less than 20
 									  NextPoint+=2;
@@ -1255,6 +1265,19 @@ void menu_s() {
 						//check string buffer before push to display when < less than 20 charactor
             stringToUnicodeAndSendToDisplay(buffer22Char);
             printf("// %d //send: %d-- %s -\r\n",jumpLECR, pointer22char, buffer22Char);
+						if(pointerSectorStatus==1){
+							pointerSectorStatus = 0;
+							pointerSector++;
+							pointer22char = 0;
+							NextPoint = 0;
+							printf("seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\r\n");
+							configFlash();
+							SPI_FLASH_CS_LOW();
+							SST25_R_BLOCK(pointerSector*4096, SST25_buffer99, 4096);
+							SPI_FLASH_CS_HIGH();
+							Delay(0xffff);
+							delay_ms(1000);
+						}
           }
         }
         break;

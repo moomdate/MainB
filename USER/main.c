@@ -1219,9 +1219,6 @@ void menu_s() {
               //NextPoint
               TempPointer22char = pointer22char;
               for (varForLoop = TempPointer22char; varForLoop > 0; varForLoop--) { // edit condition > 0 ->   ??? > 1*pointerSector 
-                if (0) { //
-
-                }
                 if (SST25_buffer99[varForLoop] == 0x0d) { //
                   countLFTwoStep++;
                   if (countLFTwoStep == 2) { //check 0x0d 0x0a two event
@@ -1232,18 +1229,20 @@ void menu_s() {
                 } else if (varForLoop == 1) { //begin of file
                   pointer22char = 0;
                   // -- find max length --
-                  if (pointer22char + 22 < addressWriteFlashTemp)
-                    maxLengthLoopL22 = 22;
-                  else
-                    maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
+                  
                   //-- end find mx length --
                   if (pointerSector != 0) { //if sector != 1
 											readPreviousSector = 1; //status for read previous sector
+											printf("reading prevois sector -----------------------------\r\n");
                   }
                 }
+								if (pointer22char + 22 < addressWriteFlashTemp)
+                    maxLengthLoopL22 = 22;
+                  else
+                    maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
                 /// printf("%c=",SST25_buffer99[j]);
               }
-            }
+            } //--------------------------end 38------------------------
             for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) { //query line
               if (NextPoint + (pointerSector * 4096) < addressWriteFlashTemp) {
                 if (SST25_buffer99[NextPoint] == 0x0d) { //next value-> 0x0a
@@ -1261,6 +1260,16 @@ void menu_s() {
             for (i = 20 - jumpLECR; i < 20; i++) { //clear another character
               buffer22Char[i] = 0;
             }
+						if(readPreviousSector==1){ //read previous sector when keycode == 38 && sector != 0
+							readPreviousSector = 0;
+							pointerSector--;
+							configFlash();
+              SPI_FLASH_CS_LOW();
+              SST25_R_BLOCK(pointerSector * 4096, SST25_buffer99, 4096);
+              SPI_FLASH_CS_HIGH();
+              Delay(0xffff);
+							pointer22char = 4096;
+						}
             //check string buffer before push to display when < less than 20 charactor
             stringToUnicodeAndSendToDisplay(buffer22Char);
             printf("// %d //send: %d-- %s -\r\n", jumpLECR, pointer22char, buffer22Char);
@@ -1270,6 +1279,7 @@ void menu_s() {
               pointer22char = 0;
               NextPoint = 0;
               printf("seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\r\n");
+							// print last string again
               configFlash();
               SPI_FLASH_CS_LOW();
               SST25_R_BLOCK(pointerSector * 4096, SST25_buffer99, 4096);

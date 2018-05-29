@@ -10,10 +10,11 @@
     - เชื่อมต่อกับอุปกรณ์ android ทำงานเป็น navigator 
     - Read text ด้วย Talkback และแสดงผ่านจุดเบรลล์
     - Keyboard Braille  
+    - notepad Braille 
 ##### ที่กำลังทำ :open_mouth: :sleeping:
   - อ่านไฟล์ sector ถัดไป Charator>4096 
   - ย้อนกลับจากโหมดอ่านไม่ได้ ต้องรีเซ็ท
-  - โหมดพิมพ์ (เหมือน notepad)
+  - โหมดพิมพ์ (เหมือน notepad) กำลังหาวิธีเซฟ
   - ยังเปิดและดูไฟล์ในโฟลเดอร์ไม่ได้
 #### ปัญหา :grimacing: :rage: :thumbsdown:
   - ไม่สามารถปรับ baud rate จาก 9600 115200 ขณะรันโปรแกรม ใน STM32 ได้

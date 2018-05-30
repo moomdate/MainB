@@ -12,7 +12,6 @@
     - เชื่อมต่อกับอุปกรณ์ android ทำงานเป็น navigator 
     - Read text ด้วย Talkback และแสดงผ่านจุดเบรลล์
     - Keyboard Braille  
-    - notepad Braille 
 ##### ที่กำลังทำ :open_mouth: :sleeping:
   - ย้อนกลับจากโหมดอ่านไม่ได้ ต้องรีเซ็ท
   - บันทึกไฟล์ที่พิมพ์ในโหมด notepad

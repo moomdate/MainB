@@ -65,8 +65,9 @@ int countLFTwoStep = 0;
 int TempPointer22char = 0;
 int varForLoop = 0;
 int readPreviousSector = 0; 
-
+int countLengthInLine = 0;
 int seeCur = 0;
+int breakOpenDir = 0;
 
 uint16_t * str;
 char buffer[6];
@@ -157,13 +158,15 @@ int setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
 int setFileNameA[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x41, 0x2e, 0x54, 0x42, 0x54, 0x00};
 int setFileNameLength = 5;
 int DiskconnectStatus[] = {0x00, 0x57, 0xab, 0x03}; //+
+int openDirStatus = 0;
 //--readmode
 char dataTemp512[512];
 int countdataTemp512 = 0;
 int waitEnd = 0; // 10
 int lastAscii = 0;
 
-int setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2a, 0x2e, 0x54, 0x58, 0x54, 0x00};//*.TXT
+int setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2a, 0x00};//*.TXT
+int setAllName3[] = {0x00, 0x57, 0xab, 0x2f, 0x2a, 0x00};//*.TXT
 int setAllName2[] = {0x00, 0x57, 0xab, 0x2f, 0x41, 0x2e, 0x54, 0x42, 0x54, 0x00};//*.TXT
 int FileOpen[] = {0x00, 0x57, 0xab, 0x32};
 int enumgo[] = {0x00, 0x57, 0xab, 0x33};
@@ -190,7 +193,8 @@ int SetByteRead6char[] = {0x00, 0x57, 0xab, 0x3a, 0x06, 0x00};
 int ReadData[] = {0x00, 0x57, 0xAB, 0x27};
 int continueRead[] = {0x00, 0x57, 0xab, 0x3b};
 int command_ = 0;
-
+int DirName[] = {0x00, 0x57, 0xab, 0x2f,0x2f,0x54,0x45,0x53,0x54,0x00};
+	
 int SwitchEndFileName = 0;
 int endFileName = 0;
 
@@ -398,7 +402,7 @@ int main(void)
     ADC_Configuration();
     delay_init();
     sendUart(1);*/
-  SPI_DISPLAY_CS_LOW();
+/*  SPI_DISPLAY_CS_LOW();
   printDot(st_0, sizeof(st_0));
   Delay(0xffff);
   delay_ms(2000);
@@ -406,7 +410,7 @@ int main(void)
   //stringToUnicodeAndSendToDisplay("Notepad");
   SPI_DISPLAY_CS_HIGH();
 
-
+*/
   /*
     configFlash();
     SPI_FLASH_CS_LOW();
@@ -467,18 +471,11 @@ int main(void)
     USBDiskMount[]
     setFileName
   */
-  //  stringToUnicodeAndSendToDisplay("abcdef ");
-
+    stringToUnicodeAndSendToDisplay("abcdef ");
+delay_ms(1200);
   //****************** check dot****************
 
   printf("---------------- \r\n");
-
-  j = 0x53;
-  for (i = 0; i < 255; i++) {
-    if (unicodeTable[(char)i] == j)
-      break;
-  }
-  printf("%c", (char)i);
 
   while (1) {
     //createFile();
@@ -602,7 +599,7 @@ void NextFile() {
 void searchFile() {
   command_ = 0;
   r_count = 0;
-  SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
+  //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   printf("reset all\r\n");
   delay_ms(50);
   command_++;
@@ -763,7 +760,6 @@ void ReadFile() { //readf
       command_++; //4
       delay_ms(50);
     } else if (command_ == 4) {
-
       SendCH370(setFileName, sizeof(setFileName));
       printf("Set file Name\r\n");
       command_++; //5
@@ -773,7 +769,6 @@ void ReadFile() { //readf
       printf("File Open\r\n");
       command_++; //6
       delay_ms(50);
-
     } else if (command_ == 6) {
       SendCH370(SetByteRead, sizeof(SetByteRead)); //result 1D can read
       //printf("Check for reading File\r\n");
@@ -931,6 +926,51 @@ void ReadFile() { //readf
 
   }
 }
+void OpenDir() { //readf
+  printf("OpenDir....\r\n");
+  command_ = 0;
+  //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
+  printf("reset all\r\n");
+  delay_ms(50);
+  command_++;
+  while (openDirStatus == 1) {
+    if (command_ == 1) {
+      SendCH370(checkConnection, sizeof(checkConnection));
+      command_++; //2
+      delay_ms(50);
+      // printf("Check Connection str %d\r\n",myFunction());
+    } else if (command_ == 2) {
+      SendCH370(setSDCard, sizeof(setSDCard));
+      printf("Set SD Card Mode\r\n");
+      command_++; //3
+      delay_ms(50);
+    } else if (command_ == 3) {
+      SendCH370(USBDiskMount, sizeof(USBDiskMount));
+      printf("USB Disk Mount\r\n");
+      command_++; //4
+      delay_ms(50);
+    } else if (command_ == 4) {
+      SendCH370(DirName, sizeof(DirName));
+      printf("Set file Name\r\n");
+      command_++; //5
+      delay_ms(50);
+    } else if (command_ == 5){ ///FileOpen
+      SendCH370(FileOpen, sizeof(FileOpen));
+      printf("File Open\r\n");
+      command_++; //6
+      delay_ms(50);
+    } 
+//    menu_s();
+    if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
+      i1 = USART_ReceiveData(USART3);
+      printf("%x-%d\r\n", i1, i1);
+		}
+		//OpenDir
+		if(command_==6&&i1==0x41){
+				openDirStatus = 0;		
+			}
+		}
+}
 void createFile() {
   if (command_ == 1) {
     SendCH370(checkConnection, sizeof(checkConnection));
@@ -1021,7 +1061,9 @@ const char * fileName()
   }
   if (seeT == 1) {
     printf("this's tbt file\r\n");
-  }
+  }else{
+		 printf("this's Dir\r\n");
+	}
   return DataForWrite_aftersort;
 }
 void menu_s() {
@@ -1157,6 +1199,14 @@ void menu_s() {
           countMenuInReadMode = 0;
         }
       } else if (mode == 3 && endReadFile != 1) { //openf
+				if(strstr(filelist[countMenuInReadMode - 1],"TBT") == NULL){
+					openDirStatus = 1;
+					while(openDirStatus==1){
+						OpenDir();
+					}
+				}
+				else // is tbt file
+				{
         strcpy(prepareNameToOpen, filelist[countMenuInReadMode - 1]);
         printf("Open %s\r\n", prepareNameToOpen);
         i = 0;
@@ -1173,6 +1223,7 @@ void menu_s() {
         seaching = 0;
         openFileStatus = 1;
         readstatus = 1;
+			}
       }
     }
 
@@ -1195,7 +1246,7 @@ void menu_s() {
               countMenuInReadMode += 1;
             }
           }
-          if (countMenuInReadMode == 0) {
+          if (countMenuInReadMode == 0) { //select file
             stringToUnicodeAndSendToDisplay("Read mode");
             printf("******print (Read mode) to dot *********\r\n");
           } else {
@@ -1219,11 +1270,19 @@ void menu_s() {
               //NextPoint
               TempPointer22char = pointer22char;
               for (varForLoop = TempPointer22char; varForLoop > 0; varForLoop--) { // edit condition > 0 ->   ??? > 1*pointerSector 
-                if (SST25_buffer99[varForLoop] == 0x0d) { //
+								countLengthInLine++;
+								if (SST25_buffer99[varForLoop] == 0x0d) { //
                   countLFTwoStep++;
+									if(countLengthInLine==5&&countLFTwoStep==2){
+									  pointer22char = varForLoop;
+                    countLFTwoStep = 0;
+										printf("Length:--%d--\r\n",countLengthInLine);
+                    break;
+									}
                   if (countLFTwoStep == 2) { //check 0x0d 0x0a two event
                     pointer22char = varForLoop + 2;
                     countLFTwoStep = 0;
+										printf("Length:--%d--\r\n",countLengthInLine);
                     break;
                   }
                 } else if (varForLoop == 1) { //begin of file
@@ -1242,6 +1301,7 @@ void menu_s() {
                     maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
                 /// printf("%c=",SST25_buffer99[j]);
               }
+							countLengthInLine=0; //clear 
             } //--------------------------end 38------------------------
             for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) { //query line
               if (NextPoint + (pointerSector * 4096) < addressWriteFlashTemp) {
@@ -1272,19 +1332,20 @@ void menu_s() {
 						}
             //check string buffer before push to display when < less than 20 charactor
             stringToUnicodeAndSendToDisplay(buffer22Char);
-            printf("// %d //send: %d-- %s -\r\n", jumpLECR, pointer22char, buffer22Char);
-            if (pointerSectorStatus == 1) {
+            printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
+            if (pointerSectorStatus == 1) { //read next sector
               pointerSectorStatus = 0;
               pointerSector++;
               pointer22char = 0;
               NextPoint = 0;
-              printf("seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\r\n");
+              //printf("seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\r\n");
 							// print last string again
               configFlash();
               SPI_FLASH_CS_LOW();
               SST25_R_BLOCK(pointerSector * 4096, SST25_buffer99, 4096);
               SPI_FLASH_CS_HIGH();
               Delay(0xffff);
+							stringToUnicodeAndSendToDisplay(buffer22Char); // print againt
               //delay_ms(1000);
             }
           }

@@ -483,8 +483,10 @@ int main(void)
     USBDiskMount[]
     setFileName
   */
-  stringToUnicodeAndSendToDisplay("abcdef ");
+  //stringToUnicodeAndSendToDisplay("abcdef ");
+	printDot(st_0, sizeof(st_0));
   delay_ms(1200);
+	stringToUnicodeAndSendToDisplay("Notepad");
   //****************** check dot****************
 
   printf("---------------- \r\n");
@@ -1175,7 +1177,7 @@ void createFile() {
     printf("File Create\r\n"); //FileClose
     command_++; //10
   } else if (command_ == 11) {
-    SendCH370(FileLength, sizeof(FileLength));
+    SendCH370(FileLength, sizeof(FileLength));//255
     printf("Setting data length\r\n");
     command_++; //12
   }
@@ -1358,15 +1360,19 @@ void menu_s() {
         seaching = 1;
         openFileStatus = 0;
         readstatus = 0;
+				endReadFile = 0;
+				printf("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
       } else if (mode == 3) { // when back from seach file
         command_ = 0;
         seaching = 0;
         mode = 0;
+				printf("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+      
       }
       else {
         mode = 0;
       }
-      printf("back c = %d mode = %d\r\n", command_, mode);
+      printf("back seaching = %d openFileStatus = %d\r\n", command_, openFileStatus);
     } // back
     if (keyCode == 13) { //enter
       //  previousMode

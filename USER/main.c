@@ -64,7 +64,7 @@ int maxLengthLoopL22 = 22;
 int countLFTwoStep = 0;
 int TempPointer22char = 0;
 int varForLoop = 0;
-int readPreviousSector = 0; 
+int readPreviousSector = 0;
 int countLengthInLine = 0;
 int seeCur = 0;
 int breakOpenDir = 0;
@@ -193,8 +193,8 @@ int SetByteRead6char[] = {0x00, 0x57, 0xab, 0x3a, 0x06, 0x00};
 int ReadData[] = {0x00, 0x57, 0xAB, 0x27};
 int continueRead[] = {0x00, 0x57, 0xab, 0x3b};
 int command_ = 0;
-int DirName[] = {0x00, 0x57, 0xab, 0x2f,0x2f,0x54,0x45,0x53,0x54,0x00};
-	
+int DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
+
 int SwitchEndFileName = 0;
 int endFileName = 0;
 
@@ -285,7 +285,7 @@ void changeBuatRate(void);
 // john function
 void unicode_to_ASCII(void);
 void notepad(void);
-int mapCursor(int,int,int);
+int mapCursor(int, int, int);
 int checkBit(int);
 //----end john func---
 //-----------------------------------mode--------------------------------//
@@ -414,15 +414,15 @@ int main(void)
     ADC_Configuration();
     delay_init();
     sendUart(1);*/
-/*  SPI_DISPLAY_CS_LOW();
-  printDot(st_0, sizeof(st_0));
-  Delay(0xffff);
-  delay_ms(2000);
-  printDot(st_notepad, sizeof(st_notepad));
-  //stringToUnicodeAndSendToDisplay("Notepad");
-  SPI_DISPLAY_CS_HIGH();
+  /*  SPI_DISPLAY_CS_LOW();
+    printDot(st_0, sizeof(st_0));
+    Delay(0xffff);
+    delay_ms(2000);
+    printDot(st_notepad, sizeof(st_notepad));
+    //stringToUnicodeAndSendToDisplay("Notepad");
+    SPI_DISPLAY_CS_HIGH();
 
-*/
+  */
   /*
     configFlash();
     SPI_FLASH_CS_LOW();
@@ -483,8 +483,8 @@ int main(void)
     USBDiskMount[]
     setFileName
   */
-    stringToUnicodeAndSendToDisplay("abcdef ");
-		delay_ms(1200);
+  stringToUnicodeAndSendToDisplay("abcdef ");
+  delay_ms(1200);
   //****************** check dot****************
 
   printf("---------------- \r\n");
@@ -494,9 +494,9 @@ int main(void)
     //appendFile();
 
     menu_s();
-		while (mode == 1) {
-			notepad();
-		}
+    while (mode == 1) {
+      notepad();
+    }
     while (mode == 3 && openFileStatus == 0) {
       searchFile();
     }
@@ -517,27 +517,27 @@ int main(void)
 }
 //---------from john------
 
-int  mapCursor(int P1,int P2,int P3){
-	if(P1!=0){
-	return	checkBit(P1);
-	}
-	else if(P2!=0){
-	return	checkBit(P2)+8;
-	}
-	else if(P3!=0){
-	return	checkBit(P3)+16;
-	}else{
-	return 0;
-	}
+int  mapCursor(int P1, int P2, int P3) {
+  if (P1 != 0) {
+    return  checkBit(P1);
+  }
+  else if (P2 != 0) {
+    return  checkBit(P2) + 8;
+  }
+  else if (P3 != 0) {
+    return  checkBit(P3) + 16;
+  } else {
+    return 0;
+  }
 }
-int checkBit(int input){
-	int i;
-	for(i = 0;i<=8;i++){	
-				if(input==1)
-				break;
-				input = input>>1;
-	}
-	return i;
+int checkBit(int input) {
+  int i;
+  for (i = 0; i <= 8; i++) {
+    if (input == 1)
+      break;
+    input = input >> 1;
+  }
+  return i;
 }
 void notepad() {
   if (cur == 20) {
@@ -555,13 +555,13 @@ void notepad() {
       countKey = 0;                                                         //-
     }
     //-
-    if (countKey == 2 && uart2Buffer == 0xa4) {
+    if (countKey == 2 && uart2Buffer == 0xa4) { // if cursor
       seeCur = 1;
     }
     if (countKey >= 4 && countKey <= 6) {                                   //-
       bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
     }
-    if (countKey == 2) //checkKeyError
+    if (countKey == 2) //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
     {
       checkKeyError = uart2Buffer;
     }
@@ -592,87 +592,101 @@ void notepad() {
       else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) { // joy is up
         keyCode = 55;  // arrow up
       }
-    }
-    if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
-      keyCode = 32;  // arrow up
-    }
-    if (seeCur == 1) {
-      mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-      if (mapcur <=  cur) {
-        mapcur1 = mapcur;
-        statusmid = 1;
-      }
-      else {
-        mapcur1 = cur;
-      }
-      printf(" mapcur = %d \n ", mapcur1);
+      else if (bufferKey3digit[1] == 32 || bufferKey3digit[2] == 4) {
+        keyCode = 8;
 
-    }
-    if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
-      if (statusmid != 1) {
-        str2[cur] = '\0';
-        cur--;
       }
     }
-    if ((bufferKey3digit[0] != 0 ||   keyCode == 32   )) {
-      for ( i = 0; i < 255; i++) {
-        if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
-          if (statusmid != 1 && keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
-            str2[cur] = i;
-            cur++;
+    if (keyCode == 8) {
+      mode = 0;
+    }
+    else {
+      if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
+        keyCode = 32;  // arrow up
+      }
+      if (seeCur == 1) {
+        mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+        if (mapcur <=  cur) {
+          mapcur1 = mapcur;
+          statusmid = 1;
+
+        }
+        else {
+
+          mapcur1 = cur;
+        }
+        printf(" mapcur = %d \n ", mapcur1);
+
+      }
+
+      if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
+        if (statusmid != 1) {
+          if (cur != 0) {
+            str2[cur] = '\0';
+            cur--;
           }
-          if (statusmid == 1  ) {
-            printf("cursor = %d \t mapcur1 = %d\t  \n", cur, mapcur1);
-            strncpy(strfirst, str2, mapcur1);
-            strncpy(strlast, str2 + mapcur1, strlen(str2) - mapcur1);
-            if (keyCode == 32) {
-              ch[0] = 32;
-              mapcur1++;
-              cur++;
-            }
-            if (bufferKey3digit[0] == 0x80  && seeCur != 1) {
-              //cur = mapcur1;
-              //  printf("buff[0] = %x\t",bufferKey3digit[0]);
-              ch[0] = '\0';
-              if (mapcur1 != 0) {
-                memset(strfirst + strlen(strfirst) - 1, '\0', strlen(strfirst));
-                cur--;
-                //cur--;
-                //  strfirst[cur] = '\0';
-                //  cur--;
-                mapcur1--;
-              }
-            }
-            if (keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
-              ch[0] = i;
-              mapcur1++;
-              cur++;
-            }
-            strcat(strfirst, ch);
-            //  printf("strfirst2: %s\t",strfirst);
-            strcat(strfirst, strlast);
-            strcpy(str2, strfirst);
-            memset(strfirst, '\0', strlen(strfirst));
-            memset(strlast, '\0', strlen(strlast));
-            memset(ch, '\0', strlen(ch));
-          }
-          break;
         }
       }
-      if (mapcur1 >= cur) {
-        statusmid = 0;
+
+      if ((bufferKey3digit[0] != 0 ||   keyCode == 32   )) {
+        for ( i = 0; i < 255; i++) {
+          if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
+            if (statusmid != 1 && keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+              str2[cur] = i;
+              cur++;
+            }
+            if (statusmid == 1  ) {
+              printf("cursor = %d \t mapcur1 = %d\t  \n", cur, mapcur1);
+              strncpy(strfirst, str2, mapcur1);
+              strncpy(strlast, str2 + mapcur1, strlen(str2) - mapcur1);
+              if (keyCode == 32) {
+                ch[0] = 32;
+                mapcur1++;
+                cur++;
+              }
+              if (bufferKey3digit[0] == 0x80  && seeCur != 1) {
+                ch[0] = '\0';
+                if (mapcur1 != 0) {
+                  memset(strfirst + strlen(strfirst) - 1, '\0', strlen(strfirst));
+                  cur--;
+                  mapcur1--;
+                }
+              }
+
+              if (keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+                ch[0] = i;
+                mapcur1++;
+                cur++;
+              }
+              strcat(strfirst, ch);
+              strcat(strfirst, strlast);
+              strcpy(str2, strfirst);
+              memset(strfirst, '\0', strlen(strfirst));
+              memset(strlast, '\0', strlen(strlast));
+              memset(ch, '\0', strlen(ch));
+            }
+
+            break;
+          }
+        }
+
+        if (mapcur1 >= cur) {
+          statusmid = 0;
+        }
       }
+
+
+      if (keyCode == 32 && statusmid != 1 ) {
+        str2[cur] = 32;
+        cur++;
+      }
+
+      printf("str2: %s : len %d\r\n", str2, strlen(str2));
+      stringToUnicodeAndSendToDisplay(str2);
+      countKey = 0;
+      keyCode = 0;
+      seeCur = 0;
     }
-    if (keyCode == 32 && statusmid != 1 ) {
-      str2[cur] = 32;
-      cur++;
-    }
-    printf("str2: %s : len %d\r\n", str2, strlen(str2));
-		stringToUnicodeAndSendToDisplay(str2);
-    // statusmid  = 0;
-    countKey = 0;
-    keyCode = 0;
-    seeCur = 0;
   }
 }
 void unicode_to_ASCII() {
@@ -773,7 +787,7 @@ void NextFile() {
 void searchFile() {
   command_ = 0;
   r_count = 0;
-	printf("Seaching............................\r\n");
+  printf("Seaching............................\r\n");
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   printf("reset all\r\n");
   delay_ms(50);
@@ -1121,22 +1135,22 @@ void OpenDir() { //readf
       printf("Set file Name\r\n");
       command_++; //5
       delay_ms(50);
-    } else if (command_ == 5){ ///FileOpen
+    } else if (command_ == 5) { ///FileOpen
       SendCH370(FileOpen, sizeof(FileOpen));
       printf("File Open\r\n");
       command_++; //6
       delay_ms(50);
-    } 
-		// menu_s();
+    }
+    // menu_s();
     if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
       i1 = USART_ReceiveData(USART3);
       printf("%x-%d\r\n", i1, i1);
-		}
-		//OpenDir
-		if(command_==6&&i1==0x41){
-				openDirStatus = 0;		
-			}
-		}
+    }
+    //OpenDir
+    if (command_ == 6 && i1 == 0x41) {
+      openDirStatus = 0;
+    }
+  }
 }
 void createFile() {
   if (command_ == 1) {
@@ -1228,9 +1242,9 @@ const char * fileName()
   }
   if (seeT == 1) {
     printf("this's tbt file\r\n");
-  }else{
-		 printf("this's Dir\r\n");
-	}
+  } else {
+    printf("this's Dir\r\n");
+  }
   return DataForWrite_aftersort;
 }
 void menu_s() {
@@ -1363,41 +1377,44 @@ void menu_s() {
         if (mode == 3) {
           seaching = 1;
           countMenuInReadMode = 0;
+        } else if (mode == 1) {
+          stringToUnicodeAndSendToDisplay(str2);
         }
-      } else if (mode == 3 && endReadFile != 1) { //openf
-				if(strstr(filelist[countMenuInReadMode - 1],"TBT") == NULL){ //open dir
-					openDirStatus = 1;
-					//---
-						command_ = 0;
-						seaching = 1;
-						mode = 3;
-					  openFileStatus = 0; 
-						//countMenuInReadMode = 0;
-					//---
-					while(openDirStatus==1){
-						OpenDir();
-					}
-				}
-				else // open tbt file
-				{
-        strcpy(prepareNameToOpen, filelist[countMenuInReadMode - 1]);
-        printf("Open %s\r\n", prepareNameToOpen);
-        i = 0;
-        setFileNameLength = 5;
-        while (prepareNameToOpen[i] != '\0') {
+      }
+      else if (mode == 3 && endReadFile != 1) { //openf
+        if (strstr(filelist[countMenuInReadMode - 1], "TBT") == NULL) { //open dir
+          openDirStatus = 1;
+          //---
+          command_ = 0;
+          seaching = 1;
+          mode = 3;
+          openFileStatus = 0;
+          //countMenuInReadMode = 0;
+          //---
+          while (openDirStatus == 1) {
+            OpenDir();
+          }
+        }
+        else // open tbt file
+        {
+          strcpy(prepareNameToOpen, filelist[countMenuInReadMode - 1]);
+          printf("Open %s\r\n", prepareNameToOpen);
+          i = 0;
+          setFileNameLength = 5;
+          while (prepareNameToOpen[i] != '\0') {
+            setFileNameLength++;
+            setFileName[i + 5] = (int)prepareNameToOpen[i];
+            printf("- %x ", setFileName[i + 5]);
+            i++;
+          }
           setFileNameLength++;
-          setFileName[i + 5] = (int)prepareNameToOpen[i];
-          printf("- %x ", setFileName[i + 5]);
-          i++;
+          setFileName[i + 5] = 0x00;
+          i = 0;
+          seaching = 0;
+          printf("clrear seaching = 0\r\n");
+          openFileStatus = 1;
+          readstatus = 1;
         }
-        setFileNameLength++;
-        setFileName[i + 5] = 0x00;
-        i = 0;
-        seaching = 0;
-				printf("clrear seaching = 0\r\n");
-        openFileStatus = 1;
-        readstatus = 1;
-			}
       }
     }
 
@@ -1443,39 +1460,39 @@ void menu_s() {
               printf("\r\n \r\n pointer22char %d \r\n \r\n", pointer22char);
               //NextPoint
               TempPointer22char = pointer22char;
-              for (varForLoop = TempPointer22char; varForLoop > 0; varForLoop--) { // edit condition > 0 ->   ??? > 1*pointerSector 
-								countLengthInLine++;
-								if (SST25_buffer99[varForLoop] == 0x0d) { //
+              for (varForLoop = TempPointer22char; varForLoop > 0; varForLoop--) { // edit condition > 0 ->   ??? > 1*pointerSector
+                countLengthInLine++;
+                if (SST25_buffer99[varForLoop] == 0x0d) { //
                   countLFTwoStep++;
-									if(countLengthInLine==5&&countLFTwoStep==2){
-									  pointer22char = varForLoop;
+                  if (countLengthInLine == 5 && countLFTwoStep == 2) {
+                    pointer22char = varForLoop;
                     countLFTwoStep = 0;
-										printf("Length:--%d--\r\n",countLengthInLine);
+                    printf("Length:--%d--\r\n", countLengthInLine);
                     break;
-									}
+                  }
                   if (countLFTwoStep == 2) { //check 0x0d 0x0a two event
                     pointer22char = varForLoop + 2;
                     countLFTwoStep = 0;
-										printf("Length:--%d--\r\n",countLengthInLine);
+                    printf("Length:--%d--\r\n", countLengthInLine);
                     break;
                   }
                 } else if (varForLoop == 1) { //begin of file
                   pointer22char = 0;
                   // -- find max length --
-                  
+
                   //-- end find mx length --
                   if (pointerSector != 0) { //if sector != 1
-											readPreviousSector = 1; //status for read previous sector
-											printf("reading prevois sector -----------------------------\r\n");
+                    readPreviousSector = 1; //status for read previous sector
+                    printf("reading prevois sector -----------------------------\r\n");
                   }
                 }
-								if (pointer22char + 22 < addressWriteFlashTemp)
-                    maxLengthLoopL22 = 22;
-                  else
-                    maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
+                if (pointer22char + 22 < addressWriteFlashTemp)
+                  maxLengthLoopL22 = 22;
+                else
+                  maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
                 /// printf("%c=",SST25_buffer99[j]);
               }
-							countLengthInLine=0; //clear 
+              countLengthInLine = 0; //clear
             } //--------------------------end 38------------------------
             for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++) { //query line
               if (NextPoint + (pointerSector * 4096) < addressWriteFlashTemp) {
@@ -1494,16 +1511,16 @@ void menu_s() {
             for (i = 20 - jumpLECR; i < 20; i++) { //clear another character
               buffer22Char[i] = 0;
             }
-						if(readPreviousSector==1){ //read previous sector when keycode == 38 && sector != 0
-							readPreviousSector = 0;
-							pointerSector--;
-							configFlash();
+            if (readPreviousSector == 1) { //read previous sector when keycode == 38 && sector != 0
+              readPreviousSector = 0;
+              pointerSector--;
+              configFlash();
               SPI_FLASH_CS_LOW();
               SST25_R_BLOCK(pointerSector * 4096, SST25_buffer99, 4096);
               SPI_FLASH_CS_HIGH();
               Delay(0xffff);
-							pointer22char = 4096;
-						}
+              pointer22char = 4096;
+            }
             //check string buffer before push to display when < less than 20 charactor
             stringToUnicodeAndSendToDisplay(buffer22Char);
             printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
@@ -1513,13 +1530,13 @@ void menu_s() {
               pointer22char = 0;
               NextPoint = 0;
               //printf("seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\r\n");
-							// print last string again
+              // print last string again
               configFlash();
               SPI_FLASH_CS_LOW();
               SST25_R_BLOCK(pointerSector * 4096, SST25_buffer99, 4096);
               SPI_FLASH_CS_HIGH();
               Delay(0xffff);
-							stringToUnicodeAndSendToDisplay(buffer22Char); // print againt
+              stringToUnicodeAndSendToDisplay(buffer22Char); // print againt
               //delay_ms(1000);
             }
           }

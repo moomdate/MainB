@@ -154,7 +154,7 @@ int becon = 0;
 int checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
 int setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03};//+
 int USBDiskMount[] = {0x00, 0x57, 0xab, 0x31};
-int setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
+int setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f}; // for direct open file
 int setFileNameA[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x41, 0x2e, 0x54, 0x42, 0x54, 0x00};
 int setFileNameLength = 5;
 int DiskconnectStatus[] = {0x00, 0x57, 0xab, 0x03}; //+
@@ -165,7 +165,7 @@ int countdataTemp512 = 0;
 int waitEnd = 0; // 10
 int lastAscii = 0;
 
-int setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2a, 0x00};//*.TXT
+int setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2a, 0x00};//*
 int setAllName3[] = {0x00, 0x57, 0xab, 0x2f, 0x2a, 0x00};//*.TXT
 int setAllName2[] = {0x00, 0x57, 0xab, 0x2f, 0x41, 0x2e, 0x54, 0x42, 0x54, 0x00};//*.TXT
 int FileOpen[] = {0x00, 0x57, 0xab, 0x32};
@@ -281,6 +281,13 @@ void searchFile(void);
 void appendFile(void);
 void SendCH370(int data[], int);
 void changeBuatRate(void);
+
+// john function
+void unicode_to_ASCII(void);
+void notepad(void);
+int mapCursor(int,int,int);
+int checkBit(int);
+//----end john func---
 //-----------------------------------mode--------------------------------//
 
 /* Private variables ---------------------------------------------------------*/
@@ -322,7 +329,20 @@ int16_t USART_FLAG;
 extern void SST25_W_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 
-
+// John global Value
+char str1[4096];
+char str2[20];
+char ch[1];
+int mapcur = 0;
+int cur = 0;
+int statusmid = 0;
+char strfirst[20];
+char strmiddle[20];
+int Curmid = 0;
+char strlast[20];
+int tempcur;
+int mapcur1;
+int mapcur2;
 /*----------------------------------------------------------------------------*/
 
 void configFlash(void) {
@@ -377,17 +397,9 @@ int main(void)
   GPIO_Configuration();             //if config this can't use printf
   //----------------------------------------------------------------------------------------------------------
   UART4_Configuration(); //9600
-
-
-
   USART2_Configuration(); //115200
   USART1_Configuration(); //115200
-
-
   USART3_Configuration(); //9600
-
-
-
   Init_SPI();
   delay_init();
   sendUart(1);
@@ -472,7 +484,7 @@ int main(void)
     setFileName
   */
     stringToUnicodeAndSendToDisplay("abcdef ");
-delay_ms(1200);
+		delay_ms(1200);
   //****************** check dot****************
 
   printf("---------------- \r\n");
@@ -482,6 +494,9 @@ delay_ms(1200);
     //appendFile();
 
     menu_s();
+		while (mode == 1) {
+			notepad();
+		}
     while (mode == 3 && openFileStatus == 0) {
       searchFile();
     }
@@ -498,16 +513,177 @@ delay_ms(1200);
         keyboardMode();
       }
     }
+  }
+}
+//---------from john------
 
-    //checkConnection
-    //printDot(st_bluetooth, sizeof(st_bluetooth));
-    // BluetoothMode();
-    //keyboardMode();
+int  mapCursor(int P1,int P2,int P3){
+	if(P1!=0){
+	return	checkBit(P1);
+	}
+	else if(P2!=0){
+	return	checkBit(P2)+8;
+	}
+	else if(P3!=0){
+	return	checkBit(P3)+16;
+	}else{
+	return 0;
+	}
+}
+int checkBit(int input){
+	int i;
+	for(i = 0;i<=8;i++){	
+				if(input==1)
+				break;
+				input = input>>1;
+	}
+	return i;
+}
+void notepad() {
+  if (cur == 20) {
+    strcat(str1, str2);
+    memset(str2, '\0', strlen(str2));
+    cur = 0;
+    mapcur1 = 0;
+    printf(" str size it  %d  is %s \n", strlen(str1), str1);
+  }
+  if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
+    //----------------------------- uart to key--------------------------------
+    uart2Buffer = USART_ReceiveData(USART2);                                //-
+    if (uart2Buffer == 0xff && SeeHead == 0) {                              //-
+      SeeHead = 1;                                                          //-
+      countKey = 0;                                                         //-
+    }
+    //-
+    if (countKey == 2 && uart2Buffer == 0xa4) {
+      seeCur = 1;
+    }
+    if (countKey >= 4 && countKey <= 6) {                                   //-
+      bufferKey3digit[countKey - 4] = uart2Buffer;                          //-
+    }
+    if (countKey == 2) //checkKeyError
+    {
+      checkKeyError = uart2Buffer;
+    }
+    countKey++;
+    // ---------------------------- end uart to key ----------------------------
+    // printf("[%x]\r\n",uart2Buffer);
+  }
+  if (countKey >= maxData) { //Recieve & checking key
+    seeHead = 0;
+    // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+
+    //printf("checkKey :%x\r\n",checkKeyError);
+    if (checkKeyError == 0xff) { //check error key
+      //printf("Key Error");
+      countKey = 0;
+      SeeHead = 0;
+    }
+
+    //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
+    //////////////////////////////////menu selector ///////////////////////////////////
+
+    if (bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0) { //joy menu
+      // ---------------------------- to key code -----------------------------
+      if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20) { // joy is down
+        keyCode = 40; // arrow down
+        // command_++;
+      }
+      else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) { // joy is up
+        keyCode = 55;  // arrow up
+      }
+    }
+    if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
+      keyCode = 32;  // arrow up
+    }
+    if (seeCur == 1) {
+      mapcur =  mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      if (mapcur <=  cur) {
+        mapcur1 = mapcur;
+        statusmid = 1;
+      }
+      else {
+        mapcur1 = cur;
+      }
+      printf(" mapcur = %d \n ", mapcur1);
+
+    }
+    if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
+      if (statusmid != 1) {
+        str2[cur] = '\0';
+        cur--;
+      }
+    }
+    if ((bufferKey3digit[0] != 0 ||   keyCode == 32   )) {
+      for ( i = 0; i < 255; i++) {
+        if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
+          if (statusmid != 1 && keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+            str2[cur] = i;
+            cur++;
+          }
+          if (statusmid == 1  ) {
+            printf("cursor = %d \t mapcur1 = %d\t  \n", cur, mapcur1);
+            strncpy(strfirst, str2, mapcur1);
+            strncpy(strlast, str2 + mapcur1, strlen(str2) - mapcur1);
+            if (keyCode == 32) {
+              ch[0] = 32;
+              mapcur1++;
+              cur++;
+            }
+            if (bufferKey3digit[0] == 0x80  && seeCur != 1) {
+              //cur = mapcur1;
+              //  printf("buff[0] = %x\t",bufferKey3digit[0]);
+              ch[0] = '\0';
+              if (mapcur1 != 0) {
+                memset(strfirst + strlen(strfirst) - 1, '\0', strlen(strfirst));
+                cur--;
+                //cur--;
+                //  strfirst[cur] = '\0';
+                //  cur--;
+                mapcur1--;
+              }
+            }
+            if (keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+              ch[0] = i;
+              mapcur1++;
+              cur++;
+            }
+            strcat(strfirst, ch);
+            //  printf("strfirst2: %s\t",strfirst);
+            strcat(strfirst, strlast);
+            strcpy(str2, strfirst);
+            memset(strfirst, '\0', strlen(strfirst));
+            memset(strlast, '\0', strlen(strlast));
+            memset(ch, '\0', strlen(ch));
+          }
+          break;
+        }
+      }
+      if (mapcur1 >= cur) {
+        statusmid = 0;
+      }
+    }
+    if (keyCode == 32 && statusmid != 1 ) {
+      str2[cur] = 32;
+      cur++;
+    }
+    printf("str2: %s : len %d\r\n", str2, strlen(str2));
+		stringToUnicodeAndSendToDisplay(str2);
+    // statusmid  = 0;
+    countKey = 0;
+    keyCode = 0;
+    seeCur = 0;
+  }
+}
+void unicode_to_ASCII() {
+  for ( i = 0; i < 255; i++) {
+    if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
+      break;
+    }
   }
 
-
-
 }
+//-----------new----------
 void stringToUnicodeAndSendToDisplay(char *string) {
   int strleng = 0;
   configDisplay();
@@ -522,10 +698,8 @@ void stringToUnicodeAndSendToDisplay(char *string) {
     }
     else {
       cell_sentdata(0xff); // null dot send to display
-      //printf("00\r\n");
     }
   }
-  //  printf("%s length: %d\r\n",string,);
 }
 void appendFile() {
   if (command_ == 1) {
@@ -599,6 +773,7 @@ void NextFile() {
 void searchFile() {
   command_ = 0;
   r_count = 0;
+	printf("Seaching............................\r\n");
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   printf("reset all\r\n");
   delay_ms(50);
@@ -706,12 +881,8 @@ void searchFile() {
         //printf("Preprrrr");
       }
     }
-    /*if(endFileName&&SwitchEndFileName==0&&command_>=11){
-      SwitchEndFileName = 1;
-      printf("EndFileName\r\n");
-      }*/
   }
-  printf("breaked\r\n");
+  printf("breaked from search file func.\r\n");
 }
 void copy_string(char *target, char *source) {
   while (*source) {
@@ -725,7 +896,6 @@ void writeFlash(int address, int size) {
   configFlash();
   SPI_FLASH_CS_LOW();
   SST25_W_BLOCK(address, SST25_buffer, 4096);
-  //printf("---test-----%s",SST25_buffer);
   SPI_FLASH_CS_HIGH();
 }
 void writeFlash2(int address, int size) {
@@ -851,7 +1021,6 @@ void ReadFile() { //readf
           } else {
             command_ = 6;
           }
-
           /*printf("data is :%s\r\n",dataTemp512);
             printf("----------------------------read sector------------------\r\n");*/
 
@@ -918,8 +1087,6 @@ void ReadFile() { //readf
           while (endReadFile == 1) { //4 readfe
             menu_s();
           }
-
-
         }
       }
     }
@@ -960,7 +1127,7 @@ void OpenDir() { //readf
       command_++; //6
       delay_ms(50);
     } 
-//    menu_s();
+		// menu_s();
     if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
       i1 = USART_ReceiveData(USART3);
       printf("%x-%d\r\n", i1, i1);
@@ -1172,13 +1339,12 @@ void menu_s() {
     }
     // ----------------------------- end mode (5) ---------------------------
     if (keyCode == 8) { // enter mode && previousMode != mode
-      if (mode == 3 && openFileStatus == 1) {
+      if (mode == 3 && openFileStatus == 1) { // when back form read file
         command_ = 0;
         seaching = 1;
-        //mode = 0;
         openFileStatus = 0;
         readstatus = 0;
-      } else if (mode == 3) {
+      } else if (mode == 3) { // when back from seach file
         command_ = 0;
         seaching = 0;
         mode = 0;
@@ -1199,13 +1365,20 @@ void menu_s() {
           countMenuInReadMode = 0;
         }
       } else if (mode == 3 && endReadFile != 1) { //openf
-				if(strstr(filelist[countMenuInReadMode - 1],"TBT") == NULL){
+				if(strstr(filelist[countMenuInReadMode - 1],"TBT") == NULL){ //open dir
 					openDirStatus = 1;
+					//---
+						command_ = 0;
+						seaching = 1;
+						mode = 3;
+					  openFileStatus = 0; 
+						//countMenuInReadMode = 0;
+					//---
 					while(openDirStatus==1){
 						OpenDir();
 					}
 				}
-				else // is tbt file
+				else // open tbt file
 				{
         strcpy(prepareNameToOpen, filelist[countMenuInReadMode - 1]);
         printf("Open %s\r\n", prepareNameToOpen);
@@ -1221,6 +1394,7 @@ void menu_s() {
         setFileName[i + 5] = 0x00;
         i = 0;
         seaching = 0;
+				printf("clrear seaching = 0\r\n");
         openFileStatus = 1;
         readstatus = 1;
 			}

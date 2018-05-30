@@ -4,17 +4,18 @@
 ##### ที่ทำได้ :satisfied: :wink:
 
   - ค้นหาไฟล์ TBT ใน SD Card
+  - โหมดพิมพ์ (เหมือน notepad) !!ยังบันทึกไม่ได้
   - เปิดอ่านไฟล์ TBT 
-  - เลื่อนบรรทัด ไป/กลับ (ไม่เกิน 4096 ตัวอักษร)
+    -  อ่านไฟล์ sector ถัดไป Charator>4096 
+    - เลื่อนบรรทัด ไป/กลับ (ไม่เกิน 4096 ตัวอักษร)
   - โหมดบลูทูธ
     - เชื่อมต่อกับอุปกรณ์ android ทำงานเป็น navigator 
     - Read text ด้วย Talkback และแสดงผ่านจุดเบรลล์
     - Keyboard Braille  
     - notepad Braille 
 ##### ที่กำลังทำ :open_mouth: :sleeping:
-  - อ่านไฟล์ sector ถัดไป Charator>4096 
   - ย้อนกลับจากโหมดอ่านไม่ได้ ต้องรีเซ็ท
-  - โหมดพิมพ์ (เหมือน notepad) กำลังหาวิธีเซฟ
+  - บันทึกไฟล์ที่พิมพ์ในโหมด notepad
   - ยังเปิดและดูไฟล์ในโฟลเดอร์ไม่ได้
 #### ปัญหา :grimacing: :rage: :thumbsdown:
   - ไม่สามารถปรับ baud rate จาก 9600 115200 ขณะรันโปรแกรม ใน STM32 ได้
@@ -34,9 +35,8 @@
 
 #### Output Function
 ```c
-   printDot(brailleUnicodeByte, sizeof(brailleUnicodeByte)); //send data to dot
-   stringToUnicodeAndSendToDisplay("String here"); // send string to dot 
-
+   printDot(brailleUnicodeByte, sizeof(brailleUnicodeByte)); //ส่ง Braille unicode ไปแสดงที่จุดเบรลล์
+   stringToUnicodeAndSendToDisplay("String here"); // ส่งสตริงไปแสดงที่จุดเบรลล์
 ```
 #### Keyboard Input 
 ```c
@@ -76,7 +76,10 @@
   }
 ```
 #### Mode (in void main)
-
+###### Bluetooth Mode
+```c
+  notepad();
+```
 ###### Bluetooth Mode
 ```c
    while (mode == 5) { // while in bluetooth mode

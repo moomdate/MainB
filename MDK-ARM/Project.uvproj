@@ -435,11 +435,6 @@
               <FileType>5</FileType>
               <FilePath>..\USER\stm32f10x_conf.h</FilePath>
             </File>
-            <File>
-              <FileName>SPI_Flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\SPI_Flash.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -474,6 +469,11 @@
               <FileName>stm32f10x_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>SPI_Flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USER\SPI_Flash.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_rcc.c</FileName>

@@ -1,12 +1,12 @@
 --cpu Cortex-M3
 ".\obj\main.o"
 ".\obj\stm32f10x_it.o"
-".\obj\spi_flash.o"
 ".\obj\stm32f10x_systick.o"
 ".\obj\systick.o"
 ".\obj\misc.o"
 ".\obj\stm32f10x_flash.o"
 ".\obj\stm32f10x_gpio.o"
+".\obj\spi_flash.o"
 ".\obj\stm32f10x_rcc.o"
 ".\obj\stm32f10x_adc.o"
 ".\obj\stm32f10x_bkp.o"

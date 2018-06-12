@@ -424,7 +424,7 @@ int main(void)
   printf("---------------- \r\n");
 	 command_ ++;
   while (CreateFile__) {
-		if(createFile("TEST.TXT")==1){
+		if(createFile("/TEST.TXT")==1){
 			printf("Create File success\r\n");
 			CreateFile__ = 0;
 		}
@@ -1103,16 +1103,13 @@ int createFile(char *name) {
   if (command_ == 1) {
     SendCH370(checkConnection, sizeof(checkConnection));
     command_++; //2
-    printf("Check Connection\r\n");
 		delay_ms(50);
   } else if (command_ == 2) {
     SendCH370(setSDCard, sizeof(setSDCard));
-    printf("Set SD Card Mode\r\n");
     command_++; //4
 		delay_ms(50);
   } else if (command_ == 3) {
     SendCH370(USBDiskMount, sizeof(USBDiskMount));
-    printf(" SendCommand R:%d\r\n", command_);
     command_++; //6
 		delay_ms(50);
   } else if (command_ == 4) {
@@ -1121,23 +1118,17 @@ int createFile(char *name) {
 		delay_ms(50);
   } else if (command_ == 5) {
     SendCH370(FileCreate, sizeof(FileCreate));
-    // SendCH370(FileClose,sizeof(FileClose));
-    printf("File Create\r\n"); //FileClose
-		//  delay_ms(50);
-		//  SendCH370(BYTE_LOCATE, sizeof(BYTE_LOCATE));
-   
 		delay_ms(50);
 		command_++; //10
   }
   else if (command_ == 6) {
     SendCH370(FileClose, sizeof(FileClose));
-    printf("File Close\r\n");
     command_++; //18
 		delay_ms(50);
   }
 	 if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
       i1 = USART_ReceiveData(USART3);
-      printf("%x\r\n", i1);
+     // printf("%x\r\n", i1);
     }
 	if(command_==7 && i1 == 0x14)
 		status_create = 1;

@@ -8,7 +8,9 @@
 #include <stdlib.h> //strtol
 #include "stm32f10x_spi.h"
 
-
+//-delay
+//#include "defines.h"
+//-
 #define RCC_APB2Periph_GPIO_SPI_FLASH_CS      RCC_APB2Periph_GPIOD
 #define SPI_DISPLAY_CS_PORT                     GPIOD
 #define SPI_DISPLAY_CS_PIN                      GPIO_Pin_4
@@ -174,6 +176,10 @@ int DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
 int SwitchEndFileName = 0;
 int endFileName = 0;
 
+int d_Time = 0;
+int toggleCur = 0;
+int tempCur = 0;
+
 int unicodeTable[] = {
   0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -241,6 +247,8 @@ void SendCommandToBLE(int data[], int sizeOfData);
 
 void printDot(int data[], int size);
 void stringToUnicodeAndSendToDisplay(char * str);
+void stringToUnicodeAndSendToDisplayC(char *string,int po); //cur position
+
 
 void clearDot(void);
 void menu_s(void);
@@ -379,40 +387,40 @@ void prepareSD(){
 	while(preStatus){
 		if (command_ == 1) {
 			SendCH370(checkConnection, sizeof(checkConnection));
-			printf(" check connecttion \r\n");
+			//printf(" check connecttion \r\n");
 			command_++; //2
 			delay_ms(50);
 		} else if (command_ == 2) {
 			SendCH370(setSDCard, sizeof(setSDCard));
-			printf(" set sd card\r\n");
+			//printf(" set sd card\r\n");
 			command_++; //4
 			delay_ms(50);
 		} else if (command_ == 3) {
 			SendCH370(USBDiskMount, sizeof(USBDiskMount));
-			printf(" usb disk mount \r\n");
+			//printf(" usb disk mount \r\n");
 			command_++; //6
 			delay_ms(50);
 		} else if (command_ == 4) {
 			SendCH370(setAllName, sizeof(setAllName));
-			printf(" set all file \r\n");
-			delay_ms(80);
+			//printf(" set all file \r\n");
+			delay_ms(50);
 			command_++; //10
 		} else if (command_ == 5) {
 			SendCH370(FileOpen, sizeof(FileOpen));
-			printf(" file open \r\n");
-			delay_ms(80);
+			//printf(" file open \r\n");
+			delay_ms(50);
 			command_++; //10
 		} else if (command_ == 6) {
 			SendCH370(FileClose, sizeof(FileClose));
-			printf(" File Close \r\n");
-			delay_ms(80);
+			//printf(" File Close \r\n");
+			delay_ms(50);
 			command_++; //10
 			preStatus = 0;
 		}
-		if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
+		/*if (USART_GetITStatus(USART3, USART_IT_RXNE) ) {
 				i1 = USART_ReceiveData(USART3);
 				printf("%x-%d\r\n", i1, i1);
-		}
+		}*/
 	}
 }
 int main(void)
@@ -427,6 +435,7 @@ int main(void)
   Init_SPI();
   delay_init();
   sendUart(1);
+	
   configDisplay();
   printDot(st_0, sizeof(st_0));
   delay_ms(1200);
@@ -435,11 +444,27 @@ int main(void)
   printf("---------------- \r\n");
   
 	prepareSD();
-	command_ = 0;
-	command_ ++;
+	command_ = 1;
+	
+	//configFlash();
   while (1) {
     //createFile();
     //appendFile();
+	/*	for(i=0; i<4096;i++){
+		if(i<2000)
+		SST25_buffer[i]='1';
+		else
+		SST25_buffer[i]='1';	
+	}
+ 
+  
+	
+	SST25_W_BLOCK(0x0000, SST25_buffer,4096);	   //写入0页的数据 
+  Delay(0xffff);
+	
+  SST25_R_BLOCK(0x0000, SST25_buffer99,4096);	 
+  printf("%s",SST25_buffer99);*/
+	
     menu_s();
     while (mode == 1) {
       notepad();
@@ -596,6 +621,27 @@ void saveName() {
   }
 }
 void notepad() {
+	int LastCur = 0;
+	if(statusmid!=0)
+		LastCur = mapcur1;
+	else 
+		LastCur = cur;
+	d_Time++;
+	if(d_Time>=300000){ //blink cu
+		if(toggleCur==0)
+			toggleCur = 1;
+		else
+			toggleCur = 0;
+		// print string here'
+		if(!toggleCur)
+			stringToUnicodeAndSendToDisplay(str2);
+		else
+			stringToUnicodeAndSendToDisplayC(str2,LastCur);
+		
+		printf("\r\ncur : %d\r\n",mapcur1);
+		d_Time = 0;
+	}
+	
   if (cur == 20) {
 		strcat(str2,"\r\n");
     strcat(str1, str2);
@@ -648,17 +694,20 @@ void notepad() {
         keyCode = 55;  // arrow up
       }
       else if (bufferKey3digit[1] == 32 || bufferKey3digit[2] == 4) {
-        keyCode = 8;
+        keyCode = 27; //escape  or back
       }
     }
-    if (keyCode == 8) {
+    if (keyCode == 27) {
       mode = 0;
     }
     else {
       if (bufferKey3digit[1] == 3  && bufferKey3digit[0] == 0) { // joy is up
         keyCode = 32;  // arrow up
       }
-      else if (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x1 && bufferKey3digit[2] == 0x00) { // save
+			else if(bufferKey3digit[0] == 0x80 && bufferKey3digit[2] == 0 && bufferKey3digit[2] == 0){
+				keyCode = 8; //delete /
+			}
+      else if ((bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x1 && bufferKey3digit[2] == 0x00)||(bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x2 && bufferKey3digit[2] == 0x00)||(bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x3 && bufferKey3digit[2] == 0x00)) { // save
         printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
@@ -673,14 +722,19 @@ void notepad() {
         }
         printf(" mapcur = %d \n ", mapcur1);
       }
-      if (bufferKey3digit[0] == 0x80 && seeCur != 1) {
+      if (keyCode == 8&& seeCur != 1) {
         if (statusmid != 1) {
-          if (cur != 0) {
+          if (cur > 0) {
+					//	printf("\r\n\ delete 1 \r\n");
             str2[cur] = '\0';
             cur--;
           }
         }
       }
+			if(keyCode == 8 && cur==0 && seeCur != 1){
+				str2[cur] = 0;
+				//printf("\r\n ------------------------------------\r\n");
+			}
       if ((bufferKey3digit[0] != 0 ||   keyCode == 32   )) {
         for ( i = 0; i < 255; i++) {
           if (bufferKey3digit[0]  == unicodeTable[(char) i]) {
@@ -697,15 +751,16 @@ void notepad() {
                 mapcur1++;
                 cur++;
               }
-              if (bufferKey3digit[0] == 0x80  && seeCur != 1) {
+              if (keyCode == 8 && seeCur != 1) {
                 ch[0] = '\0';
                 if (mapcur1 != 0) {
                   memset(strfirst + strlen(strfirst) - 1, '\0', strlen(strfirst));
+															printf("\r\n\ delete 0 \r\n");
                   cur--;
                   mapcur1--;
                 }
               }
-              if (keyCode != 32 && bufferKey3digit[0] != 0x80  && seeCur != 1 ) {
+              if (keyCode != 32 && keyCode == 8  && seeCur != 1 ) {
                 ch[0] = i;
                 mapcur1++;
                 cur++;
@@ -746,15 +801,20 @@ void unicode_to_ASCII() {
 
 }
 //-----------new----------
+
 void stringToUnicodeAndSendToDisplay(char *string) {
   int strleng = 0;
   configDisplay();
+	//clearDot();
   for (j = 0; j < 20 && string[j] != '\0' && string[j] != 0x0a; j++) {
     strleng++;
   }
   printf("| %s \r\n", string);
+	SPI_DISPLAY_CS_LOW();
+   
   for (j = 20; j >= 0; j--) {
     if (j < strleng) {
+			Delay(0x55F);
       cell_sentdata(~unicodeTable[((int) * (string + j))]); //send to display
       printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int) * (string + j))], (int) * (string + j), j);
     }
@@ -762,6 +822,37 @@ void stringToUnicodeAndSendToDisplay(char *string) {
       cell_sentdata(0xff); // null dot send to display
     }
   }
+	SPI_DISPLAY_CS_HIGH();
+	Delay(0x55F);
+}
+void stringToUnicodeAndSendToDisplayC(char *string,int po) { //cur position
+  int strleng = 0;
+  configDisplay();
+	//clearDot();
+  for (j = 0; j < 20 && string[j] != '\0' && string[j] != 0x0a; j++) {
+    strleng++;
+  }
+  printf("| %s \r\n", string);
+	SPI_DISPLAY_CS_LOW();
+   
+  for (j = 20; j >= 0; j--) {
+		if(j==po){
+				cell_sentdata((~unicodeTable[((int) * (string + j))]&(~0xc0))); //curPostion
+			}
+    else if (j < strleng) {
+			Delay(0x55F);
+			cell_sentdata(~unicodeTable[((int) * (string + j))]); //send to display
+			printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int) * (string + j))], (int) * (string + j), j);
+    }
+		else if(strleng == 0 && j == 0){
+		cell_sentdata((~0xc0)); //first position
+		}
+    else {
+      cell_sentdata(0xff); // null dot send to display
+    }
+  }
+	SPI_DISPLAY_CS_HIGH();
+	Delay(0x55F);
 }
 void appendFile() {
 
@@ -1466,6 +1557,7 @@ void menu_s() {
 
     if (seeCur == 1) {
       printf("see cur \r\n");
+			printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
     } else {
       printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
     }
@@ -1792,18 +1884,27 @@ void caseMenu(int count_menu) {
 void printDot(int data[], int size) {
   int tsize = size / sizeof(int);
   //  printf("%d", sizeof(testarray[0]) / sizeof(int));
+	clearDot();
+	SPI_DISPLAY_CS_LOW();
+	Delay(0x55F);
   for (j = 20; j >= 0; j--) {
     if (j < tsize)
       cell_sentdata(~data[j]);
     else
       cell_sentdata(0xff); // null dot
   }
+	SPI_DISPLAY_CS_HIGH();
+	 Delay(0x55F);
 
 }
 void clearDot() {
+	SPI_DISPLAY_CS_LOW();
+	 Delay(0x55F);
   for (j = 20; j >= 0; j--) {
     cell_sentdata(0xff);
   }
+	SPI_DISPLAY_CS_HIGH();
+	 Delay(0x55F);
 }
 void  Delay(uint32_t nCount)
 {
@@ -1835,7 +1936,7 @@ void Init_SPI(void)
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz; //dot display 10MHz
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; //dot display 10MHz
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4; //dot display
@@ -1858,18 +1959,19 @@ void Init_SPI(void)
   //SPI_DISPLAY_CS_LOW();
 }
 void sentdata_cell(int data) {
-  for (i = 0; i < 1; i++) {
+  //for (i = 0; i < 1; i++) {
+	
     Flash_ReadWriteByte2(data);
     Delay(0x25F);
-  }
+ // }
 }
 void cell_sentdata(int cell) {
-  SPI_DISPLAY_CS_LOW();
-  Delay(0x55F);
+  //SPI_DISPLAY_CS_LOW();
+ // Delay(0x55F);
   sentdata_cell(cell);
   //    Delay(0x005e0);
-  SPI_DISPLAY_CS_HIGH();
-  Delay(0x55F);
+ // SPI_DISPLAY_CS_HIGH();
+  //Delay(0x55F);
 }
 void delay_SPI() {
   Delay(0xfffff);

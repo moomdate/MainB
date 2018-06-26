@@ -612,21 +612,6 @@
             </File>
           </Files>
         </Group>
-        <Group>
-          <GroupName>ch376</GroupName>
-          <Files>
-            <File>
-              <FileName>ch376M.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ch376M.c</FilePath>
-            </File>
-            <File>
-              <FileName>ch376M.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\ch376M.h</FilePath>
-            </File>
-          </Files>
-        </Group>
       </Groups>
     </Target>
   </Targets>

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jul 11 14:40:43 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Jul 16 13:50:17 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -741,7 +741,8 @@ Global Symbols
 <P><STRONG><a name="[7e]"></a>beepError</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.beepError))
 <BR><BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 </UL>
-<BR>[Called By]<UL><LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<BR>[Called By]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidingFileFromRomToDisplay
+<LI><a href="#[9c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
@@ -787,14 +788,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 </UL>
 
-<P><STRONG><a name="[8b]"></a>configDisplay</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, main.o(i.configDisplay))
+<P><STRONG><a name="[8b]"></a>configDisplay</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.configDisplay))
 <BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[8d]"></a>configFlash</STRONG> (Thumb, 70 bytes, Stack size 0 bytes, main.o(i.configFlash))
+<P><STRONG><a name="[8d]"></a>configFlash</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.configFlash))
 <BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
@@ -865,7 +866,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
-<P><STRONG><a name="[98]"></a>keyRead</STRONG> (Thumb, 574 bytes, Stack size 0 bytes, main.o(i.keyRead))
+<P><STRONG><a name="[98]"></a>keyRead</STRONG> (Thumb, 604 bytes, Stack size 0 bytes, main.o(i.keyRead))
 <BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
@@ -973,7 +974,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wip
 </UL>
 
-<P><STRONG><a name="[9c]"></a>readFileFromCH376sToFlashRom</STRONG> (Thumb, 946 bytes, Stack size 0 bytes, main.o(i.readFileFromCH376sToFlashRom))
+<P><STRONG><a name="[9c]"></a>readFileFromCH376sToFlashRom</STRONG> (Thumb, 934 bytes, Stack size 0 bytes, main.o(i.readFileFromCH376sToFlashRom))
 <BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
@@ -1050,13 +1051,14 @@ Global Symbols
 <LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;openDir
 </UL>
 
-<P><STRONG><a name="[9a]"></a>slidingFileFromRomToDisplay</STRONG> (Thumb, 740 bytes, Stack size 0 bytes, main.o(i.slidingFileFromRomToDisplay))
+<P><STRONG><a name="[9a]"></a>slidingFileFromRomToDisplay</STRONG> (Thumb, 746 bytes, Stack size 0 bytes, main.o(i.slidingFileFromRomToDisplay))
 <BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configFlash
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beepError
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead

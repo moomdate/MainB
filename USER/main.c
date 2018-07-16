@@ -1,5 +1,3 @@
-
-
 //#include "stm32f10x.h"
 #include "systick.h"
 #include <ctype.h> //use toupper
@@ -14,6 +12,12 @@
 #define SPI_DISPLAY_CS_PORT                     GPIOD
 #define SPI_DISPLAY_CS_PIN                      GPIO_Pin_4
 
+
+//-------------------------------------define mode-------------------------------
+#define mode_on_meno 0
+#define mode_notepad 1
+#define mode_read 2
+#define mode_bluetooth 3
 //--------------------------------spi display----------------------------------
 #define SPI_DISPLAY_CS_LOW()       GPIO_ResetBits(GPIOD, GPIO_Pin_4) //SPI_FLASH_CS_LOW
 #define SPI_DISPLAY_CS_HIGH()      GPIO_SetBits(GPIOD, GPIO_Pin_4)   //SPI_FLASH_CS_HIGH
@@ -22,6 +26,19 @@
 //--------------------------------spi flash------------------------------------
 #define SPI_FLASH_CS_LOW()     GPIO_ResetBits(GPIOA, GPIO_Pin_4)
 #define SPI_FLASH_CS_HIGH()    GPIO_SetBits(GPIOA, GPIO_Pin_4)
+
+
+#ifdef __GNUC__
+/* With GCC/RAISONANCE, small printf (opti
+  on LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
+
+/* Private define ------------------------------------------------------------*/
+#define ADC1_DR_Address    ((u32)0x4001244C)
 
 
 #define delayCur 250000
@@ -77,8 +94,29 @@ int hexbuffer = 0;
 int hexPrep = 0;
 int SeeHead = 0;
 int dataLength = 0;
-
-//---------------------- menu variable ----------------------
+//----------------*------ch376 command-------------------------------
+int data0[] = {0x57, 0xab, 0x27};
+int enumgo[] = { 0x57, 0xab, 0x33};
+int FileOpen[] = {0x00, 0x57, 0xab, 0x32};
+int ResetAll[] = {0x00, 0x57, 0xab, 0x05};
+int ReadData[] = {0x00, 0x57, 0xAB, 0x27};
+int FileCreate[] = {0x00, 0x57, 0xab, 0x34};
+int FileUpdate[] = {0x00, 0x57, 0xab, 0x3d};
+int USBDiskMount[] = {0x00, 0x57, 0xab, 0x31};
+int continueRead[] = {0x00, 0x57, 0xab, 0x3b};
+int FileClose[] = {0x00, 0x57, 0xab, 0x36, 0x01};
+int setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03};//+
+int setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
+int checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
+int SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00}; //15 = 21 character
+int setFilenameForFunction[] = {0x00, 0x57, 0xab, 0x2f}; // use vie function set file name
+int setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
+int SetByteRead6char[] = {0x00, 0x57, 0xab, 0x3a, 0x06, 0x00};
+int changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
+int FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
+int FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
+/////////////////////////////////////////////////////////////////////
+//---------------------- menu variable ------------------------------
 int count_menu = 1;
 int maxMenu = 3;
 int menu[6] = {0x01, 0x02, 0x04, 0x80, 0x04, 0x02};
@@ -99,6 +137,7 @@ int read_mode[] = {0x57, 0x51, 0x41, 0x59, 0x00, 0x4d, 0x55, 0x59, 0x51};
 int bigL[] = {0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47, 0x47};
 int mode_1[4] = {0x00, 0x01, 0x02};
 int mode = 0 ; //1,2,3,4,5,6,7,8
+
 ////////////////////////////////////////////////////////////////
 int checkKeyError = 0;
 int keyCode = 0;
@@ -117,7 +156,7 @@ int navLeft[] = {0xff, 0xff, 0xa6, 0x03, 0x00, 0x04, 0x00};
 
 //-----------------------------------------End BLE data-----------------------------------------------//
 //-----------------------------------------ch370s data------------------------------------------------//
-int changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
+
 int countSector512 = 0;
 int countRoundSector512 = 0;
 int countCounitueRead = 0; //512 ,round =24
@@ -130,11 +169,7 @@ int continueReadFile = 0;
 int openFileStatus = 0;
 int readstatus = 0;
 int becon = 0;
-int checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
-int setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03};//+
-int USBDiskMount[] = {0x00, 0x57, 0xab, 0x31};
-int setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f}; // for direct open file
-int setFilenameForFunction[] = {0x00, 0x57, 0xab, 0x2f}; // use vie function set file name
+
 int setFileNameLength = 5;
 int DiskconnectStatus[] = {0x00, 0x57, 0xab, 0x03}; //+
 int openDirStatus = 0;
@@ -144,18 +179,8 @@ int countdataTemp512 = 0;
 int waitEnd = 0; // 10
 int lastAscii = 0;
 
-int setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
-int setAllName3[] = {0x00, 0x57, 0xab, 0x2f, 0x2a, 0x00};//*.TXT
-int setAllName2[] = {0x00, 0x57, 0xab, 0x2f, 0x41, 0x2e, 0x54, 0x42, 0x54, 0x00};//*.TXT
-int FileOpen[] = {0x00, 0x57, 0xab, 0x32};
-int enumgo[] = { 0x57, 0xab, 0x33};
-int data0[] = {0x57, 0xab, 0x27};
-int sendNull[] = {0};
-int FileCreate[] = {0x00, 0x57, 0xab, 0x34};
-int FileUpdate[] = {0x00, 0x57, 0xab, 0x3d};
-int FileClose[] = {0x00, 0x57, 0xab, 0x36, 0x01};
-int FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
-int FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
+//int sendNull[] = {0};
+
 int searchStep = 0;
 int stepCount = 0;
 int r_count = 0;
@@ -164,12 +189,7 @@ int countFileLegth = 0;
 char prepareNameToOpen[] = "";
 int FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
 
-int FileWrite2[] = {0x00, 0x57, 0xab, 0x2d, 0x1e, 0x13, 0x0A, 0x0E, 0x20, 0x0E, 0x00, 0x01, 0x0F, 0x0F, 0x11, 0x1D, 0x19, 0x00, 0x0B, 0x0A, 0x07, 0x11};
-int ResetAll[] = {0x00, 0x57, 0xab, 0x05};
-int SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00}; //15 = 21 character
-int SetByteRead6char[] = {0x00, 0x57, 0xab, 0x3a, 0x06, 0x00};
-int ReadData[] = {0x00, 0x57, 0xAB, 0x27};
-int continueRead[] = {0x00, 0x57, 0xab, 0x3b};
+
 int command_ = 0;
 int DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
 
@@ -193,7 +213,7 @@ int unicodeTable[] = {
   /*A-Z*/
   0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
   0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/,
-  0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/
+  0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/ //checked
   0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
   0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/
   0x37, 0x33, 0x3e, 0x2e, 0xff /*{|}*/
@@ -201,23 +221,6 @@ int unicodeTable[] = {
 //------------------------------------------ ch370t data ------------------------------------//'
 char filelist[10][15];
 int seaching = 1; //for seaching file
-
-
-
-
-//-------------------------------------------------------------------------------------------//
-//---------------------------------------------
-#ifdef __GNUC__
-/* With GCC/RAISONANCE, small printf (opti
-  on LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
-
-/* Private define ------------------------------------------------------------*/
-#define ADC1_DR_Address    ((u32)0x4001244C)
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -240,7 +243,6 @@ void UART4_Configuration(void);
 void ADC_Configuration(void);
 void sendUart(int);
 void UARTSend(const unsigned char *pucBuffer, unsigned long ulCount);
-void Uart2ReceiveKeyCode(void);
 void ConnectBLE(void);
 void BluetoothMode(void);
 void SendCommandToBLE(int data[], int sizeOfData);
@@ -334,9 +336,8 @@ int tempcur;
 int mapcur1;
 int mapcur2;
 /*----------------------------------------------------------------------------*/
-
+SPI_InitTypeDef  SPI_InitStructure;
 void configFlash(void) {
-  SPI_InitTypeDef  SPI_InitStructure;
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
   SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
@@ -349,7 +350,6 @@ void configFlash(void) {
   SPI_Init(SPI1, &SPI_InitStructure);
 }
 void configDisplay(void) {
-  SPI_InitTypeDef  SPI_InitStructure;
   SPI_InitStructure.SPI_Direction = SPI_Direction_1Line_Tx;
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
   SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
@@ -433,8 +433,6 @@ void NextFile(void);
 void keyRead(void);
 void exitOncePath();
 void cdWithPath(char *path);
-
-
 
 
 int maxFile = 0;
@@ -650,7 +648,7 @@ void keyRead() { //used
 			//printf("testttttttttttttttttttttttttt");
 			slidingFileFromRomToDisplay();
 		}
-    if (2) { //key in mode 2
+    if (2 &&endReadFile!=1) { //key in mode 2
       if (keyCode == 38) {
         if (fileSelect > 0) {
           fileSelect--;
@@ -687,7 +685,7 @@ void keyRead() { //used
             command_ = 4;
           }
         }//readFileFromCH376sToFlashRom
-        else if (checkFileType(fileLists[fileSelect]) == 1) {
+        else if (checkFileType(fileLists[fileSelect]) == 1||checkFileType(fileLists[fileSelect]) == 2) {
           //printf("is tbt ");
           readFileFromCH376sToFlashRom(fileLists[fileSelect]);
         }
@@ -709,6 +707,7 @@ void keyRead() { //used
   }
 
 }
+
 //-----------------------------------------------------------------------------
 //---------------------------------readFileFromCH376sToFlashRom-----------------
 //slidingFileFromRomToDisplay
@@ -722,35 +721,30 @@ int readFileFromCH376sToFlashRom(char *fileName___) {
   printf("reading............ all\r\n");
   delay_ms(10);
   command_ = 4;
-  while (readFileStatus___ == 1) {//readstatus
+  while (readFileStatus___ == 1) {
     if (command_ == 4) {
-      //SendCH370(setFileName, sizeof(setFileName));
       setFilename(fileName___);
-      printf("Set file Name\r\n");
       command_++; //5
       delay_ms(45);
-    } else if (command_ == 5) { ///FileOpen
+    } else if (command_ == 5) { 
       SendCH370(FileOpen, sizeof(FileOpen));
-      printf("File Open\r\n");
       command_++; //6
       delay_ms(45);
     } else if (command_ == 6) {
-      //printf("conread \r\n");
-      //delay_ms(10);
-      SendCH370(SetByteRead, sizeof(SetByteRead)); //result 1D can read
-      //printf("Check for reading File\r\n");
+      SendCH370(SetByteRead, sizeof(SetByteRead)); 
+			//result 1D can read
       command_ = 99;
       delay_ms(30);
-    } else if (command_ == 95) { //left (prevois line)
+    } else if (command_ == 95) { 
+			//left (prevois line)
       SendCH370(continueRead, sizeof(continueRead));
-      //printf("continue Read\r\n");
       command_++; //96
     }
-    else if (command_ == 98) { //right (next line)
+    else if (command_ == 98) { 
+			//right (next line)
       command_ = 6;
     } else if (command_ == 99) {
       SendCH370(ReadData, sizeof(ReadData));
-      // printf("Reading File\r\n");
       command_++;
     }
     menu_s();
@@ -877,6 +871,9 @@ int readFileFromCH376sToFlashRom(char *fileName___) {
   }
   return 0;
 }
+//----------------------------------modified-----------------------------
+//
+/////////////////////////////////////////////////////////////////////////
 void slidingFileFromRomToDisplay() {
 		if (keyCode == 38 || keyCode == 40 && endReadFile == 1) { //readfg
             if (keyCode == 40) { //next line
@@ -885,10 +882,13 @@ void slidingFileFromRomToDisplay() {
                 pointerSectorStatus = 1;
                 printf("change sector\r\n");
               }
-              if (pointer22char + 22 < addressWriteFlashTemp)
+              if (pointer22char + 22 < addressWriteFlashTemp){
                 maxLengthLoopL22 = 22;
-              else
+							}
+              else{
                 maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
+								beepError();
+							}
             } else if (keyCode == 38) { //prev line pointer22char   bug***
               printf("\r\n \r\n pointer22char %d \r\n \r\n", pointer22char);
               //NextPoint
@@ -919,10 +919,14 @@ void slidingFileFromRomToDisplay() {
                     printf("reading prevois sector -----------------------------\r\n");
                   }
                 }
-                if (pointer22char + 22 < addressWriteFlashTemp)
+                if (pointer22char + 22 < addressWriteFlashTemp){
                   maxLengthLoopL22 = 22;
+								}
                 else
+								{
                   maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
+									beepError();
+								}
                 /// printf("%c=",SST25_buffer99[j]);
               }
               countLengthInLine = 0; //clear
@@ -948,6 +952,7 @@ void slidingFileFromRomToDisplay() {
               readPreviousSector = 0;
               pointerSector--;
               configFlash();
+							
               SPI_FLASH_CS_LOW();
               SST25_R_BLOCK(pointerSector * 4096, SST25_buffer99, 4096);
               SPI_FLASH_CS_HIGH();
@@ -2957,84 +2962,8 @@ void cell_sentdata(int cell) {
 void delay_SPI() {
   Delay(0xfffff);
 }
-void Uart2ReceiveKeyCode() {
-  sendUart(1);
-  if ( USART_GetITStatus(USART2, USART_IT_RXNE) ) {
-    i1 = USART_ReceiveData(USART2);
-    //printf("%c", k);
-    if (i1 == 'H') { //check first byte
-      isHex = 1;   //equal 1 is hex
-    } else if (i1 == 'S') {
-      isHex = 2; // equal 2 is Switch
-    }
-    if (i1 != 'F' && i1 != '\r' && i1 != '\n') {
-      if (i1 != 'S' && i1 != 'H') {
+//Uart2ReceiveKeyCode
 
-        buffer[count1++] = (char)i1;
-
-        //printf("%c", i);
-      }
-    } else { //after store buffer
-      if (isHex == 2) {
-        printf("Switch input : %s\r\n", buffer); //debug via USART 1
-
-        //Example Switch
-        // index 0 is '0' use index 1 for check condition
-        if (buffer[1] == '3') {
-          printf("Nav Left\r\n");
-          SendCommandToBLE(navLeft, sizeof(navLeft));
-        }
-        if (buffer[1] == 'C') {
-          printf("Nav Right\r\n");
-          SendCommandToBLE(navRight, sizeof(navRight));
-        }
-        // do  something
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-      } else if (isHex == 1) {
-        // converts to hex//
-        while (buffer[j1] != '\0') {
-          if (buffer != 0) {
-            Hex = buffer[j1];
-          }
-          j1++;
-          if (j1 > 6) {
-            break;
-          }
-        }
-        j1 = 0;
-        // end converst
-        printf("Hex input : %s Hex is %x \r\n", buffer, Hex);
-        // do something with hex
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-      }
-      //printf("%s",buffer);
-      //** clear buffer string **//
-      itFirst = 0;
-      count1 = 0;
-      isHex = 0;
-      memset(buffer, 0, sizeof(buffer));
-      //////////////////////////////
-    }
-  }
-  sendUart(0);
-  //printf("%s\r\n",buffer);
-  //memset(buffer, 0, sizeof(buffer));
-  //  printf("%c",USART_ReceiveData(USART2));
-  //  printf("%c",USART_ReceiveData(USART2));
-  //
-}
 //--------------------------------- keyboard mode for BLE---------------------
 //
 //

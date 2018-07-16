@@ -45,10 +45,6 @@
    stringToUnicodeAndSendToDisplay("String here"); 
 ```
 
-
-
-
-
 #### Keyboard Input 
 ```c
     if (USART_GetITStatus(USART2, USART_IT_RXNE)) {
@@ -117,5 +113,3 @@
 
 
 
-
-:cold_sweat: :neutral_face: :neutral_face::neutral_face::neutral_face:

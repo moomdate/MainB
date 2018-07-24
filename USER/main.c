@@ -5,7 +5,6 @@ Setting UTF-8 in keil ide for display thai charactor
 3. in tab Editor > Encoding > Endcode in UTF-8 without signature
 */
 
-
 //#include "stm32f10x.h"
 #include "systick.h"
 #include <ctype.h> //use toupper
@@ -45,9 +44,9 @@ Setting UTF-8 in keil ide for display thai charactor
 #define ADC1_DR_Address ((u32)0x4001244C)
 
 #define delayCur 250000 // delay time for cursor blink
-#define sector 4096   //amount char in one sector
-#define MaxInLine 42  //char for read in one line
-
+#define sector 4096     //amount char in one sector
+#define MaxInLine 42    //char for read in one line
+#define CRLF 2
 void writeFlash(int address, int size);
 void writeFlash2(int address, int size);
 int addressWriteFlashTemp = 0x0;
@@ -58,9 +57,9 @@ int addressSector = 0x00;
 int endReadFile = 0;
 char buffer22Char[42];
 int pointer22char = 0;
-int pointerSector = 0;
+int pointerSector = 0; //current sector
 int pointerSectorStatus = 0;
-int jumpLECR = 0;
+int jumpCRLF = 0;
 int AmountSector = 0;
 int AmountSectorT = 0;
 int NextLenghtLess20 = 0;
@@ -485,12 +484,12 @@ void printStringLR(char *str, int s)
     if (!s)
     { // split left
       begin = 0;
-      end = 19;
+      end = 20;
     }
     else
     { // split right
-      begin = 19;
-      end = 39;
+      begin = 20;
+      end = 40;
     }
     memset(buff, 0, strlen(buff));
     strncpy(buff, str + begin, end - begin);
@@ -978,11 +977,12 @@ int readFileFromCH376sToFlashRom(char *fileName___)
 
 //------------------slidingFileFromRomToDisplay--------------------------
 //.
-//อ่านข้อมูลจากROMมาเก็บในตัวแปลครั้งละ 4096 ตัวอักษรและดึงออกมาครั้งละไม่เกิน 20 หรือ 40 
+//อ่านข้อมูลจากROMมาเก็บในตัวแปลครั้งละ 4096 ตัวอักษรและดึงออกมาครั้งละไม่เกิน 20 หรือ 40
 //ตัวอักษร  โดยการกด key 38,40,1,2
 /////////////////////////////////////////////////////////////////////////
 void slidingFileFromRomToDisplay()
 {
+  // check #endReadFile status for do in this void.
   //int MaxInLine = 42;
   if ((keyCode == 38 || keyCode == 40) && endReadFile == 1)
   {
@@ -1003,9 +1003,9 @@ void slidingFileFromRomToDisplay()
         printf("change sector\r\n");
       }
       //------------------------------------------------------------------
-      // 
+      //
       //------------------------------------------------------------------
-      if (pointer22char + MaxInLine < addressWriteFlashTemp) // can read 
+      if (pointer22char + MaxInLine < addressWriteFlashTemp) // can read.
       {
         // ให้ maxLengthLoopL22 ยาวเท่า MaxInLine
         maxLengthLoopL22 = MaxInLine;
@@ -1013,10 +1013,10 @@ void slidingFileFromRomToDisplay()
       else
       {
         // maxLengthLoopL22 เก็บข้อมูลที่เหลือ ที่สามารถอ่านได้
-        maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
-        beepError();
+        maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value.
+        beepError();                                              // beep error sound
       }
-    } //end right button
+    } //--end keyCode 40--
     else if (keyCode == 38)
     {
       //prev line pointer22char   bug***************************
@@ -1031,9 +1031,11 @@ void slidingFileFromRomToDisplay()
       { // edit condition > 0 ->   ??? > 1*pointerSector
         countLengthInLine++;
         if (SST25_buffer99[varForLoop] == 0x0d)
-        { //
+        {
+          //
+          // ถ้าเจอ CL ให้เพื่มค่าของ #countLFTwoStep
           countLFTwoStep++;
-          if (countLengthInLine == 5 && countLFTwoStep == 2)
+          /*if (countLengthInLine == 5 && countLFTwoStep == 2)
           {
             pointer22char = varForLoop;
             countLFTwoStep = 0;
@@ -1046,7 +1048,13 @@ void slidingFileFromRomToDisplay()
             countLFTwoStep = 0;
             printf("Length:--%d--\r\n", countLengthInLine);
             break;
+          }*/
+          if (countLFTwoStep == 3){
+            pointer22char = varForLoop+1; //0x0a
+            countLFTwoStep = 0;
+            break;
           }
+
         }
         else if (varForLoop == 1)
         { //begin of file
@@ -1060,6 +1068,7 @@ void slidingFileFromRomToDisplay()
             printf("reading prevois sector -----------------------------\r\n");
           }
         }
+
         if (pointer22char + MaxInLine < addressWriteFlashTemp)
         {
           maxLengthLoopL22 = MaxInLine;
@@ -1067,42 +1076,57 @@ void slidingFileFromRomToDisplay()
         else
         {
           maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
-          beepError();
         }
         /// printf("%c=",SST25_buffer99[j]);
-      }
+      }                      // end for loop:
       countLengthInLine = 0; //clear
-    }
-    //--------------------------end query line---------------------------
+    }                        //--end keyCode 38--
+
+    //--------------end query line for display string in line------------
     //
     //-------------------------------------------------------------------
 
+    //********************Prepare string [20-40] for display on braille dot********************
+    // NextPoint เท่ากับตำแหน่งปัจจุบัน ,ถ้า NextPoint น้อยกว่า (ตำแหน่งปัจจุบัน+ความยาวที่จะสามารถอ่านได้)
+    //-----------------------------------------------------------------------------------------
+    // ตำแหน่งปัจจุบัน; if()
     for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++)
-    { //query line
+    {
+      //-------------------------query line [20,40]-----------------------------
+      //------------------------------------------------------------------------
       if (NextPoint + (pointerSector * sector) < addressWriteFlashTemp)
-      {
+      { 
         if (SST25_buffer99[NextPoint] == 0x0d) //next value-> 0x0a
         {
-          jumpLECR = pointer22char + 40 - NextPoint; //store index value whene amount string less than 20
-          NextPoint += 2;
+          // CRLF = 2
+          // MaxInLine = 40
+          /*
+          ยกเว้น ox0d,0x0a โดดข้ามไปเลย
+          */
+          jumpCRLF = pointer22char + (MaxInLine - CRLF) - NextPoint; //store index value whene amount string less than 20
+          NextPoint += CRLF;
           break;
         }
+
         //NextLenghtLess20
+        //-------------------Store String value in #buffer22Char-----------------
         buffer22Char[NextPoint - pointer22char] = SST25_buffer99[NextPoint];
-        printf("%c/", SST25_buffer99[NextPoint]);
+        //printf("%c/", SST25_buffer99[NextPoint]);
       }
-      else
+      else // ถ้าเกืนความยาวของไฟล์
       {
         break;
       }
-    }
-    for (i = 40 - jumpLECR; i < 40; i++)
+    } // end for loop;
+    for (i = 40 - jumpCRLF; i < 40; i++)
     {
-      //clear another character defualt 20
+      //เคลียตัวอักษรที่นอกเหนือจากความยาวของ String ที่จะแสดงผล[hex is 0x00]
       buffer22Char[i] = 0;
     }
-    //-----------------read data from flash rom-----------------------
+
+    //*****************read data from flash rom***********************
     //previous line
+    //ถ้ามีการบอกว่าต้องอ่านข้ิอมูลใน sector ก่อนหน้า
     //////////////////////////////////////////////////////////////////
     if (readPreviousSector == 1)
     { //read previous sector when keycode == 38 && sector != 0
@@ -1123,13 +1147,13 @@ void slidingFileFromRomToDisplay()
     printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
     //-------------read data from flash rom--------------------------
     //Next line
-    //
+    //อ่านข้อมูลจาก ROM ใน Sector ถัดไป
     /////////////////////////////////////////////////////////////////
     if (pointerSectorStatus == 1)
     {
       //read next sector [length more than 4096]
       pointerSectorStatus = 0;
-      pointerSector++;
+      pointerSector++; // current sector
       pointer22char = 0;
       NextPoint = 0;
       //printf("seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\r\n");
@@ -1143,11 +1167,11 @@ void slidingFileFromRomToDisplay()
       //delay_ms(1000);
     }
   }
-  else if (keyCode == 1 || keyCode == 2) //left right
+  else if (keyCode == 1 || keyCode == 2) //[left,right] button
   {
-    if (keyCode == 2)
+    if (keyCode == 2) //right button
       printStringLR(buffer22Char, 1);
-    else
+    else // left button
       printStringLR(buffer22Char, 0);
   }
 }
@@ -2527,7 +2551,7 @@ uint8_t Flash_ReadWriteByte2(uint8_t data)
 }
 void Init_SPI(void)
 {
- // SPI_InitTypeDef SPI_InitStructure;
+  // SPI_InitTypeDef SPI_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);

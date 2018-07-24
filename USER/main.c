@@ -1049,7 +1049,7 @@ void slidingFileFromRomToDisplay()
             printf("Length:--%d--\r\n", countLengthInLine);
             break;
           }*/
-          if (countLFTwoStep == 3){
+          if (countLFTwoStep == 2){ // fix read 
             pointer22char = varForLoop+1; //0x0a
             countLFTwoStep = 0;
             break;

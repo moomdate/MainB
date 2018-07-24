@@ -5,6 +5,7 @@ Setting UTF-8 in keil ide for display thai charactor
 3. in tab Editor > Encoding > Endcode in UTF-8 without signature
 */
 
+
 //#include "stm32f10x.h"
 #include "systick.h"
 #include <ctype.h> //use toupper

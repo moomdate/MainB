@@ -63,7 +63,7 @@
     // ส่งสตริงยาว 40 ตัวอักษร params(สตริงยาว<=40, 0 หรือ 1)
    printStringLR("String", 0);
     //beep sound 
-    ส่งออก Serial2 [Docs here](https://github.com/moomdate/Bkeyboard/blob/master/readme.md)
+    ส่งออก Serial2 
       dec:155	-> Output:beep beep
       dec:154	-> Output:beep
       dec:153 -> Output:beeeep beeep (เสียงต่ำ)
@@ -76,9 +76,8 @@
       dec:148 -> mute
                 Output:beep beep
       dec:147 -> Output: status mute
-
 ```
-
+Serial 2 command [Docs here](https://github.com/moomdate/Bkeyboard/blob/master/readme.md)
 #### Keyboard Input 
 ```c
     if (USART_GetITStatus(USART2, USART_IT_RXNE)) {

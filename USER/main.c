@@ -286,6 +286,7 @@ int savePath(char *pathName);
 int checkSlash(char *pathName);
 int countPath(char *pathSource);
 
+
 int maxFile = 0;
 int fileSelect = 0;
 
@@ -348,6 +349,24 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 char str1[sector];
 char str2[22];
 
+struct  {
+  int cursor; // auto gen
+  int setcursor;  // by user
+  int cursor_rom;
+  int keycode;
+  int i;
+  int j;
+  int state;
+  int shiftpoint;
+  char *buff; // buffer  = index *buffer = value
+  char *buff2;
+  char strfirst[200]; // strF
+  char strlast[200];
+  char ch;
+  char str_buff[40];
+  char str_rom[4096];
+  char str_ram[40];
+} note;
 SPI_InitTypeDef SPI_InitStructure;
 void configFlash(void)
 {
@@ -1058,24 +1077,14 @@ void slidingFileFromRomToDisplay()
           example :  current line is : (0xFF,0xFF,0xFF,0xFF)
           */
           if (countLFTwoStep == 2)
-          { //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
-            /* current = 0x0d
+          {                                 //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
+                                            /* current = 0x0d
             0x0d 0x0a
             0x0d 0x0a
             */
-            if (SST25_buffer99[varForLoop - 2] == 0x0d)
-            { //เช็คว่า line นั้นมีตัวอักษรมั้ย มีให้ หยุดที่ var + 2
-              pointer22char = varForLoop-1;
-              for (i = varForLoop - 3; SST25_buffer99[i] != 0x0d && i > 0; i--)
-              {
-               //bug
-              }
-               pointer22char = i-2;
-            }
-            else
-            {                                 // ให้หยุดที่ var - 1
-              pointer22char = varForLoop + 2; //0x0a
-            }
+                                            // ให้หยุดที่ var - 1
+            pointer22char = varForLoop + 2; //0x0a
+
             countLFTwoStep = 0;
             break;
           }

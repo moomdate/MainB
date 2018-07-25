@@ -1,4 +1,4 @@
-# ล่าสุด ตามเวลา commit 11/7/2018
+# ล่าสุด ตามเวลา commit xx/x/2018
 
 
 ## Feature 
@@ -64,18 +64,6 @@
    printStringLR("String", 0);
     //beep sound 
     ส่งออก Serial2 
-      dec:155	-> Output:beep beep
-      dec:154	-> Output:beep
-      dec:153 -> Output:beeeep beeep (เสียงต่ำ)
-      dec:152 -> Output:beep bep
-      dec:151 -> Output:beep beep beeep
-      dec:150 -> Battery status 
-                Output:percent battery Hex:(0-100)%
-      dec:149 -> unmute
-                Output:beep
-      dec:148 -> mute
-                Output:beep beep
-      dec:147 -> Output: status mute
 ```
 Serial 2 command [Docs here](https://github.com/moomdate/Bkeyboard/blob/master/readme.md)
 #### Keyboard Input 

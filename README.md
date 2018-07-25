@@ -60,6 +60,23 @@
    printDot(brailleUnicodeByte, sizeof(brailleUnicodeByte)); 
    // ส่งสตริงไปแสดงที่จุดเบรลล์
    stringToUnicodeAndSendToDisplay("String here"); 
+    // ส่งสตริงยาว 40 ตัวอักษร params(สตริงยาว<=40, 0 หรือ 1)
+   printStringLR("String", 0);
+    //beep sound 
+    ส่งออก Serial2 [Docs here](https://github.com/moomdate/Bkeyboard/blob/master/readme.md)
+      dec:155	-> Output:beep beep
+      dec:154	-> Output:beep
+      dec:153 -> Output:beeeep beeep (เสียงต่ำ)
+      dec:152 -> Output:beep bep
+      dec:151 -> Output:beep beep beeep
+      dec:150 -> Battery status 
+                Output:percent battery Hex:(0-100)%
+      dec:149 -> unmute
+                Output:beep
+      dec:148 -> mute
+                Output:beep beep
+      dec:147 -> Output: status mute
+
 ```
 
 #### Keyboard Input 

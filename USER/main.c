@@ -1,4 +1,4 @@
-/*
+/* line:1037
 Setting UTF-8 in keil ide for display thai charactor
 1. open keil
 2. go to menu file select Configuration
@@ -1030,7 +1030,7 @@ void slidingFileFromRomToDisplay()
       for (varForLoop = TempPointer22char; varForLoop > 0; varForLoop--)
       { // edit condition > 0 ->   ??? > 1*pointerSector
         countLengthInLine++;
-        if (SST25_buffer99[varForLoop] == 0x0d)
+        if (SST25_buffer99[varForLoop] == 0x0d) //see head
         {
           //
           // ถ้าเจอ CL ให้เพื่มค่าของ #countLFTwoStep
@@ -1049,12 +1049,36 @@ void slidingFileFromRomToDisplay()
             printf("Length:--%d--\r\n", countLengthInLine);
             break;
           }*/
-          if (countLFTwoStep == 2){ // fix read 
-            pointer22char = varForLoop+1; //0x0a
+          /*
+          0x0d 0x0a 
+          0x0d 0x0a 
+          0x0d [0x0a] <-- stop here!!!!
+          0x0d 0x0a |0xFF 0xFF 0xFF 0xFF 0xFF
+          0x0d 0x0a|
+          example :  current line is : (0xFF,0xFF,0xFF,0xFF)
+          */
+          if (countLFTwoStep == 2)
+          { //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
+            /* current = 0x0d
+            0x0d 0x0a
+            0x0d 0x0a
+            */
+            if (SST25_buffer99[varForLoop - 2] == 0x0d)
+            { //เช็คว่า line นั้นมีตัวอักษรมั้ย มีให้ หยุดที่ var + 2
+              pointer22char = varForLoop-1;
+              for (i = varForLoop - 3; SST25_buffer99[i] != 0x0d && i > 0; i--)
+              {
+               //bug
+              }
+               pointer22char = i-2;
+            }
+            else
+            {                                 // ให้หยุดที่ var - 1
+              pointer22char = varForLoop + 2; //0x0a
+            }
             countLFTwoStep = 0;
             break;
           }
-
         }
         else if (varForLoop == 1)
         { //begin of file
@@ -1095,7 +1119,7 @@ void slidingFileFromRomToDisplay()
       //-------------------------query line [20,40]-----------------------------
       //------------------------------------------------------------------------
       if (NextPoint + (pointerSector * sector) < addressWriteFlashTemp)
-      { 
+      {
         if (SST25_buffer99[NextPoint] == 0x0d) //next value-> 0x0a
         {
           // CRLF = 2

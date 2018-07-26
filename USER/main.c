@@ -286,7 +286,6 @@ int savePath(char *pathName);
 int checkSlash(char *pathName);
 int countPath(char *pathSource);
 
-
 int maxFile = 0;
 int fileSelect = 0;
 
@@ -349,24 +348,6 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 char str1[sector];
 char str2[22];
 
-struct  {
-  int cursor; // auto gen
-  int setcursor;  // by user
-  int cursor_rom;
-  int keycode;
-  int i;
-  int j;
-  int state;
-  int shiftpoint;
-  char *buff; // buffer  = index *buffer = value
-  char *buff2;
-  char strfirst[200]; // strF
-  char strlast[200];
-  char ch;
-  char str_buff[40];
-  char str_rom[4096];
-  char str_ram[40];
-} note;
 SPI_InitTypeDef SPI_InitStructure;
 void configFlash(void)
 {
@@ -539,7 +520,7 @@ int main(void)
   printDot(st_0, sizeof(st_0));
   delay_ms(1200);
   //printStringLR("Hello test test aaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbb",0);
-  printf("batt:%d", getBatterry());
+  
   //delay_ms(3000);
 
   //****************** check dot****************
@@ -592,10 +573,11 @@ int main(void)
     }
     }*/
   command_ = 1;
-  while (1)
+  /*
+  while (1) // explorror and read mode
   {
 
-    printf("batt:%d", getBatterry());
+   
     keyRead();
     searchFile2();
     for (i = 0; i < maxFile; i++)
@@ -603,6 +585,7 @@ int main(void)
       printf("%s\r\n", fileLists[i]);
     }
   }
+  */
   //new
 }
 
@@ -1077,14 +1060,14 @@ void slidingFileFromRomToDisplay()
           example :  current line is : (0xFF,0xFF,0xFF,0xFF)
           */
           if (countLFTwoStep == 2)
-          {                                 //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
-                                            /* current = 0x0d
+          { //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
+            /* current = 0x0d
             0x0d 0x0a
             0x0d 0x0a
             */
-                                            // ให้หยุดที่ var - 1
-            pointer22char = varForLoop + 2; //0x0a
-
+                                          // ให้หยุดที่ var - 1
+              pointer22char = varForLoop + 2; //0x0a
+            
             countLFTwoStep = 0;
             break;
           }

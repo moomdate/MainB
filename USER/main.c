@@ -496,8 +496,13 @@ void notepad_main(void);
 //อ่านค่าคีย์บอร์ด
 void notepad_readKey(void);
 //สำหรับให้เคอเซอร์ชี้ตำแหน่งของสตริงตัวล่าสุดของบรรทัด
-int notepad_getnullPostion();
+int notepad_getnullPostion(char *);
+int countStr(char *data);
+char numToASCII(int num);
+void append(char subject[], const char insert[], int pos);
 
+void removeChar(char *str, int idxToDel);
+void printStringInLine(char *str);
 //ตำแหน่งปัจจุบันของเคอร์เซอร์
 int notepad_cursorPosition = 0;
 //ตัวคูณเลื่อนตำแหน่งเคอร์เซอร์
@@ -505,7 +510,7 @@ int notepad_multiplyCursor = 0;
 //บรรทัดปัจจุบัน
 int notepad_currentLine = 0;
 
-
+char keybuff[2] = "\0";
 int unicode_to_ASCII(int);
 int mapCursor(int, int, int);
 int checkBit(int);
@@ -513,13 +518,12 @@ int keyMapping(int, int, int);
 void clearKeyValue(void);
 
 #define notepad_Line 97
-#define notepad_MaxinLine 40
+#define notepad_MaxinLine 20
 
 char notepad_buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
 ////////////////////////end notepad function/////////////////////
 
-
-///------------------------ main function------------------------
+//------------------------- main function------------------------
 /////////////////////////////////////////////////////////////////
 int main(void)
 {
@@ -615,6 +619,7 @@ int main(void)
 void notepad_main()
 {
   int doing = 1; //status for do something in notepad mode
+
   while (doing)
   {
     notepad_readKey();       // key recieve
@@ -629,52 +634,184 @@ void notepad_main()
       }
       // key mapping //
       //keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-      if(bufferKey3digit[1]!=0||bufferKey3digit[2]!=0){
-          keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-          //--- เลื่อนบรรทัด
-          if(keyCode == 40){ // next line
-                if(notepad_currentLine<notepad_Line);
-                notepad_currentLine++;
-          }else if(keyCode == 38){ // prevoius line
-                if(notepad_currentLine>0)
-                  notepad_currentLine--;
-              printf("null position in line:%d \r\n",notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]));
-          }
-      }
-      else if (1) //type message in notepad mode 
+      /*if ((bufferKey3digit[0] == 0 &&
+           bufferKey3digit[2] == 0) &&
+          (bufferKey3digit[1] == 1 ||
+           bufferKey3digit[1] == 2 ||
+           bufferKey3digit[1] == 3)) // check spaces
       {
+        printf("Space\r\n");
+        keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      }*/
+      if ((bufferKey3digit[1] > 3 || bufferKey3digit[2] != 0) && seeCur != 1) // key control
+      {
+        keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+        //--- เลื่อนบรรทัด ----
+        if (keyCode == 40)
+        { // next line
+          if (notepad_currentLine < notepad_Line)
+            notepad_currentLine++;
+
+          notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
+        }
+        else if (keyCode == 38)
+        { // previous line
+          if (notepad_currentLine > 0)
+            notepad_currentLine--;
+
+          notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
+          printf("null position in line:%d \r\n", notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]));
+        }
+      }
+      else if (bufferKey3digit[0] == 0x40) //enter
+      {
+        printf("new line \r\n");
+        if (notepad_cursorPosition < notepad_MaxinLine)
+        {
+          while (notepad_cursorPosition < 20)
+          {
+            append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition);
+            if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
+            {
+              //new line
+              notepad_currentLine++;
+              notepad_cursorPosition = 1;
+            }
+            else
+            {
+              notepad_cursorPosition++;
+              if (notepad_cursorPosition == 20)
+              {
+                notepad_cursorPosition = 0;
+                notepad_currentLine++;
+								break;
+              }
+            }
+          }
+          //notepad_currentLine++;
+        }
+      }
+      else if (bufferKey3digit[0] == 0x80)
+      { //remove str at index
+
+        //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
+        printf("remove char %d -%c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition]);
+
+        if (notepad_cursorPosition > 0)
+        {
+          notepad_cursorPosition--;
+        }
+        else if (notepad_currentLine > 0)
+        {
+          notepad_cursorPosition = notepad_MaxinLine - 1;
+          notepad_currentLine--;
+        }
+        if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-')
+        {
+          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-')
+          {
+            removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
+            notepad_cursorPosition--;
+          }
+        }
+        removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
+      }
+      else if (seeCur == 1)
+      {
+        notepad_cursorPosition = mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+        printf("cursor set at:%s\r\n", notepad_cursorPosition);
+      }
+      else if (1 && seeCur != 1) //type message in notepad mode
+      {
+        // printf("else -------------------------\r\n");
         //read key and convert to ascii
         keyCode = unicode_to_ASCII(bufferKey3digit[0]);
+        if (keyCode == 0) //space bar edit in unicode table
+          keyCode = 32;
+        // printf("keycode/*/////%d\r\n",keyCode);
         //store data to #notepad_buffer_string
-        notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] = keyCode;
+
+        //notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] = keyCode;
         //increase charactor postion
 
-        //manage charactor position
-        if (notepad_cursorPosition >= 20) 
+        //manage charactor position // line feed
+        keybuff[0] = (char)keyCode;
+        append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_cursorPosition);
+        if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
         {
-          notepad_cursorPosition = 0;
           //new line
           notepad_currentLine++;
+          notepad_cursorPosition = 1;
         }
         else
         {
           notepad_cursorPosition++;
         }
       }
-      printf("typing//:%s\r\n", notepad_buffer_string[notepad_currentLine]);
-      printf("current line is : %d\r\n",notepad_currentLine);
+      printf("\r\n============================================\r\n");
+      printf("current in dex is: %d\r\n", notepad_cursorPosition);
+      printStringInLine(notepad_buffer_string[notepad_currentLine]);
+      // printf("typing// index at :%s\r\n", notepad_buffer_string[notepad_currentLine]);
+      printf("current line is : %d\r\n", notepad_currentLine);
+      printf("\r\n============================================\r\n");
       clearKeyValue(); // clear key buffer
     }
   }
 }
-int notepad_getnullPostion(char * str){
-    int cc_m = 0;
-    while(str[cc_m]!=0){ // null byte
-      cc_m++;
-    }
-    return cc_m;
+char numToASCII(int num)
+{
+  return (char)num;
 }
- 
+int countStr(char *data)
+{
+  int cc__ = 0;
+  int cc = 0;
+  if (strlen(data) > 0)
+  {
+    while (data[cc__] != '\0' || cc__ < 42)
+    {
+      cc++;
+    }
+  }
+  return cc;
+}
+void append(char subject[], const char insert[], int pos)
+{
+  char buf[100] = {0}; // 100 so that it's big enough. fill with zeros
+  int len;
+  strncpy(buf, subject, pos); // copy at most first pos characters
+  len = strlen(buf);
+  strcpy(buf + len, insert); // copy all of insert[] at the end
+  len += strlen(insert);     // increase the length by length of insert[]
+  strcpy(buf + len, subject + pos);
+  strcpy(subject, buf);
+}
+
+void removeChar(char *str___, int idxToDel)
+{
+  memmove(&str___[idxToDel], &str___[idxToDel + 1], strlen(str___) - idxToDel);
+}
+void printStringInLine(char *str)
+{
+  int aaa = 0;
+  while (aaa < notepad_MaxinLine)
+  {
+    if (str[aaa] != 0)
+      printf("%c", str[aaa]);
+    aaa++;
+  }
+  printf("\r\n");
+}
+int notepad_getnullPostion(char *str)
+{
+  int cc_m = 0;
+  while (str[cc_m] != 0)
+  { // null byte
+    cc_m++;
+  }
+  return cc_m;
+}
+
 void notepad_readKey()
 {
   if (USART_GetITStatus(USART2, USART_IT_RXNE))
@@ -735,6 +872,15 @@ int keyMapping(int a, int b, int c)
   else if (b == 64 || c == 8)
   {
     keyCode__ = 13; // enter
+  }
+  else if (a == 0x00 && (b == 0x01 || b == 0x02 || b == 0x03) && c == 0x00) //space bar
+  {
+    keyCode__ = 32; // space
+  }
+
+  else if (a == 0x40 && b == 0x00 && c == 0x00) // enter button 7
+  {
+    keyCode__ = 13;
   }
   //-----------------on read sector----------------
   //

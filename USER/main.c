@@ -773,6 +773,7 @@ int countStr(char *data)
       cc++;
     }
   }
+  //
   return cc;
 }
 void append(char subject[], const char insert[], int pos)

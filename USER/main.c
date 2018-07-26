@@ -297,17 +297,6 @@ char fileLists[30][15];
 USART_InitTypeDef USART_InitStructure36;
 //////////////////////////////////////////////////////////////////////////////
 
-//------------------notepad 2------------------------------
-//-----------------------------------------------------------
-// john function
-void unicode_to_ASCII(void);
-void notepad(void);
-int mapCursor(int, int, int);
-int checkBit(int);
-//----end john func---
-//-----------------------------------mode--------------------------------//
-
-/* Private variables ----------------------------------------------------*/
 float AD_value;
 vu16 ADC_ConvertedValue;
 
@@ -500,6 +489,36 @@ void printStringLR(char *str, int s)
     stringToUnicodeAndSendToDisplay(str);
   }
 }
+
+//------------------------notepad function and variable---------------------------
+//ฟังค์ชั่นหลักของ notepad
+void notepad_main(void);
+//อ่านค่าคีย์บอร์ด
+void notepad_readKey(void);
+//สำหรับให้เคอเซอร์ชี้ตำแหน่งของสตริงตัวล่าสุดของบรรทัด
+int notepad_getnullPostion();
+
+//ตำแหน่งปัจจุบันของเคอร์เซอร์
+int notepad_cursorPosition = 0;
+//ตัวคูณเลื่อนตำแหน่งเคอร์เซอร์
+int notepad_multiplyCursor = 0;
+//บรรทัดปัจจุบัน
+int notepad_currentLine = 0;
+
+
+int unicode_to_ASCII(int);
+int mapCursor(int, int, int);
+int checkBit(int);
+int keyMapping(int, int, int);
+void clearKeyValue(void);
+
+#define notepad_Line 97
+#define notepad_MaxinLine 40
+
+char notepad_buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
+////////////////////////end notepad function/////////////////////
+
+
 ///------------------------ main function------------------------
 /////////////////////////////////////////////////////////////////
 int main(void)
@@ -520,7 +539,7 @@ int main(void)
   printDot(st_0, sizeof(st_0));
   delay_ms(1200);
   //printStringLR("Hello test test aaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbb",0);
-  
+
   //delay_ms(3000);
 
   //****************** check dot****************
@@ -572,7 +591,12 @@ int main(void)
       }
     }
     }*/
-  command_ = 1;
+  //-notepad test
+  while (1)
+  {
+    notepad_main();
+  }
+  // command_ = 1;
   /*
   while (1) // explorror and read mode
   {
@@ -588,7 +612,103 @@ int main(void)
   */
   //new
 }
+void notepad_main()
+{
+  int doing = 1; //status for do something in notepad mode
+  while (doing)
+  {
+    notepad_readKey();       // key recieve
+    if (countKey >= maxData) // do events
+    {                        //Recieve & checking key
+      seeHead = 0;
+      printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      if (checkKeyError == 0xff)
+      { //clear error key
+        countKey = 0;
+        SeeHead = 0;
+      }
+      // key mapping //
+      //keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      if(bufferKey3digit[1]!=0||bufferKey3digit[2]!=0){
+          keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+          //--- เลื่อนบรรทัด
+          if(keyCode == 40){ // next line
+                if(notepad_currentLine<notepad_Line);
+                notepad_currentLine++;
+          }else if(keyCode == 38){ // prevoius line
+                if(notepad_currentLine>0)
+                  notepad_currentLine--;
+              printf("null position in line:%d \r\n",notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]));
+          }
+      }
+      else if (1) //type message in notepad mode 
+      {
+        //read key and convert to ascii
+        keyCode = unicode_to_ASCII(bufferKey3digit[0]);
+        //store data to #notepad_buffer_string
+        notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] = keyCode;
+        //increase charactor postion
 
+        //manage charactor position
+        if (notepad_cursorPosition >= 20) 
+        {
+          notepad_cursorPosition = 0;
+          //new line
+          notepad_currentLine++;
+        }
+        else
+        {
+          notepad_cursorPosition++;
+        }
+      }
+      printf("typing//:%s\r\n", notepad_buffer_string[notepad_currentLine]);
+      printf("current line is : %d\r\n",notepad_currentLine);
+      clearKeyValue(); // clear key buffer
+    }
+  }
+}
+int notepad_getnullPostion(char * str){
+    int cc_m = 0;
+    while(str[cc_m]!=0){ // null byte
+      cc_m++;
+    }
+    return cc_m;
+}
+ 
+void notepad_readKey()
+{
+  if (USART_GetITStatus(USART2, USART_IT_RXNE))
+  {
+    //----------------------------- uart to key--------------------------------
+    uart2Buffer = USART_ReceiveData(USART2); //-
+    if (uart2Buffer == 0xff && SeeHead == 0)
+    {
+      SeeHead = 1;
+      countKey = 0;
+    }
+    if (countKey == 2 && uart2Buffer == 0xa4)
+    {
+      // key is cursor #seeCur = 1;
+      seeCur = 1;
+    }
+    if (countKey >= 4 && countKey <= 6)
+    {                                              //-
+      bufferKey3digit[countKey - 4] = uart2Buffer; //-
+    }
+    if (countKey == 2) //error checking
+    {
+      checkKeyError = uart2Buffer;
+    }
+    countKey++;
+    // ---------------------------- serial interrupt----------------------------
+  }
+}
+void clearKeyValue()
+{
+  countKey = 0;
+  keyCode = 0;
+  seeCur = 0;
+}
 //------------ mapping key to keyCode  ----------------------
 //
 //
@@ -699,8 +819,8 @@ void keyRead()
       caseMenu(count_menu);
       }*/
     //--------
-    if (endReadFile == 1)
-    { // on mode read
+    if (endReadFile == 1) //node 2
+    {                     // on mode read
       //printf("testttttttttttttttttttttttttt");
       slidingFileFromRomToDisplay();
     }
@@ -1060,14 +1180,14 @@ void slidingFileFromRomToDisplay()
           example :  current line is : (0xFF,0xFF,0xFF,0xFF)
           */
           if (countLFTwoStep == 2)
-          { //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
-            /* current = 0x0d
+          {                                 //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
+                                            /* current = 0x0d
             0x0d 0x0a
             0x0d 0x0a
             */
-                                          // ให้หยุดที่ var - 1
-              pointer22char = varForLoop + 2; //0x0a
-            
+                                            // ให้หยุดที่ var - 1
+            pointer22char = varForLoop + 2; //0x0a
+
             countLFTwoStep = 0;
             break;
           }
@@ -1833,15 +1953,16 @@ void saveName()
 //---------------------unicode from keyboardto ascii -------------------------
 //
 //////////////////////////////////////////////////////////////////////////////
-void unicode_to_ASCII()
+int unicode_to_ASCII(int key)
 {
-  for (i = 0; i < 255; i++)
+  for (j = 0; j < 255; j++)
   {
-    if (bufferKey3digit[0] == unicodeTable[(char)i])
+    if (key == unicodeTable[(char)j])
     {
       break;
     }
   }
+  return j;
 }
 //-----------new----------
 
@@ -3196,3 +3317,6 @@ void assert_failed(uint8_t *file, uint32_t line)
   }
 }
 #endif
+/*
+
+*/

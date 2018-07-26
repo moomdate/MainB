@@ -773,7 +773,9 @@ int countStr(char *data)
       cc++;
     }
   }
+  // ทดสอบคอมเม้น 
   //
+  
   return cc;
 }
 void append(char subject[], const char insert[], int pos)

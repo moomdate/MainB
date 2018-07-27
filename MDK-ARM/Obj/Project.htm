@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Jul 27 16:20:05 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Jul 27 19:09:10 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -294,7 +294,7 @@ Global Symbols
 <P><STRONG><a name="[a]"></a>WWDG_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f10x_hd.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[97]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
+<P><STRONG><a name="[98]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
 </UL>
 
@@ -308,7 +308,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[84]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 
 <P><STRONG><a name="[4e]"></a>_memset$wrapper</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
@@ -316,11 +317,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[85]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 
 <P><STRONG><a name="[86]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
@@ -567,7 +570,7 @@ Global Symbols
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
 
-<P><STRONG><a name="[95]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
+<P><STRONG><a name="[96]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
 <BR><BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
 </UL>
@@ -588,7 +591,7 @@ Global Symbols
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART4_Configuration
 </UL>
 
-<P><STRONG><a name="[96]"></a>USART_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ReceiveData))
+<P><STRONG><a name="[97]"></a>USART_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ReceiveData))
 <BR><BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
 </UL>
@@ -606,7 +609,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[8c]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
-<BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
@@ -632,7 +636,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 </UL>
 
-<P><STRONG><a name="[94]"></a>clearKeyValue</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.clearKeyValue))
+<P><STRONG><a name="[95]"></a>clearKeyValue</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.clearKeyValue))
 <BR><BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
@@ -731,12 +735,13 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[80]"></a>notepad_main</STRONG> (Thumb, 974 bytes, Stack size 0 bytes, main.o(i.notepad_main))
+<P><STRONG><a name="[80]"></a>notepad_main</STRONG> (Thumb, 1388 bytes, Stack size 0 bytes, main.o(i.notepad_main))
 <BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_getnullPostion
@@ -746,14 +751,14 @@ Global Symbols
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
-<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[8d]"></a>notepad_readKey</STRONG> (Thumb, 134 bytes, Stack size 0 bytes, main.o(i.notepad_readKey))
-<BR><BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
+<BR><BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
+<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 </UL>
 <BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
@@ -768,8 +773,8 @@ Global Symbols
 <P><STRONG><a name="[7f]"></a>prepareSD</STRONG> (Thumb, 288 bytes, Stack size 0 bytes, main.o(i.prepareSD))
 <BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
-<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
+<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -785,7 +790,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[93]"></a>printStringInLine</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
+<P><STRONG><a name="[94]"></a>printStringInLine</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
 <BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
@@ -793,7 +798,7 @@ Global Symbols
 
 <P><STRONG><a name="[90]"></a>removeChar</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.removeChar))
 <BR><BR>[Calls]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
+<LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
 </UL>
 <BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
@@ -808,6 +813,15 @@ Global Symbols
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
+</UL>
+
+<P><STRONG><a name="[93]"></a>subStringLanR</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, main.o(i.subStringLanR))
+<BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+</UL>
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
 <P><STRONG><a name="[91]"></a>unicode_to_ASCII</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.unicode_to_ASCII))

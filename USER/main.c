@@ -464,34 +464,6 @@ int getBatterry()
   }
   return uart2Buffer;
 }
-void printStringLR(char *str, int s)
-{
-  char buff[20];
-  int begin = 0;
-  int end = 0;
-
-  if (strlen(str) > 20)
-  {
-    //clear buff
-    if (!s)
-    { // split left
-      begin = 0;
-      end = 20;
-    }
-    else
-    { // split right
-      begin = 20;
-      end = 40;
-    }
-    memset(buff, 0, strlen(buff));
-    strncpy(buff, str + begin, end - begin);
-    stringToUnicodeAndSendToDisplay(buff);
-  }
-  else
-  {
-    stringToUnicodeAndSendToDisplay(str);
-  }
-}
 
 //------------------------notepad function and variable---------------------------
 //ฟังค์ชั่นหลักของ notepad
@@ -506,9 +478,11 @@ void notepad_removeEnterSign(char *str);
 int notepad_countEnterSign(char *str);
 void notepad_fillEnterSign(char *str);
 void notepad_append(char subject[], const char insert[], int pos);
-
+void printStringLR(char *str, int p);
 int notepad_countStr(char *data);
 char numToASCII(int num);
+
+char *subStringLanR(char *str, int p);
 
 void removeChar(char *str, int idxToDel);
 void printStringInLine(char *str);
@@ -516,9 +490,11 @@ void printStringInLine(char *str);
 int notepad_cursorPosition = 0;
 //ตัวคูณเลื่อนตำแหน่งเคอร์เซอร์
 int notepad_multiplyCursor = 0;
+int notepad_multiplyDisplay = 0;
 //บรรทัดปัจจุบัน
 int notepad_currentLine = 0;
 
+int display_f = 0;
 char keybuff[2] = "\0";
 int enterSign = 45; //escape
 int unicode_to_ASCII(int);
@@ -528,7 +504,7 @@ int keyMapping(int, int, int);
 void clearKeyValue(void);
 
 #define notepad_Line 97
-#define notepad_MaxinLine 20
+#define notepad_MaxinLine 40
 
 char notepad_buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
 ////////////////////////end notepad function/////////////////////
@@ -673,6 +649,20 @@ void notepad_main()
             notepad_cursorPosition = k;
           //printf("null position in line:%d \r\n", notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]));
         }
+        else if (keyCode == 1)
+        { //left
+          display_f = 0;
+          k = 20;// ไม่นับถึง enter
+          if (notepad_cursorPosition > k)                                                 //กดได้ไม่เกิน enter
+            notepad_cursorPosition = k;
+          else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
+            notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
+            notepad_multiplyCursor = 0;
+        }
+        else if (keyCode == 2)
+        { //right
+          display_f = 1;
+        }
       }
       else if (bufferKey3digit[0] == 0x40 && seeCur != 1) //enter
       {
@@ -681,7 +671,7 @@ void notepad_main()
         {
           while (notepad_cursorPosition < notepad_MaxinLine) //20 ตัวอักษร
           {
-          notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition);
+            notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition);
             if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
             {
               //new line
@@ -736,7 +726,12 @@ void notepad_main()
           notepad_cursorPosition = k;
         else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
           notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
-        printf("cursor set at:%d\r\n", notepad_cursorPosition);
+
+        if (display_f == 1)
+          notepad_multiplyCursor = 20;
+        else
+          notepad_multiplyCursor = 0;
+        printf("cursor set at:%d\r\n", notepad_cursorPosition + notepad_multiplyCursor);
       }
       else if (1 && seeCur != 1) //type message in notepad mode
       {
@@ -754,6 +749,7 @@ void notepad_main()
         //manage charactor position // line feed
 
         //--- check enter in line ------
+
         if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
         {
           notepad_removeEnterSign(notepad_buffer_string[notepad_currentLine]);
@@ -761,7 +757,8 @@ void notepad_main()
         keybuff[0] = (char)keyCode;
         //printf("current po at %d \r\n", notepad_cursorPosition);
         // enter ตัวสุดท้ายจะถูกเบียดลง จะเกิน max ผมจะไม่ให้มันเบียด
-        notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_cursorPosition);
+        printf("/////////////////// %d %d//////////////////", notepad_cursorPosition, notepad_multiplyCursor);
+        notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_cursorPosition + notepad_multiplyCursor);
 
         if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
         {
@@ -772,13 +769,24 @@ void notepad_main()
         else
         {
           notepad_cursorPosition++;
+          if (notepad_cursorPosition == notepad_MaxinLine / 2)
+          {
+            display_f = 1;
+          }
         }
       }
+
       if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
       {
         notepad_fillEnterSign(notepad_buffer_string[notepad_currentLine]); //--เติม enter ถ้าไม่เต็มบรรทัด
       }
-      printf("\r\n============================================\r\n");
+      printf("\r\n=====================sub=======================\r\n");
+
+      // เช็คความยาว ตัดมาแสดง ไม่เกิน 20 ตัว
+
+      //
+      subStringLanR(notepad_buffer_string[notepad_currentLine], display_f);
+      printf("\r\n=====================normal=======================\r\n");
       // printf("current in dex is: %d\r\n", notepad_cursorPosition);
       printStringInLine(notepad_buffer_string[notepad_currentLine]);
       // printf("typing// index at :%s\r\n", notepad_buffer_string[notepad_currentLine]);
@@ -788,6 +796,64 @@ void notepad_main()
     }
   }
 }
+char *subStringLanR(char *str, int p)
+{
+  char buff[20];
+  int begin = 0;
+  int end = 0;
+  int l = 0;
+  memset(buff, 0, strlen(buff));
+  if (strlen(str) > 20)
+  {
+    //clear buff
+    if (!p)
+    { // split left
+      begin = 0;
+      end = 20;
+    }
+    else
+    { // split right
+      begin = 20;
+      end = 40;
+    }
+    strncpy(buff, str + begin, end - begin);
+    l = 1;
+    printf("%s\r\n", buff);
+  }
+  else
+  {
+    printf("%s\r\n", str);
+  }
+}
+void printStringLR(char *str, int s)
+{
+  char buff[20];
+  int begin = 0;
+  int end = 0;
+
+  if (strlen(str) > 20)
+  {
+    //clear buff
+    if (!s)
+    { // split left
+      begin = 0;
+      end = 20;
+    }
+    else
+    { // split right
+      begin = 20;
+      end = 40;
+    }
+    memset(buff, 0, strlen(buff));
+    strncpy(buff, str + begin, end - begin);
+    stringToUnicodeAndSendToDisplay(buff);
+  }
+  else
+  {
+    stringToUnicodeAndSendToDisplay(str);
+  }
+}
+
 void notepad_fillEnterSign(char *str)
 {
   int a, b;

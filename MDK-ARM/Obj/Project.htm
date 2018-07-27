@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Jul 26 18:19:46 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Jul 27 16:20:05 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -294,8 +294,8 @@ Global Symbols
 <P><STRONG><a name="[a]"></a>WWDG_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f10x_hd.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[92]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<P><STRONG><a name="[97]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
 </UL>
 
 <P><STRONG><a name="[4d]"></a>__aeabi_memset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
@@ -307,25 +307,26 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[70]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;append
+<P><STRONG><a name="[84]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 
 <P><STRONG><a name="[4e]"></a>_memset$wrapper</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, memseta.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 
-<P><STRONG><a name="[71]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;append
+<P><STRONG><a name="[85]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 
-<P><STRONG><a name="[72]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;append
+<P><STRONG><a name="[86]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 
-<P><STRONG><a name="[73]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;append
+<P><STRONG><a name="[87]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 
 <P><STRONG><a name="[4f]"></a>__aeabi_uldivmod</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, uldiv.o(.text), UNUSED)
@@ -355,10 +356,10 @@ Global Symbols
 <P><STRONG><a name="[7]"></a>DebugMon_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.DebugMon_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[78]"></a>Delay</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.Delay))
-<BR><BR>[Called By]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
-<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
-<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
+<P><STRONG><a name="[73]"></a>Delay</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.Delay))
+<BR><BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
+<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 </UL>
 
 <P><STRONG><a name="[53]"></a>Flash_ReadWriteByte2</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, main.o(i.Flash_ReadWriteByte2))
@@ -366,7 +367,7 @@ Global Symbols
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_I2S_ReceiveData
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_I2S_GetFlagStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
+<BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
 </UL>
 
 <P><STRONG><a name="[57]"></a>GPIO_Configuration</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, main.o(i.GPIO_Configuration))
@@ -385,14 +386,14 @@ Global Symbols
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_Configuration
 </UL>
 
-<P><STRONG><a name="[77]"></a>GPIO_ResetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_gpio.o(i.GPIO_ResetBits))
-<BR><BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
-<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
+<P><STRONG><a name="[72]"></a>GPIO_ResetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_gpio.o(i.GPIO_ResetBits))
+<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
+<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 </UL>
 
 <P><STRONG><a name="[5b]"></a>GPIO_SetBits</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32f10x_gpio.o(i.GPIO_SetBits))
-<BR><BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
-<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
+<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
+<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_SPI
 </UL>
 
@@ -434,7 +435,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[6c]"></a>RCC_GetClocksFreq</STRONG> (Thumb, 192 bytes, Stack size 0 bytes, stm32f10x_rcc.o(i.RCC_GetClocksFreq))
-<BR><BR>[Called By]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
+<BR><BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Init
 </UL>
 
@@ -458,8 +459,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Flash_ReadWriteByte2
 </UL>
 
-<P><STRONG><a name="[7a]"></a>SPI_Init</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, stm32f10x_spi.o(i.SPI_Init))
-<BR><BR>[Called By]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configDisplay
+<P><STRONG><a name="[75]"></a>SPI_Init</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, stm32f10x_spi.o(i.SPI_Init))
+<BR><BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configDisplay
 </UL>
 
 <P><STRONG><a name="[6]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.SVC_Handler))
@@ -469,30 +470,30 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetFlagStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
+<BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
 </UL>
 
-<P><STRONG><a name="[7c]"></a>SysTick_CLKSourceConfig</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, misc.o(i.SysTick_CLKSourceConfig))
-<BR><BR>[Called By]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
+<P><STRONG><a name="[77]"></a>SysTick_CLKSourceConfig</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, misc.o(i.SysTick_CLKSourceConfig))
+<BR><BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
 </UL>
 
-<P><STRONG><a name="[80]"></a>SysTick_CounterCmd</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_CounterCmd))
-<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<P><STRONG><a name="[7b]"></a>SysTick_CounterCmd</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_CounterCmd))
+<BR><BR>[Called By]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 
-<P><STRONG><a name="[81]"></a>SysTick_GetFlagStatus</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_GetFlagStatus))
-<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<P><STRONG><a name="[7c]"></a>SysTick_GetFlagStatus</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_GetFlagStatus))
+<BR><BR>[Called By]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 
 <P><STRONG><a name="[9]"></a>SysTick_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.SysTick_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
-<P><STRONG><a name="[7d]"></a>SysTick_ITConfig</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_ITConfig))
-<BR><BR>[Called By]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
+<P><STRONG><a name="[78]"></a>SysTick_ITConfig</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_ITConfig))
+<BR><BR>[Called By]<UL><LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
 </UL>
 
-<P><STRONG><a name="[7f]"></a>SysTick_SetReload</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_SetReload))
-<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<P><STRONG><a name="[7a]"></a>SysTick_SetReload</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, stm32f10x_systick.o(i.SysTick_SetReload))
+<BR><BR>[Called By]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 
 <P><STRONG><a name="[47]"></a>SystemInit</STRONG> (Thumb, 78 bytes, Stack size 0 bytes, system_stm32f10x.o(i.SystemInit))
@@ -566,9 +567,9 @@ Global Symbols
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
 
-<P><STRONG><a name="[90]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
-<BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
+<P><STRONG><a name="[95]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
+<BR><BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
 </UL>
 
 <P><STRONG><a name="[66]"></a>USART_ITConfig</STRONG> (Thumb, 74 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ITConfig))
@@ -587,9 +588,9 @@ Global Symbols
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART4_Configuration
 </UL>
 
-<P><STRONG><a name="[91]"></a>USART_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ReceiveData))
-<BR><BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
+<P><STRONG><a name="[96]"></a>USART_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ReceiveData))
+<BR><BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
 </UL>
 
 <P><STRONG><a name="[5f]"></a>USART_SendData</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_SendData))
@@ -604,65 +605,57 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[89]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
-<BR><BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
-<LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<P><STRONG><a name="[8c]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
+<BR><BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 </UL>
 
-<P><STRONG><a name="[6f]"></a>append</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, main.o(i.append))
-<BR><BR>[Calls]<UL><LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
-<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
-<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<P><STRONG><a name="[6f]"></a>cell_sentdata</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.cell_sentdata))
+<BR><BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
 </UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
+<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 </UL>
 
-<P><STRONG><a name="[74]"></a>cell_sentdata</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.cell_sentdata))
-<BR><BR>[Calls]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
-</UL>
-<BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
-<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
+<P><STRONG><a name="[82]"></a>checkBit</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.checkBit))
+<BR><BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
 </UL>
 
-<P><STRONG><a name="[87]"></a>checkBit</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.checkBit))
-<BR><BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
-</UL>
-
-<P><STRONG><a name="[76]"></a>clearDot</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, main.o(i.clearDot))
+<P><STRONG><a name="[71]"></a>clearDot</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, main.o(i.clearDot))
 <BR><BR>[Calls]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
-<LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
-<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
-<LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
+<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
+<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
+<LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
-</UL>
-
-<P><STRONG><a name="[8f]"></a>clearKeyValue</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.clearKeyValue))
-<BR><BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 </UL>
 
-<P><STRONG><a name="[79]"></a>configDisplay</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.configDisplay))
-<BR><BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
+<P><STRONG><a name="[94]"></a>clearKeyValue</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.clearKeyValue))
+<BR><BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+</UL>
+
+<P><STRONG><a name="[74]"></a>configDisplay</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.configDisplay))
+<BR><BR>[Calls]<UL><LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7b]"></a>delay_init</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, systick.o(i.delay_init))
-<BR><BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CLKSourceConfig
+<P><STRONG><a name="[76]"></a>delay_init</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, systick.o(i.delay_init))
+<BR><BR>[Calls]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CLKSourceConfig
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RCC_GetClocksFreq
-<LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_ITConfig
+<LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_ITConfig
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[7e]"></a>delay_ms</STRONG> (Thumb, 74 bytes, Stack size 0 bytes, systick.o(i.delay_ms))
-<BR><BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_SetReload
-<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_GetFlagStatus
-<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CounterCmd
+<P><STRONG><a name="[79]"></a>delay_ms</STRONG> (Thumb, 74 bytes, Stack size 0 bytes, systick.o(i.delay_ms))
+<BR><BR>[Calls]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_SetReload
+<LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_GetFlagStatus
+<LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CounterCmd
 </UL>
-<BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
+<BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
@@ -672,18 +665,18 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> printf5.o(i.__0printf$5)
 </UL>
-<P><STRONG><a name="[8a]"></a>keyMapping</STRONG> (Thumb, 122 bytes, Stack size 0 bytes, main.o(i.keyMapping))
-<BR><BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<P><STRONG><a name="[8e]"></a>keyMapping</STRONG> (Thumb, 122 bytes, Stack size 0 bytes, main.o(i.keyMapping))
+<BR><BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
 <P><STRONG><a name="[46]"></a>main</STRONG> (Thumb, 66 bytes, Stack size 0 bytes, main.o(i.main))
-<BR><BR>[Calls]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
-<LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
-<LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendUart
-<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
-<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
-<LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configDisplay
+<BR><BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_init
+<LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendUart
+<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
+<LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configDisplay
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART3_Configuration
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART2_Configuration
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART1_Configuration
@@ -693,84 +686,132 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[86]"></a>mapCursor</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.mapCursor))
-<BR><BR>[Calls]<UL><LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;checkBit
+<P><STRONG><a name="[81]"></a>mapCursor</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.mapCursor))
+<BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;checkBit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-</UL>
-
-<P><STRONG><a name="[8b]"></a>notepad_getnullPostion</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.notepad_getnullPostion))
-<BR><BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[85]"></a>notepad_main</STRONG> (Thumb, 730 bytes, Stack size 0 bytes, main.o(i.notepad_main))
-<BR><BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
-<LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
-<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
-<LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_getnullPostion
-<LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
-<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
-<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;append
+<P><STRONG><a name="[83]"></a>notepad_append</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, main.o(i.notepad_append))
+<BR><BR>[Calls]<UL><LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+</UL>
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+</UL>
+
+<P><STRONG><a name="[89]"></a>notepad_checkEnterSignInLine</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.notepad_checkEnterSignInLine))
+<BR><BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+</UL>
+
+<P><STRONG><a name="[8b]"></a>notepad_countEnterSign</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.notepad_countEnterSign))
+<BR><BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+</UL>
+
+<P><STRONG><a name="[8a]"></a>notepad_countLinewithOutLNsign</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.notepad_countLinewithOutLNsign))
+<BR><BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+</UL>
+
+<P><STRONG><a name="[88]"></a>notepad_fillEnterSign</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, main.o(i.notepad_fillEnterSign))
+<BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countEnterSign
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+</UL>
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+</UL>
+
+<P><STRONG><a name="[8f]"></a>notepad_getnullPostion</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.notepad_getnullPostion))
+<BR><BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+</UL>
+
+<P><STRONG><a name="[80]"></a>notepad_main</STRONG> (Thumb, 974 bytes, Stack size 0 bytes, main.o(i.notepad_main))
+<BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
+<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
+<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_getnullPostion
+<LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
+<LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
+<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[88]"></a>notepad_readKey</STRONG> (Thumb, 134 bytes, Stack size 0 bytes, main.o(i.notepad_readKey))
-<BR><BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
-<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
+<P><STRONG><a name="[8d]"></a>notepad_readKey</STRONG> (Thumb, 134 bytes, Stack size 0 bytes, main.o(i.notepad_readKey))
+<BR><BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[84]"></a>prepareSD</STRONG> (Thumb, 288 bytes, Stack size 0 bytes, main.o(i.prepareSD))
-<BR><BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
-<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
+<P><STRONG><a name="[92]"></a>notepad_removeEnterSign</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.notepad_removeEnterSign))
+<BR><BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+</UL>
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+</UL>
+
+<P><STRONG><a name="[7f]"></a>prepareSD</STRONG> (Thumb, 288 bytes, Stack size 0 bytes, main.o(i.prepareSD))
+<BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[83]"></a>printDot</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.printDot))
+<P><STRONG><a name="[7e]"></a>printDot</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.printDot))
 <BR><BR>[Calls]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
-<LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
-<LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
-<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
-<LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
+<LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
+<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
+<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
+<LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[8e]"></a>printStringInLine</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
-<BR><BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<P><STRONG><a name="[93]"></a>printStringInLine</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
+<BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-</UL>
-
-<P><STRONG><a name="[8c]"></a>removeChar</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.removeChar))
-<BR><BR>[Calls]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
-</UL>
-<BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[82]"></a>sendUart</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, main.o(i.sendUart))
+<P><STRONG><a name="[90]"></a>removeChar</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.removeChar))
+<BR><BR>[Calls]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
+</UL>
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+</UL>
+
+<P><STRONG><a name="[7d]"></a>sendUart</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, main.o(i.sendUart))
 <BR><BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[75]"></a>sentdata_cell</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, main.o(i.sentdata_cell))
+<P><STRONG><a name="[70]"></a>sentdata_cell</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, main.o(i.sentdata_cell))
 <BR><BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Flash_ReadWriteByte2
-<LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
+<LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
+<BR>[Called By]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 </UL>
 
-<P><STRONG><a name="[8d]"></a>unicode_to_ASCII</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.unicode_to_ASCII))
-<BR><BR>[Called By]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<P><STRONG><a name="[91]"></a>unicode_to_ASCII</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.unicode_to_ASCII))
+<BR><BR>[Called By]<UL><LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 <P>
 <H3>

@@ -286,6 +286,7 @@ int savePath(char *pathName);
 int checkSlash(char *pathName);
 int countPath(char *pathSource);
 
+void saveName(void);
 int maxFile = 0;
 int fileSelect = 0;
 
@@ -652,19 +653,26 @@ void notepad_main()
         else if (keyCode == 1)
         { //left
           display_f = 0;
-          k = 20;// ไม่นับถึง enter
-          if (notepad_cursorPosition > k)                                                 //กดได้ไม่เกิน enter
+          k = 20;                         // ไม่นับถึง enter
+          if (notepad_cursorPosition > k) //กดได้ไม่เกิน enter
             notepad_cursorPosition = k;
           else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
             notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
-            notepad_multiplyCursor = 0;
+          notepad_multiplyCursor = 0;
         }
         else if (keyCode == 2)
         { //right
-          display_f = 1;
+
+          if (notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]) > 20)
+            display_f = 1;
         }
       }
-      else if (bufferKey3digit[0] == 0x40 && seeCur != 1) //enter
+      else if ((bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x1 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x2 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x3 && bufferKey3digit[2] == 0x00))
+      { // save
+        printf("\r\n-----------Save:------------\r\n");
+        saveName();
+      }
+      else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
       {
         printf("New line \r\n");
         if (notepad_cursorPosition < notepad_MaxinLine)
@@ -692,7 +700,7 @@ void notepad_main()
           //notepad_currentLine++;
         }
       }
-      else if (bufferKey3digit[0] == 0x80 && seeCur != 1)
+      else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
       { //remove str at index
 
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
@@ -727,7 +735,7 @@ void notepad_main()
         else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
           notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
 
-        if (display_f == 1)
+        if (display_f == 1) //กำหนด cursor ตำแหน่ง 20-40
           notepad_multiplyCursor = 20;
         else
           notepad_multiplyCursor = 0;
@@ -735,44 +743,32 @@ void notepad_main()
       }
       else if (1 && seeCur != 1) //type message in notepad mode
       {
-        // printf("else -------------------------\r\n");
-        //read key and convert to ascii
         keyCode = unicode_to_ASCII(bufferKey3digit[0]);
         if (keyCode == 0) //space bar edit in unicode table
           keyCode = 32;
-        // printf("keycode/*/////%d\r\n",keyCode);
-        //store data to #notepad_buffer_string
-
-        //notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] = keyCode;
-        //increase charactor postion
-
-        //manage charactor position // line feed
-
-        //--- check enter in line ------
-
         if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
         {
           notepad_removeEnterSign(notepad_buffer_string[notepad_currentLine]);
         }
+
         keybuff[0] = (char)keyCode;
         //printf("current po at %d \r\n", notepad_cursorPosition);
         // enter ตัวสุดท้ายจะถูกเบียดลง จะเกิน max ผมจะไม่ให้มันเบียด
-        printf("/////////////////// %d %d//////////////////", notepad_cursorPosition, notepad_multiplyCursor);
+        printf("/////////////////// %d %d //////////////////\r\n", notepad_cursorPosition, notepad_multiplyCursor);
         notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_cursorPosition + notepad_multiplyCursor);
 
         if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
         {
-          //new line
+          //เลื่อนบรรทัดอัตโนมัติ
           notepad_currentLine++;
           notepad_cursorPosition = 1;
         }
         else
         {
           notepad_cursorPosition++;
-          if (notepad_cursorPosition == notepad_MaxinLine / 2)
-          {
+
+          if (notepad_cursorPosition == notepad_MaxinLine / 2) //เลื่อนชุดเซลล์อัตโนมัติ
             display_f = 1;
-          }
         }
       }
 
@@ -864,15 +860,15 @@ void notepad_fillEnterSign(char *str)
     printf("/////////////////////////////////////a = %d,b = %d\r\n", a, b);
     if (a + b != notepad_MaxinLine)
     {
-      while (b < notepad_MaxinLine - 1)
+
+      while (a < notepad_MaxinLine - 1)
       {
         //str[b] = (char)enterSign; //fille enter sign
+
         keybuff[0] = (char)enterSign;
-        if (str[b] != '\0')
-          notepad_append(str, keybuff, b);
-        else
-          str[b] = (char)enterSign;
-        b++;
+        /*  if (str[a] == '\0')*/
+        notepad_append(str, keybuff, a);
+        a++;
       }
     }
   }
@@ -894,23 +890,26 @@ int notepad_countEnterSign(char *str)
 void notepad_removeEnterSign(char *str)
 {
   int cc = 0;
-  int indexSign = notepad_countLinewithOutLNsign(str) + 1;
-
-  removeChar(str, indexSign);
+  int indexSign = notepad_countLinewithOutLNsign(str);
+  if (indexSign != 39)
+    removeChar(str, indexSign);
 }
 //--check in line "-"
 int notepad_checkEnterSignInLine(char *str)
 {
   int cc = 0;
   int st = 0;
-  while (str[cc] != 0x00 && cc < notepad_MaxinLine)
+  if (strlen(str) > 0)
   {
-    if (str[cc] == enterSign)
-    { // '-
-      st = 1;
-      break;
+    while (str[cc] != 0x00 && cc < notepad_MaxinLine)
+    {
+      if (str[cc] == enterSign)
+      { // '-
+        st = 1;
+        break;
+      }
+      cc++;
     }
-    cc++;
   }
   return st;
 }
@@ -2035,8 +2034,8 @@ void createFileAndWrite(char *fname)
   delay_ms(100);
   command_ = 1;
   //  strcpy(str33,"The Afghan Taliban have rejected calls to extend a three-day ceasefire declared for the Muslim Eid festival. A spokesman said the truce would end on Sunday night and operations against the security forces would resume. Government officials urged the militants not to return to fighting, as dozens of unarmed Taliban exchanged Eid greetings with soldiers and civilians. Meanwhile, at least 18 people were killed in a suicide attack in the city of Jalalabad, officials said. The blast happened outside the office of the governor of Nangarhar province while officials were meeting Taliban insurgents as part of the ceasefire. Dozens were The ceasefire ends tonight and our operations will begin, God willing. We have no intention to extend the ceasefire, said spokesman Zabihullah Mujahid.");
-  strcat(str1, str2);
-  writeFile4096(fname, str1);
+  // strcat(str1, str2);
+  writeFile4096(fname, notepad_buffer_string[notepad_currentLine]);
 }
 //-----------------------write file less than 4096 or equal------------------
 //

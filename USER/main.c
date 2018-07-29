@@ -487,6 +487,7 @@ char *subStringLanR(char *str, int p);
 
 void removeChar(char *str, int idxToDel);
 void printStringInLine(char *str);
+void notepad_checkenterAndpush(char *str);
 //ตำแหน่งปัจจุบันของเคอร์เซอร์
 int notepad_cursorPosition = 0;
 //ตัวคูณเลื่อนตำแหน่งเคอร์เซอร์
@@ -677,7 +678,7 @@ void notepad_main()
         printf("New line \r\n");
         if (notepad_cursorPosition < notepad_MaxinLine)
         {
-          while (notepad_cursorPosition < notepad_MaxinLine) //20 ตัวอักษร
+          while (notepad_cursorPosition < notepad_MaxinLine) //40 ตัวอักษร
           {
             notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition);
             if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
@@ -723,6 +724,12 @@ void notepad_main()
             removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
             notepad_cursorPosition--;
           }
+        }
+
+        if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1) //fill enter
+        {
+          keybuff[0] = (char)enterSign;
+          notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_MaxinLine);
         }
         removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
       }
@@ -771,7 +778,7 @@ void notepad_main()
             display_f = 1;
         }
       }
-
+      notepad_checkenterAndpush(notepad_buffer_string[notepad_currentLine]); //เบียด
       if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
       {
         notepad_fillEnterSign(notepad_buffer_string[notepad_currentLine]); //--เติม enter ถ้าไม่เต็มบรรทัด
@@ -789,6 +796,29 @@ void notepad_main()
       //  printf("current line is : %d\r\n", notepad_currentLine);
       printf("\r\n============================================\r\n");
       clearKeyValue(); // clear key buffer
+    }
+  }
+}
+void notepad_checkenterAndpush(char *str) //--------------xxxxx
+{
+  int cc = 0;
+  if (str[0] == enterSign)
+  {
+    while (str[cc] == enterSign && cc < notepad_MaxinLine)
+    {
+      if (str[cc] != enterSign)
+        break;
+      cc++;
+    }
+    printf("-------------------push at %d to %d---------------------",cc,notepad_MaxinLine);
+    while (cc < notepad_MaxinLine)
+    {
+      keybuff[0] = (char)enterSign;
+      /*  if (str[a] == '\0')*/
+
+      notepad_append(str, keybuff, cc);
+      //str[cc] = (char)enterSign;
+      cc++;
     }
   }
 }
@@ -858,7 +888,7 @@ void notepad_fillEnterSign(char *str)
     a = notepad_countLinewithOutLNsign(str);
     b = notepad_countEnterSign(str);
     printf("/////////////////////////////////////a = %d,b = %d\r\n", a, b);
-    if (a + b != notepad_MaxinLine)
+    if (a + b != notepad_MaxinLine && a != 0)
     {
 
       while (a < notepad_MaxinLine - 1)
@@ -867,6 +897,7 @@ void notepad_fillEnterSign(char *str)
 
         keybuff[0] = (char)enterSign;
         /*  if (str[a] == '\0')*/
+
         notepad_append(str, keybuff, a);
         a++;
       }

@@ -633,10 +633,11 @@ void notepad_main()
           notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
           // บังคับห้ามมีค่าเกิน max
           if (notepad_cursorPosition >= notepad_MaxinLine)
-            notepad_cursorPosition = notepad_MaxinLine;
+            notepad_cursorPosition = notepad_MaxinLine-1;
           k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
           if (notepad_cursorPosition > k)
             notepad_cursorPosition = k;
+          printf("cursor position at :%d \r\n", notepad_cursorPosition);
         }
         else if (keyCode == 38)
         { // previous line
@@ -649,7 +650,7 @@ void notepad_main()
           k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
           if (notepad_cursorPosition > k)
             notepad_cursorPosition = k;
-          //printf("null position in line:%d \r\n", notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]));
+          printf("cursor position at :%d \r\n", notepad_cursorPosition);
         }
         else if (keyCode == 1)
         { //left
@@ -705,7 +706,7 @@ void notepad_main()
       { //remove str at index
 
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
-        printf("remove char %d -%c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition]);
+        printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition]);
 
         if (notepad_cursorPosition > 0)
         {
@@ -731,7 +732,7 @@ void notepad_main()
           keybuff[0] = (char)enterSign;
           notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_MaxinLine);
         }
-        removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
+        removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition+notepad_multiplyCursor);
       }
       else if (seeCur == 1)
       {
@@ -810,7 +811,7 @@ void notepad_checkenterAndpush(char *str) //--------------xxxxx
         break;
       cc++;
     }
-    printf("-------------------push at %d to %d---------------------",cc,notepad_MaxinLine);
+    printf("-------------------push at %d to %d---------------------", cc, notepad_MaxinLine);
     while (cc < notepad_MaxinLine)
     {
       keybuff[0] = (char)enterSign;

@@ -627,6 +627,7 @@ void notepad_main()
         //--- เลื่อนบรรทัด ----
         if (keyCode == 40)
         { // next line
+
           if (notepad_currentLine < notepad_Line)
             notepad_currentLine++;
 
@@ -637,6 +638,7 @@ void notepad_main()
           k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
           if (notepad_cursorPosition > k)
             notepad_cursorPosition = k;
+          notepad_multiplyCursor = 0;
           printf("cursor position at :%d \r\n", notepad_cursorPosition);
         }
         else if (keyCode == 38)
@@ -648,10 +650,11 @@ void notepad_main()
           if (notepad_cursorPosition >= notepad_MaxinLine)
             notepad_cursorPosition = notepad_MaxinLine;
           k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
-          /*if (k == 0)
-            k = notepad_MaxinLine;*/
+          if (k == 0)
+            k = notepad_MaxinLine;
           if (notepad_cursorPosition > k)
             notepad_cursorPosition = k;
+          notepad_multiplyCursor = 0;
           printf("cursor position  k at :%d \r\n", notepad_cursorPosition);
         }
         else if (keyCode == 1)
@@ -683,8 +686,8 @@ void notepad_main()
         {
           while (notepad_cursorPosition < notepad_MaxinLine) //40 ตัวอักษร
           {
-            notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition);
-            if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
+            notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition + notepad_multiplyCursor);
+            if (notepad_cursorPosition > notepad_MaxinLine) //defualt 40 charactor
             {
               //new line
               notepad_currentLine++;
@@ -706,7 +709,7 @@ void notepad_main()
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
       { //remove str at index
-
+  
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
         printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor]);
         if (notepad_cursorPosition > 0) //มากกว่า 0
@@ -794,13 +797,12 @@ void notepad_main()
       {
         notepad_fillEnterSign(notepad_buffer_string[notepad_currentLine]); //--เติม enter ถ้าไม่เต็มบรรทัด
       }
-      printf("\r\n=====================sub=======================\r\n");
 
       // เช็คความยาว ตัดมาแสดง ไม่เกิน 20 ตัว
 
       //
       subStringLanR(notepad_buffer_string[notepad_currentLine], display_f);
-      printf("\r\n=====================normal=======================\r\n");
+      printf("\r\n#########################normal#########################r\n");
       // printf("current in dex is: %d\r\n", notepad_cursorPosition);
       printStringInLine(notepad_buffer_string[notepad_currentLine]);
       // printf("typing// index at :%s\r\n", notepad_buffer_string[notepad_currentLine]);
@@ -808,8 +810,8 @@ void notepad_main()
       printf("\r\n============================================\r\n");
       printf("current line :%d", notepad_currentLine);
       printf("\r\n============================================\r\n");
-      printf("current position :%c at index:%d", notepad_buffer_string[notepad_currentLine][notepad_cursorPosition], notepad_cursorPosition);
-      printf("\r\n============================================\r\n");
+      printf("current position :%c at index:%d and multi cur :%d ", notepad_buffer_string[notepad_currentLine][notepad_cursorPosition], notepad_cursorPosition, notepad_multiplyCursor);
+      printf("\r\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$r\n");
       clearKeyValue(); // clear key buffer
     }
   }

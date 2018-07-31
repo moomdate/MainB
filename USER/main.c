@@ -690,7 +690,7 @@ void notepad_main()
           while (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine) //40 ตัวอักษร
           {
             notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition + notepad_multiplyCursor);
-            if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
+            if (notepad_cursorPosition + notepad_multiplyCursor >= notepad_MaxinLine) //defualt 40 charactor
             {
               //new line
               notepad_currentLine++;
@@ -699,7 +699,7 @@ void notepad_main()
             else
             {
               notepad_cursorPosition++;
-              if (notepad_cursorPosition == notepad_MaxinLine) // max size in line
+              if (notepad_cursorPosition + notepad_multiplyCursor == notepad_MaxinLine) // max size in line
               {
                 notepad_cursorPosition = 0;
                 notepad_currentLine++;
@@ -725,10 +725,10 @@ void notepad_main()
           notepad_currentLine--;
         }
         //------------ถ้าเจอ enter ลบจนกว่าจะหมดไปใน line----------------------
-        if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-') //ภ้าเป็น enter
+        if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == enterSign) //ภ้าเป็น enter
         {
           printf("\r\n--------------------remove enter------------------------\r\n");
-          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-' && notepad_cursorPosition >= 0)
+          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == enterSign && notepad_cursorPosition >= 0)
           {
 
             removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
@@ -819,7 +819,7 @@ void notepad_main()
     }
   }
 }
-void notepad_checkMaxLine() 
+void notepad_checkMaxLine()
 {
   int a = 0;
   a = notepad_currentLine;

@@ -682,9 +682,9 @@ void notepad_main()
       else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
       {
         printf("New line \r\n");
-        if (notepad_cursorPosition < notepad_MaxinLine)
+        if (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine)
         {
-          while (notepad_cursorPosition < notepad_MaxinLine) //40 ตัวอักษร
+          while (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine) //40 ตัวอักษร
           {
             notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition + notepad_multiplyCursor);
             if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor

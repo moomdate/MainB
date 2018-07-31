@@ -717,6 +717,7 @@ void notepad_main()
           notepad_cursorPosition = notepad_MaxinLine - 1;
           notepad_currentLine--;
         }
+        removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition + notepad_multiplyCursor);
         //------------ถ้าเจอ enter ลบจนกว่าจะหมดไปใน line----------------------
         if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-') //ภ้าเป็น enter
         {
@@ -733,9 +734,8 @@ void notepad_main()
         {
           keybuff[0] = (char)enterSign;
           notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_MaxinLine);
-          removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition + notepad_multiplyCursor);
         }
-            }
+      }
       else if (seeCur == 1)
       {
         notepad_cursorPosition = mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);

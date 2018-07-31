@@ -648,9 +648,11 @@ void notepad_main()
           if (notepad_cursorPosition >= notepad_MaxinLine)
             notepad_cursorPosition = notepad_MaxinLine;
           k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
+          /*if (k == 0)
+            k = notepad_MaxinLine;*/
           if (notepad_cursorPosition > k)
             notepad_cursorPosition = k;
-          printf("cursor position at :%d \r\n", notepad_cursorPosition);
+          printf("cursor position  k at :%d \r\n", notepad_cursorPosition);
         }
         else if (keyCode == 1)
         { //left
@@ -707,7 +709,6 @@ void notepad_main()
 
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
         printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor]);
-
         if (notepad_cursorPosition > 0) //มากกว่า 0
         {
           notepad_cursorPosition--;
@@ -717,17 +718,23 @@ void notepad_main()
           notepad_cursorPosition = notepad_MaxinLine - 1;
           notepad_currentLine--;
         }
-        removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition + notepad_multiplyCursor);
         //------------ถ้าเจอ enter ลบจนกว่าจะหมดไปใน line----------------------
         if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-') //ภ้าเป็น enter
         {
-          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-' && notepad_cursorPosition > 0)
+          printf("\r\n--------------------remove enter------------------------\r\n");
+          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-' && notepad_cursorPosition >= 0)
           {
-            if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor] != enterSign)
-              break;
+
             removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
-            notepad_cursorPosition--;
+            if (notepad_cursorPosition > 0)
+              notepad_cursorPosition--;
+            if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] != enterSign) //ห้ามลบตัวอักษร
+              break;
           }
+        }
+        else
+        {
+          removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition + notepad_multiplyCursor);
         }
 
         if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1) //fill enter
@@ -780,7 +787,8 @@ void notepad_main()
           if (notepad_cursorPosition == notepad_MaxinLine / 2) //เลื่อนชุดเซลล์อัตโนมัติ
             display_f = 1;
         }
-      }
+      } //end input
+
       notepad_checkenterAndpush(notepad_buffer_string[notepad_currentLine]); //เบียด
       if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
       {
@@ -817,7 +825,7 @@ void notepad_checkenterAndpush(char *str) //--------------xxxxx
         break;
       cc++;
     }
-    printf("-------------------push at %d to %d---------------------", cc, notepad_MaxinLine);
+    //printf("-------------------push at %d to %d---------------------", cc, notepad_MaxinLine);
     while (cc < notepad_MaxinLine)
     {
       keybuff[0] = (char)enterSign;

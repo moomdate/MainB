@@ -488,6 +488,7 @@ char *subStringLanR(char *str, int p);
 void removeChar(char *str, int idxToDel);
 void printStringInLine(char *str);
 void notepad_checkenterAndpush(char *str);
+void notepad_checkMaxLine(void);
 //ตำแหน่งปัจจุบันของเคอร์เซอร์
 int notepad_cursorPosition = 0;
 //ตัวคูณเลื่อนตำแหน่งเคอร์เซอร์
@@ -495,7 +496,7 @@ int notepad_multiplyCursor = 0;
 int notepad_multiplyDisplay = 0;
 //บรรทัดปัจจุบัน
 int notepad_currentLine = 0;
-
+int maxLineN = 0;
 int display_f = 0;
 char keybuff[2] = "\0";
 int enterSign = 45; //escape
@@ -628,8 +629,10 @@ void notepad_main()
         if (keyCode == 40)
         { // next line
 
-          if (notepad_currentLine < notepad_Line)
+          if (notepad_currentLine < notepad_Line && notepad_currentLine < maxLineN)
+          {
             notepad_currentLine++;
+          }
 
           notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
           // บังคับห้ามมีค่าเกิน max
@@ -680,7 +683,7 @@ void notepad_main()
         saveName();
       }
       else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
-      {
+      {                                                                                                         //enter key
         printf("New line \r\n");
         if (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine)
         {
@@ -708,8 +711,8 @@ void notepad_main()
         }
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
-      { //remove str at index
-
+      {
+        //remove str at index
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
         printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor]);
         if (notepad_cursorPosition > 0) //มากกว่า 0
@@ -746,7 +749,7 @@ void notepad_main()
           notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_MaxinLine);
         }
       }
-      else if (seeCur == 1)
+      else if (seeCur == 1) // cursor key
       {
         notepad_cursorPosition = mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
         k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); // ไม่นับถึง enter
@@ -777,7 +780,7 @@ void notepad_main()
         printf("/////////////////// %d %d //////////////////\r\n", notepad_cursorPosition, notepad_multiplyCursor);
         notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_cursorPosition + notepad_multiplyCursor);
 
-        if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
+        if (notepad_cursorPosition >= notepad_MaxinLine) //เลื่อนบรรทัดอัตโนมัติ
         {
           //เลื่อนบรรทัดอัตโนมัติ
           notepad_currentLine++;
@@ -790,8 +793,8 @@ void notepad_main()
           if (notepad_cursorPosition == notepad_MaxinLine / 2) //เลื่อนชุดเซลล์อัตโนมัติ
             display_f = 1;
         }
-      } //end input
-
+      } //end key input
+      notepad_checkMaxLine();
       notepad_checkenterAndpush(notepad_buffer_string[notepad_currentLine]); //เบียด
       if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
       {
@@ -805,7 +808,7 @@ void notepad_main()
       printf("\r\n#########################normal#########################r\n");
       // printf("current in dex is: %d\r\n", notepad_cursorPosition);
       printStringInLine(notepad_buffer_string[notepad_currentLine]);
-      // printf("typing// index at :%s\r\n", notepad_buffer_string[notepad_currentLine]);
+      // printf("typing// :%s\r\n", notepad_buffer_string[notepad_currentLine]);
       //  printf("current line is : %d\r\n", notepad_currentLine);
       printf("\r\n============================================\r\n");
       printf("current line :%d", notepad_currentLine);
@@ -815,6 +818,40 @@ void notepad_main()
       clearKeyValue(); // clear key buffer
     }
   }
+}
+void notepad_checkMaxLine() 
+{
+  int a = 0;
+  a = notepad_currentLine;
+  while (a < notepad_MaxinLine)
+  {
+    if (notepad_countStr(notepad_buffer_string[a]) != 40)
+    {
+      break;
+    }
+    else
+    {
+      a++;
+    }
+  }
+  maxLineN = a;
+  //printf("$$$ff max in line %d\r\n", maxLineN);
+}
+int notepad_countStr(char *str)
+{
+  int aaa = 0;
+  int cccccc = 0;
+  while (aaa < notepad_MaxinLine)
+  {
+    if (str[aaa] != 0)
+    {
+      //printf("%c", str[aaa]);
+      cccccc++;
+    }
+    aaa++;
+  }
+  //printf("max length in line :%d\r\n", cccccc);
+  return cccccc;
 }
 void notepad_checkenterAndpush(char *str) //--------------xxxxx
 {
@@ -976,22 +1013,6 @@ char numToASCII(int num)
 {
   return (char)num;
 }
-int notepad_countStr(char *data)
-{
-  int cc__ = 0;
-  int cc = 0;
-  if (strlen(data) > 0)
-  {
-    while (data[cc__] != '\0' || cc__ < 42)
-    {
-      cc++;
-    }
-  }
-  // ทดสอบคอมเม้น
-  //
-
-  return cc;
-}
 void notepad_append(char subject[], const char insert[], int pos)
 {
   char buf[100] = {0}; // 100 so that it's big enough. fill with zeros
@@ -1011,13 +1032,16 @@ void removeChar(char *str___, int idxToDel)
 void printStringInLine(char *str)
 {
   int aaa = 0;
+  int cccccc = 0;
   while (aaa < notepad_MaxinLine)
   {
     if (str[aaa] != 0)
+    {
       printf("%c", str[aaa]);
+      cccccc++;
+    }
     aaa++;
   }
-  printf("\r\n");
 }
 int notepad_getnullPostion(char *str)
 {

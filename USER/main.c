@@ -687,7 +687,7 @@ void notepad_main()
           while (notepad_cursorPosition < notepad_MaxinLine) //40 ตัวอักษร
           {
             notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition + notepad_multiplyCursor);
-            if (notepad_cursorPosition > notepad_MaxinLine) //defualt 40 charactor
+            if (notepad_cursorPosition >= notepad_MaxinLine) //defualt 40 charactor
             {
               //new line
               notepad_currentLine++;
@@ -709,7 +709,7 @@ void notepad_main()
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
       { //remove str at index
-  
+
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
         printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor]);
         if (notepad_cursorPosition > 0) //มากกว่า 0

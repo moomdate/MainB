@@ -633,7 +633,7 @@ void notepad_main()
           notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
           // บังคับห้ามมีค่าเกิน max
           if (notepad_cursorPosition >= notepad_MaxinLine)
-            notepad_cursorPosition = notepad_MaxinLine-1;
+            notepad_cursorPosition = notepad_MaxinLine - 1;
           k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
           if (notepad_cursorPosition > k)
             notepad_cursorPosition = k;
@@ -706,13 +706,13 @@ void notepad_main()
       { //remove str at index
 
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
-        printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition]);
+        printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor]);
 
-        if (notepad_cursorPosition > 0)
+        if (notepad_cursorPosition > 0) //มากกว่า 0
         {
           notepad_cursorPosition--;
         }
-        else if (notepad_currentLine > 0)
+        else if (notepad_currentLine > 0) // เป็น 0 และไม่ใช่บรรทัด 0
         {
           notepad_cursorPosition = notepad_MaxinLine - 1;
           notepad_currentLine--;
@@ -720,8 +720,10 @@ void notepad_main()
         //------------ถ้าเจอ enter ลบจนกว่าจะหมดไปใน line----------------------
         if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-') //ภ้าเป็น enter
         {
-          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-')
+          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == '-' && notepad_cursorPosition > 0)
           {
+            if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor] != enterSign)
+              break;
             removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
             notepad_cursorPosition--;
           }
@@ -731,9 +733,9 @@ void notepad_main()
         {
           keybuff[0] = (char)enterSign;
           notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_MaxinLine);
+          removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition + notepad_multiplyCursor);
         }
-        removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition+notepad_multiplyCursor);
-      }
+            }
       else if (seeCur == 1)
       {
         notepad_cursorPosition = mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
@@ -795,6 +797,10 @@ void notepad_main()
       printStringInLine(notepad_buffer_string[notepad_currentLine]);
       // printf("typing// index at :%s\r\n", notepad_buffer_string[notepad_currentLine]);
       //  printf("current line is : %d\r\n", notepad_currentLine);
+      printf("\r\n============================================\r\n");
+      printf("current line :%d", notepad_currentLine);
+      printf("\r\n============================================\r\n");
+      printf("current position :%c at index:%d", notepad_buffer_string[notepad_currentLine][notepad_cursorPosition], notepad_cursorPosition);
       printf("\r\n============================================\r\n");
       clearKeyValue(); // clear key buffer
     }
@@ -880,7 +886,6 @@ void printStringLR(char *str, int s)
     stringToUnicodeAndSendToDisplay(str);
   }
 }
-
 void notepad_fillEnterSign(char *str)
 {
   int a, b;

@@ -743,6 +743,7 @@ void notepad_main()
         }
         else
         {
+          
           notepad_cursorPosition++;
 
           if (notepad_cursorPosition == notepad_MaxinLine / 2) //เลื่อนชุดเซลล์อัตโนมัติ

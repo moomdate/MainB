@@ -420,11 +420,11 @@ int main(void)
     }*/
   //-notepad test
   //printf("batterry %d ",getBatterry());
-  while (1)
+ /* while (1)
   {
     notepad_main();
-  }
- /* command_ = 1;
+  }*/
+ command_ = 1;
   while (1) // explorror and read mode
   {
 
@@ -434,8 +434,8 @@ int main(void)
     /*for (i = 0; i < maxFile; i++)
     {
       printf("%s\r\n", fileLists[i]);
-    }
-  }*/
+    }*/
+  }
 
   //new
 }
@@ -1329,7 +1329,6 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     }
     else if (command_ == 6)
     {
-
       SendCH370(SetByteRead, sizeof(SetByteRead));
       //result 1D can read
       command_ = 99;

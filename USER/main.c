@@ -41,7 +41,6 @@
 /* Private define ------------------------------------------------------------*/
 #define ADC1_DR_Address ((u32)0x4001244C)
 
-
 void writeFlash(int address, int size);
 void writeFlash2(int address, int size);
 int addressWriteFlashTemp = 0x0;
@@ -325,19 +324,20 @@ int unicodeTable[] = {
     0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     // !"#$%&'()*+,-./
-    0x00, 0x2e, 0x10, 0x3c, 0x28, 0x3f, 0x2f, 0x20, 0x26, 0x34, 0x14, 0x16, 0x02, 0x24, 0x04, 0x32,
+    0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x00, 0x37, 0x3e, 0x2c, 0x16, 0x00, 0x00, 0x28, 0x0c,//checked 8/6/2018
     /*0-9*/
-    0x2c, 0x21, 0x23, 0x29, 0x39, 0x31, 0x2b, 0x3b, 0x33, 0x2a,
+    0x31, 0x30, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
     /*:  ;  */
-    0x12, 0x06, 0x30, 0x36, 0x18, 0x22, 0x5c,
+    0x12, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48,//checked 8/6/2018 -- one check
     /*A-Z*/
     0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
-    0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/,
+    0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/, //checked 8/6/2018
     0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/ //checked
-    0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
-    0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/
 
-    0x37, 0x33, 0x3e, 0x2e, 0xff /*{|}*/
+    0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
+    0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
+
+    0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/  //checked 8/6/2018
 };
 ////////////////////////end notepad function/////////////////////
 /*******************************************************************************
@@ -424,20 +424,19 @@ int main(void)
   {
     notepad_main();
   }
-  // command_ = 1;
-  /*
+ /* command_ = 1;
   while (1) // explorror and read mode
   {
 
-   
     keyRead();
     searchFile2();
-    for (i = 0; i < maxFile; i++)
+    //stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
+    /*for (i = 0; i < maxFile; i++)
     {
       printf("%s\r\n", fileLists[i]);
     }
-  }
-  */
+  }*/
+
   //new
 }
 
@@ -743,7 +742,6 @@ void notepad_main()
         }
         else
         {
-          
           notepad_cursorPosition++;
 
           if (notepad_cursorPosition == notepad_MaxinLine / 2) //เลื่อนชุดเซลล์อัตโนมัติ
@@ -855,7 +853,7 @@ void notepad_checkenterAndpush(char *str) //-------------------x
   if (las != notepad_MaxinLine && las != 0 && notepad_countStr(str) == notepad_MaxinLine)
   {
     keybuff[0] = (char)enterSign;
-    printf("bug herre----------------- \r\n");
+    //printf("bug herre----------------- \r\n");
     notepad_append(str, keybuff, las);
   }
 }
@@ -1086,6 +1084,7 @@ void clearKeyValue()
 int keyMapping(int a, int b, int c)
 {
   int keyCode__ = 0;
+  //-----------------------joyRight--------------------------------
   if (a == 0x00 && b == 0x00 && c == 0x04)
   {
     keyCode__ = 37; // ArrowLeft
@@ -1102,6 +1101,24 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 40; // ArrowDown
   }
+  //---------------------------joyleft------------------------------
+  else  if (a == 0x00 && b == 0x20 && c == 0x00)
+  {
+    keyCode__ = 37; // ArrowLeft
+  }
+  else if (a == 0x00 && b == 0x80 && c == 0x00)
+  {
+    keyCode__ = 38; // ArrowUp
+  }
+  else if (a == 0x00 && b == 0x40 && c == 0x00)
+  {
+    keyCode__ = 39; // ArrowRight
+  }
+  else if (a == 0x00 && b == 0x00 && c == 0x01)
+  {
+    keyCode__ = 40; // ArrowDown
+  }
+  //----------------------------------------------------------
   else if (b == 64 || c == 8)
   {
     keyCode__ = 13; // enter
@@ -1228,7 +1245,8 @@ void keyRead()
         }
       }
       printf("%s\r\n", fileLists[fileSelect]);
-      printf("%s\r\n", Dirpath);
+      stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
+      // printf("%s\r\n", Dirpath);
       if (keyCode == 39)
       { //enter // right joy
         //command_ = 16;
@@ -1243,7 +1261,7 @@ void keyRead()
             if (strstr(fileLists[fileSelect], "..") != NULL)
             {
               if (ex_countPath(Dirpath) > 0)
-              {                      //back and clear path
+              {                         //back and clear path
                 ex_exitOncePath();      // remove current path
                 ex_cdWithPath(Dirpath); //back one path
               }
@@ -1279,6 +1297,7 @@ void keyRead()
     keyCode = 0;
     seeCur = 0;
   }
+  //tringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
 }
 
 //-----------------------------------------------------------------------------
@@ -1357,7 +1376,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           ////////////////////////////////////////////////////////////////////
           dataTemp512[countdataTemp512] = i1;
           countdataTemp512++;
-        
+
           waitEnd = 0;
           lastAscii = i1;
         }
@@ -1458,6 +1477,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           //stringToUnicodeAndSendToDisplay(buffer22Char);
           pointer22char += NextPoint + 2;
           NextPoint = pointer22char;
+          printStringLR(buffer22Char, 0);
           AmountSector = addressWriteFlashTemp / sector;  //---- จำนวน sector ----
           AmountSectorT = addressWriteFlashTemp % sector; //---- เศษ ที่เหลือของ sector ---
           //-----------------------------------display string 20 charactor -----------------------------------
@@ -1490,6 +1510,7 @@ void slidingFileFromRomToDisplay()
     {
       // clear previous value
       pointer22char += NextPoint - pointer22char;
+
       //------------------------------------------------------------------
       /*
        ถ้าตำแหน่งปัจจุบัน + จำนวนข้้อควา่มที่จะอ่าน > จำนวน Sector(4096) 
@@ -1776,6 +1797,7 @@ void searchFile2()
     }
     else if (command_ == 4)
     {
+      stringToUnicodeAndSendToDisplay("Please wait...");
       //ex_exitOncePath();
       delay_ms(45);
       if (ex_openDir("*"))
@@ -1824,6 +1846,8 @@ void searchFile2()
       else if (i1 == 0x42 && countFileLegth == 0)
       {
         readStatus = 0;
+        stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
+        //printf("--------------------end -------------------------\r\n");
       }
       if (command_ == 2 && i1 == 0x82)
       {
@@ -2297,7 +2321,7 @@ void saveName()
         strcpy(bufferDisplay, "Name:");
         strcat(bufferDisplay, nameBuff);
         //stringToUnicodeAndSendToDisplay(bufferDisplay);
-
+        stringToUnicodeAndSendToDisplayC(bufferDisplay, cc + 5);
         /*-----------------------
           print file name here
           -----------------------*/
@@ -3619,15 +3643,11 @@ void ADC_Configuration(void)
   /* Enable ADC1 reset calibaration register */
   ADC_ResetCalibration(ADC1);
   /* Check the end of ADC1 reset calibration register */
-  while (ADC_GetResetCalibrationStatus(ADC1))
-    ;
-
+  while (ADC_GetResetCalibrationStatus(ADC1));
   /* Start ADC1 calibaration */
   ADC_StartCalibration(ADC1);
   /* Check the end of ADC1 calibration */
-  while (ADC_GetCalibrationStatus(ADC1))
-    ;
-
+  while (ADC_GetCalibrationStatus(ADC1));
   /* Start ADC1 Software Conversion */
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }

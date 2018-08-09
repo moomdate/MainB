@@ -134,7 +134,6 @@ int CountbufferFromRead = 0;
 int startRead = 0;
 int countPageWhenRead = 0;
 int continueReadFile = 0;
-int openFileStatus = 0;
 int readstatus = 0;
 int becon = 0;
 
@@ -147,6 +146,7 @@ int countdataTemp512 = 0;
 int waitEnd = 0; // 10
 int lastAscii = 0;
 int nextAgain = 0;
+int readFileStatus___ = 0;
 int countFileLegth = 0;
 int FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
 
@@ -278,6 +278,7 @@ void prepareSD_Card(void);
 #define bufferMaxSize 4096
 #define notepad_Line 97
 #define notepad_MaxinLine 40
+#define maxMenu 3
 int enterSign = 45; //escape
 
 void notepad_main(void);
@@ -309,7 +310,7 @@ void configDisplay(void);
 
 char numToASCII(int num);
 char notepad_buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
-char *subStringLanR(char *str, int p);
+char *subStringLanR(char *str, int p, int cur_);
 
 int notepad_cursorPosition = 0;
 int notepad_multiplyCursor = 0;
@@ -324,20 +325,20 @@ int unicodeTable[] = {
     0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     // !"#$%&'()*+,-./
-    0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x00, 0x37, 0x3e, 0x2c, 0x16, 0x00, 0x00, 0x28, 0x0c,//checked 8/6/2018
+    0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x00, 0x37, 0x3e, 0x2c, 0x16, 0x00, 0x00, 0x28, 0x0c, //checked 8/6/2018
     /*0-9*/
     0x31, 0x30, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
     /*:  ;  */
-    0x12, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48,//checked 8/6/2018 -- one check
+    0x12, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48, //checked 8/6/2018 -- one check
     /*A-Z*/
     0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
     0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/, //checked 8/6/2018
-    0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/ //checked
+    0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/                    //checked
 
     0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
     0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
 
-    0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/  //checked 8/6/2018
+    0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/ //checked 8/6/2018
 };
 ////////////////////////end notepad function/////////////////////
 /*******************************************************************************
@@ -392,50 +393,56 @@ int main(void)
   */
 
   prepareSD_Card();
+  stringToUnicodeAndSendToDisplay("Notepad");
   //command_ = 1;
 
   //configFlash();
-  /*while (1) {
-    menu_s();
-    while (mode == 1) {
-      notepad();
+  while (1)
+  {
+    keyRead();
+    //menu_s();
+    while (mode == 1)
+    {
+      notepad_main();
     }
-    while (mode == 2 && openFileStatus == 0) {
-      searchFile();
+    while (mode == 2)
+    {
+      keyRead();
+      searchFile2();
     }
-    while (mode == 2 && openFileStatus == 1) {
-      ReadFile();
-    }
-    while (mode == 3) {
-      GPIO_SetBits(GPIOC , GPIO_Pin_0);
+    /*while (mode == 2 && openFileStatus == 1)
+    {
+      //ReadFile();
+    }*/
+    while (mode == 3)
+    {
+      GPIO_SetBits(GPIOC, GPIO_Pin_0);
       BluetoothMode();
       // keyboardMode();
-      if (becon == 0) {
-        menu_s();
+      if (becon == 0)
+      {
+        //menu_s();
       }
-      else {
+      else
+      {
         keyboardMode();
       }
     }
-    }*/
+  }
   //-notepad test
   //printf("batterry %d ",getBatterry());
- /* while (1)
-  {
-    notepad_main();
-  }*/
- command_ = 1;
+  /*command_ = 1;
   while (1) // explorror and read mode
   {
 
     keyRead();
     searchFile2();
     //stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
-    /*for (i = 0; i < maxFile; i++)
+    for (i = 0; i < maxFile; i++)
     {
       printf("%s\r\n", fileLists[i]);
-    }*/
-  }
+    }
+  }*/
 
   //new
 }
@@ -711,10 +718,20 @@ void notepad_main()
         else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
           notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
 
-        if (display_f == 1) //กำหนด cursor ตำแหน่ง 20-40
+         printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
+        if (display_f == 1)
+        { //กำหนด cursor ตำแหน่ง 20-40
           notepad_multiplyCursor = 20;
+          k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); // ไม่นับถึง enter
+          if (notepad_cursorPosition + notepad_cursorPosition > k)
+          {
+            notepad_cursorPosition = k-20;
+          }
+        }
         else
+        {
           notepad_multiplyCursor = 0;
+        }
         //   printf("cursor set at:%d\r\n", notepad_cursorPosition + notepad_multiplyCursor);
       }
       else if (1 && seeCur != 1) //type message in notepad mode--------------------------------------------------------
@@ -762,7 +779,14 @@ void notepad_main()
         printf("|////////////////////////////////////////////|\r\n");
         printStringInLine(notepad_buffer_string[notepad_currentLine]);
         printf("\r\n|=================sub========================|\r\n");
-        subStringLanR(notepad_buffer_string[notepad_currentLine], display_f);
+        if (!toggleCur)
+        {
+          subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, 99);
+        }
+        else
+        {
+          subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition);
+        }
         printf("\r\n|============================================|\r\n");
         printf("|current line (%d)", notepad_currentLine);
         printf("\r\n|============================================|\r\n");
@@ -770,6 +794,23 @@ void notepad_main()
         printf("|////////////////////////////////////////////|\r\n");
       }
       clearKeyValue(); // clear key buffer
+    }                  //end key event
+    d_Time++;
+    if (d_Time >= delayCur)
+    { //blink cu
+      if (toggleCur == 0)
+        toggleCur = 1;
+      else
+        toggleCur = 0;
+      if (!toggleCur)
+      {
+        subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, 99);
+      }
+      else
+      {
+        subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition + notepad_multiplyCursor);
+      }
+      d_Time = 0;
     }
   }
 }
@@ -857,12 +898,13 @@ void notepad_checkenterAndpush(char *str) //-------------------x
     notepad_append(str, keybuff, las);
   }
 }
-char *subStringLanR(char *str, int p)
+char *subStringLanR(char *str, int p, int cur__)
 {
   char buff[20];
   int begin = 0;
   int end = 0;
   memset(buff, 0, strlen(buff));
+
   if (strlen(str) > 20)
   {
     //clear buff
@@ -877,12 +919,23 @@ char *subStringLanR(char *str, int p)
       end = 40;
     }
     strncpy(buff, str + begin, end - begin);
+    if (cur__ > 20 && cur__ != 99)
+      cur__ -= 20;
+    if (cur__ != 99)
+      stringToUnicodeAndSendToDisplayC(buff, cur__);
+    else
+      stringToUnicodeAndSendToDisplay(buff);
     printf("|%s\r\n", buff);
   }
   else
   {
+    if (cur__ != 99)
+      stringToUnicodeAndSendToDisplayC(str, cur__);
+    else
+      stringToUnicodeAndSendToDisplay(str);
     printf("|%s\r\n", str);
   }
+  return "";
 }
 void printStringLR(char *str, int s)
 {
@@ -990,7 +1043,7 @@ int notepad_checkEnterSignInLine(char *str)
 int notepad_countLinewithOutLNsign(char *str)
 {
   int cc = 0;
-  while (str[cc] != enterSign)
+  while (str[cc] != enterSign && cc < notepad_MaxinLine && str[cc]!='\0')
   {
     if (str[cc] == enterSign)
       break;
@@ -1102,7 +1155,7 @@ int keyMapping(int a, int b, int c)
     keyCode__ = 40; // ArrowDown
   }
   //---------------------------joyleft------------------------------
-  else  if (a == 0x00 && b == 0x20 && c == 0x00)
+  else if (a == 0x00 && b == 0x20 && c == 0x00)
   {
     keyCode__ = 37; // ArrowLeft
   }
@@ -1141,6 +1194,10 @@ int keyMapping(int a, int b, int c)
   else if (a == 0x00 && b == 0x08 && c == 0x00)
   { // right button (readMode)
     keyCode__ = 2;
+  }
+  else if (a == 0x11 && b != 0x0)
+  { //exit
+    keyCode__ = 27;
   }
   return keyCode__;
 }
@@ -1189,38 +1246,46 @@ void keyRead()
 
     // key mapping //
     keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    printf("keycode:%d\r\n", keyCode);
     // end keymapping //
 
-    /*if(1){ //key in mode 0
-       if (count_menu >= 1 && count_menu <= maxMenu && mode == 0) { //select menu //modemenu
-        if (keyCode == 40) { //up
-          if (count_menu != maxMenu) {
+    if (mode == 0)
+    { //key in mode 0
+      if (count_menu >= 1 && count_menu <= maxMenu && mode == 0)
+      { //select menu //modemenu
+        if (keyCode == 40)
+        { //up
+          if (count_menu != maxMenu)
+          {
             count_menu++;
           }
         }
-        else if (keyC
-        ode == 38) { //down
-          if (count_menu != 1) {
+        else if (keyCode == 38)
+        { //down
+          if (count_menu != 1)
+          {
             count_menu -= 1;
           }
         }
       }
-      if (keyCode == 39) {
-        if (mode == 0) { //
+      if (keyCode == 39)
+      {
+        if (mode == 0)
+        { //
           previousMode = mode;
           mode = count_menu;
-          printf("mode:%d",mode);
+          printf("mode:%d", mode);
         }
       }
       caseMenu(count_menu);
-      }*/
-    //--------
-    if (endReadFile == 1) //node 2
-    {                     // on mode read
+    }
+    //-------
+    if (endReadFile == 1 && mode == 2) //mode 2
+    {                                  // on mode read
       //printf("testttttttttttttttttttttttttt");
       slidingFileFromRomToDisplay();
     }
-    if (2 && endReadFile != 1)
+    if (mode == 2 && endReadFile != 1)
     { //key in mode 2
       if (keyCode == 38)
       {
@@ -1286,10 +1351,21 @@ void keyRead()
       { // left joy
         printf("exit\r\n");
         maxFile = 0;
-        ex_exitOncePath();
-        //ex_openDir("..");
-        ex_cdWithPath(Dirpath);
-        command_ = 4;
+        printf("pathD: %d\r\n", ex_countPath(Dirpath));
+        if (ex_countPath(Dirpath) == 1)
+          mode = 0;
+        else
+        {
+          ex_exitOncePath();
+          //ex_openDir("..");
+          ex_cdWithPath(Dirpath);
+          command_ = 4;
+        }
+      }
+      if (keyCode == 27)
+      {
+        mode = 0;
+        printf("exittttttttttttttttttttttttttt\r\n");
       }
     }
     ///------
@@ -1306,7 +1382,7 @@ void keyRead()
 ////////////////////////////////////////////////////////////////////////////////
 int readFileFromCH376sToFlashRom(char *fileName___)
 {
-  int readFileStatus___ = 1;
+  readFileStatus___ = 1;
   //stringToUnicodeAndSendToDisplay("Reading....");
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   //printf("reading............ all\r\n");
@@ -1486,6 +1562,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           { // query string-
             // menu_s();
             keyRead();
+            //readFileStatus___
           }
         } // ทดสอบ
       }
@@ -1707,6 +1784,17 @@ void slidingFileFromRomToDisplay()
     else // left button
       printStringLR(buffer22Char, 0);
   }
+  if (keyCode == 27)
+  { //exit
+
+    endReadFile = 0;
+    mode = 0;
+    readFileStatus___ = 0;
+    SendCH370(ResetAll, sizeof(ResetAll));
+    delay_ms(45);
+    stringToUnicodeAndSendToDisplay("Exit...");
+    //printf("exit-------------\r\n");
+  }
 }
 //----------------------- check file type ------------------------
 // *.TBT file return 1
@@ -1865,7 +1953,7 @@ void searchFile2()
         }
         else
         {
-          DataForWrite[countFileLegth] = 42;
+          DataForWrite[countFileLegth] = 42; //42
           countFileLegth++;
           time_check = 0;
         }
@@ -2816,6 +2904,12 @@ const char *fileName()
   int loop = 0;
   int count_char = 0;
   int seeT = 0, seeBr = 0, seeTx = 0;
+  /*printf("data for write \r\n");
+  for (i = 0; i < 32; i++)
+  {
+    printf("%d ", DataForWrite[i]);
+  }*/
+
   for (loop = 0; loop < 32; loop++)
   {
     if (((int)DataForWrite[loop] >= 33 && (int)DataForWrite[loop] <= 126) && DataForWrite[loop] != 42 && loop < 12)
@@ -3642,11 +3736,13 @@ void ADC_Configuration(void)
   /* Enable ADC1 reset calibaration register */
   ADC_ResetCalibration(ADC1);
   /* Check the end of ADC1 reset calibration register */
-  while (ADC_GetResetCalibrationStatus(ADC1));
+  while (ADC_GetResetCalibrationStatus(ADC1))
+    ;
   /* Start ADC1 calibaration */
   ADC_StartCalibration(ADC1);
   /* Check the end of ADC1 calibration */
-  while (ADC_GetCalibrationStatus(ADC1));
+  while (ADC_GetCalibrationStatus(ADC1))
+    ;
   /* Start ADC1 Software Conversion */
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }

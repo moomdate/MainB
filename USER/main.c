@@ -718,15 +718,12 @@ void notepad_main()
         else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
           notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
 
-         printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
+        //printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
         if (display_f == 1)
         { //กำหนด cursor ตำแหน่ง 20-40
           notepad_multiplyCursor = 20;
-          k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); // ไม่นับถึง enter
-          if (notepad_cursorPosition + notepad_cursorPosition > k)
-          {
-            notepad_cursorPosition = k-20;
-          }
+          notepad_cursorPosition = k - notepad_multiplyCursor;
+         // printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
         }
         else
         {
@@ -1043,7 +1040,7 @@ int notepad_checkEnterSignInLine(char *str)
 int notepad_countLinewithOutLNsign(char *str)
 {
   int cc = 0;
-  while (str[cc] != enterSign && cc < notepad_MaxinLine && str[cc]!='\0')
+  while (str[cc] != enterSign && cc < notepad_MaxinLine && str[cc] != '\0')
   {
     if (str[cc] == enterSign)
       break;

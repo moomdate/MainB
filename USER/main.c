@@ -722,8 +722,9 @@ void notepad_main()
         if (display_f == 1)
         { //กำหนด cursor ตำแหน่ง 20-40
           notepad_multiplyCursor = 20;
-          notepad_cursorPosition = k - notepad_multiplyCursor;
-         // printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
+          if (notepad_cursorPosition + notepad_multiplyCursor > k)
+            notepad_cursorPosition = k - notepad_multiplyCursor;
+          // printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
         }
         else
         {

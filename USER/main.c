@@ -327,7 +327,7 @@ int unicodeTable[] = {
     // !"#$%&'()*+,-./
     0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x00, 0x37, 0x3e, 0x2c, 0x16, 0x00, 0x00, 0x28, 0x0c, //checked 8/6/2018
     /*0-9*/
-    0x31, 0x30, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
+    0x34, 0x02, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
     /*:  ;  */
     0x12, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48, //checked 8/6/2018 -- one check
     /*A-Z*/
@@ -735,6 +735,9 @@ void notepad_main()
       else if (1 && seeCur != 1) //type message in notepad mode--------------------------------------------------------
       {
         keyCode = unicode_to_ASCII(bufferKey3digit[0]);
+        if (keyCode > 127)
+          keyCode = ~bufferKey3digit[0];
+
         if (keyCode == 0) //space bar edit in unicode table
           keyCode = 32;
 
@@ -777,14 +780,14 @@ void notepad_main()
         printf("|////////////////////////////////////////////|\r\n");
         printStringInLine(notepad_buffer_string[notepad_currentLine]);
         printf("\r\n|=================sub========================|\r\n");
-        if (!toggleCur)
+        /* if (!toggleCur)
         {
           subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, 99);
         }
         else
-        {
-          subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition);
-        }
+        {*/
+        subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition);
+        // }
         printf("\r\n|============================================|\r\n");
         printf("|current line (%d)", notepad_currentLine);
         printf("\r\n|============================================|\r\n");
@@ -793,7 +796,7 @@ void notepad_main()
       }
       clearKeyValue(); // clear key buffer
     }                  //end key event
-    d_Time++;
+                       /* d_Time++;
     if (d_Time >= delayCur)
     { //blink cu
       if (toggleCur == 0)
@@ -809,7 +812,7 @@ void notepad_main()
         subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition + notepad_multiplyCursor);
       }
       d_Time = 0;
-    }
+    }*/
   }
 }
 ///
@@ -2436,14 +2439,18 @@ void saveName()
 //////////////////////////////////////////////////////////////////////////////
 int unicode_to_ASCII(int key)
 {
-  for (j = 0; j < 255; j++)
+  int asciT = 0;
+  printf("\r\nkey B is (%d) \r\n", key);
+  for (asciT = 0; asciT < 255; asciT++)
   {
-    if (key == unicodeTable[(char)j])
+    if (key == unicodeTable[asciT])
     {
+      asciT = asciT;
       break;
     }
   }
-  return j;
+  printf("ascii is %c HEX:%x\r\n", asciT, asciT);
+  return asciT;
 }
 //-----------new----------
 
@@ -2491,13 +2498,23 @@ void stringToUnicodeAndSendToDisplayC(char *string, int po)
   {
     if (j == po)
     {
+
       cell_sentdata((~unicodeTable[((int)*(string + j))] & (~0xc0))); //curPostion
     }
     else if (j < strleng)
     {
       Delay(0x55F);
-      cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
-      printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int)*(string + j))], (int)*(string + j), j);
+      printf("as--%x", ((int)(string[j])));
+      //printf("hex:%x\r\n", unicodeTable[((int)*(string + j))]);
+      if (unicodeTable[((int)(string[j]))] != 0)
+      {
+        cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
+      }
+      else
+      {
+        cell_sentdata(((int)*(string + j)));
+      }
+      printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int)(string[j]))], (int)*(string + j), j);
     }
     else if (strleng == 0 && j == 0)
     {

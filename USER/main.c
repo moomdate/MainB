@@ -482,35 +482,35 @@ void prepareSD_Card()
     if (command_ == 1)
     {
       SendCH370(checkConnection, sizeof(checkConnection));
-      printf(" check connecttion \r\n");
+      printf("Check connecttion \r\n");
       command_++; //2
       delay_ms(45);
     }
     else if (command_ == 2)
     {
       SendCH370(setSDCard, sizeof(setSDCard));
-      printf(" set sd card\r\n");
+      printf("Set sd card\r\n");
       command_++; //4
       delay_ms(45);
     }
     else if (command_ == 3)
     {
       SendCH370(USBDiskMount, sizeof(USBDiskMount));
-      printf(" usb disk mount \r\n");
+      printf("Usb disk mount \r\n");
       command_++; //6
       delay_ms(45);
     }
     else if (command_ == 4)
     {
       SendCH370(setAllName, sizeof(setAllName));
-      printf(" set all file \r\n");
+      printf("Fet all file \r\n");
       command_++; //10
       delay_ms(45);
     }
     else if (command_ == 5)
     {
       SendCH370(FileOpen, sizeof(FileOpen));
-      printf(" file open \r\n");
+      printf("File open \r\n");
       command_++; //10
       delay_ms(45);
     }
@@ -525,7 +525,7 @@ void prepareSD_Card()
     if (USART_GetITStatus(USART3, USART_IT_RXNE))
     {
       i1 = USART_ReceiveData(USART3);
-      printf("%x\r\n", i1);
+      printf("Recieve:%x\r\n", i1);
     }
   }
   printf("End prepare\r\n");
@@ -627,7 +627,7 @@ void notepad_main()
         printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
-      else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
+      else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
       {                                                                                                         //enter key
                                                                                                                 // printf("New line \r\n");
         if (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine)
@@ -655,7 +655,7 @@ void notepad_main()
           //notepad_currentLine++;
         }
       }
-      else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
+      else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
       {
         //remove str at index
         //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
@@ -745,7 +745,6 @@ void notepad_main()
         {
           notepad_removeEnterSign(notepad_buffer_string[notepad_currentLine]);
         }
-
         keybuff[0] = (char)keyCode;
         //printf("current po at %d \r\n", notepad_cursorPosition);
         // enter ตัวสุดท้ายจะถูกเบียดลง จะเกิน max ผมจะไม่ให้มันเบียด
@@ -796,7 +795,7 @@ void notepad_main()
       }
       clearKeyValue(); // clear key buffer
     }                  //end key event
-                       /* d_Time++;
+    d_Time++;
     if (d_Time >= delayCur)
     { //blink cu
       if (toggleCur == 0)
@@ -812,7 +811,7 @@ void notepad_main()
         subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition + notepad_multiplyCursor);
       }
       d_Time = 0;
-    }*/
+    }
   }
 }
 ///
@@ -2441,7 +2440,7 @@ int unicode_to_ASCII(int key)
 {
   int asciT = 0;
   printf("\r\nkey B is (%d) \r\n", key);
-  for (asciT = 0; asciT < 255; asciT++)
+  for (asciT = 0; asciT < 255 && asciT < sizeof(unicodeTable); asciT++)
   {
     if (key == unicodeTable[asciT])
     {
@@ -2449,6 +2448,7 @@ int unicode_to_ASCII(int key)
       break;
     }
   }
+
   printf("ascii is %c HEX:%x\r\n", asciT, asciT);
   return asciT;
 }
@@ -2471,8 +2471,16 @@ void stringToUnicodeAndSendToDisplay(char *string)
     if (j < strleng)
     {
       Delay(0x55F);
-      cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
-      printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int)*(string + j))], (int)*(string + j), j);
+      //cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
+      //printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int)*(string + j))], (int)*(string + j), j);
+      if (unicodeTable[((int)(string[j]))] != 0 || string[j] == 32)
+      {
+        cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
+      }
+      else
+      {
+        cell_sentdata(((int)*(string + j)));
+      }
     }
     else
     {
@@ -2496,7 +2504,7 @@ void stringToUnicodeAndSendToDisplayC(char *string, int po)
 
   for (j = 20; j >= 0; j--)
   {
-    if (j == po)
+    if (j == po) //ตำแหน่งตรงกับ cursor
     {
 
       cell_sentdata((~unicodeTable[((int)*(string + j))] & (~0xc0))); //curPostion
@@ -2504,9 +2512,9 @@ void stringToUnicodeAndSendToDisplayC(char *string, int po)
     else if (j < strleng)
     {
       Delay(0x55F);
-      printf("as--%x", ((int)(string[j])));
+      //printf("as--%x", ((int)(string[j])));
       //printf("hex:%x\r\n", unicodeTable[((int)*(string + j))]);
-      if (unicodeTable[((int)(string[j]))] != 0)
+      if (unicodeTable[((int)(string[j]))] != 0 || string[j] == 32)
       {
         cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
       }
@@ -2514,7 +2522,7 @@ void stringToUnicodeAndSendToDisplayC(char *string, int po)
       {
         cell_sentdata(((int)*(string + j)));
       }
-      printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int)(string[j]))], (int)*(string + j), j);
+      //printf(" %c unicode:%x ascii:%d lum: %d\r\n", *(string + j), unicodeTable[((int)(string[j]))], (int)*(string + j), j);
     }
     else if (strleng == 0 && j == 0)
     {

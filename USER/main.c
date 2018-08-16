@@ -279,7 +279,8 @@ void prepareSD_Card(void);
 #define notepad_Line 97
 #define notepad_MaxinLine 40
 #define maxMenu 3
-int enterSign = 45; //escape
+int enterSign = 195; //escape
+char buffAs[2];
 
 void notepad_main(void);
 void notepad_readKey(void);
@@ -325,11 +326,11 @@ int unicodeTable[] = {
     0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     // !"#$%&'()*+,-./
-    0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x00, 0x37, 0x3e, 0x2c, 0x16, 0x00, 0x00, 0x28, 0x0c, //checked 8/6/2018
+    0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x00, 0x37, 0x3e, 0x21, 0x16, 0x00, 0x24, 0x28, 0x0c, //checked 8/6/2018
     /*0-9*/
     0x34, 0x02, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
     /*:  ;  */
-    0x12, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48, //checked 8/6/2018 -- one check
+    0x31, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48, //checked 8/6/2018 -- one check
     /*A-Z*/
     0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
     0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/, //checked 8/6/2018
@@ -351,6 +352,7 @@ int unicodeTable[] = {
 *******************************************************************************/
 int main(void)
 {
+  buffAs[0] = (char)enterSign;
   /* Configure the GPIO ports */
   GPIO_Configuration(); //if config this can't use printf
   //----------------------------
@@ -634,7 +636,7 @@ void notepad_main()
         {
           while (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine) //40 ตัวอักษร
           {
-            notepad_append(notepad_buffer_string[notepad_currentLine], "-", notepad_cursorPosition + notepad_multiplyCursor);
+            notepad_append(notepad_buffer_string[notepad_currentLine], buffAs, notepad_cursorPosition + notepad_multiplyCursor);
             if (notepad_cursorPosition + notepad_multiplyCursor >= notepad_MaxinLine) //defualt 40 charactor
             {
               //new line
@@ -2477,6 +2479,10 @@ void stringToUnicodeAndSendToDisplay(char *string)
       {
         cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
       }
+      else if (string[j] == 195)//enter sign
+      {
+        cell_sentdata(~unicodeTable[32]); 
+      }
       else
       {
         cell_sentdata(((int)*(string + j)));
@@ -2513,10 +2519,14 @@ void stringToUnicodeAndSendToDisplayC(char *string, int po)
     {
       Delay(0x55F);
       //printf("as--%x", ((int)(string[j])));
-      //printf("hex:%x\r\n", unicodeTable[((int)*(string + j))]);
+      printf("hex:%d\r\n", string[j]);
       if (unicodeTable[((int)(string[j]))] != 0 || string[j] == 32)
       {
         cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
+      }
+      else if (string[j] == enterSign) //enter sign
+      {
+        cell_sentdata(~unicodeTable[32]);
       }
       else
       {

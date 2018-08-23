@@ -276,7 +276,8 @@ void prepareSD_Card(void);
 
 //------------------------notepad function and variable---------------------------
 #define bufferMaxSize 4096
-#define notepad_Line 97
+#define notepad_Line 102 // 102 * 40 = 4080
+#define scrapSize (notepad_Line * notepad_MaxinLine) - bufferMaxSize
 #define notepad_MaxinLine 40
 #define maxMenu 3
 int enterSign = 195; //escape
@@ -307,6 +308,7 @@ int keyMapping(int, int, int);
 ///------------------------config------------------------
 void configFlash(void);
 void configDisplay(void);
+void sendCommandtoAtmega(int data);
 //-------------------------------------------------------
 
 char numToASCII(int num);
@@ -321,6 +323,10 @@ int notepad_currentLine = 0;
 int maxLineN = 0;
 int debug = 1;
 char keybuff[2] = "\0";
+
+//int enterSign = (int)'-';
+void regexStrEnter(char *str);
+int str_cut(char *str, int begin, int len);
 
 int unicodeTable[] = {
     0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -350,16 +356,18 @@ int unicodeTable[] = {
   Return         : None
   Attention      : None
 *******************************************************************************/
+char str_ready[40];
+char str_be[10][11];
 int main(void)
 {
-  buffAs[0] = (char)enterSign;
+  buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
   /* Configure the GPIO ports */
   GPIO_Configuration(); //if config this can't use printf
   //----------------------------
   UART4_Configuration();  //9600
   USART2_Configuration(); //115200
   USART1_Configuration(); //115200
-  USART3_Configuration(); //9600
+  USART3_Configuration(); //115200
 
   Init_SPI();
   delay_init();
@@ -368,34 +376,11 @@ int main(void)
   configDisplay();
   printDot(st_0, sizeof(st_0));
   delay_ms(1200);
-  //printStringLR("Hello test test aaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbb",0);
-
-  //delay_ms(3000);
-
-  //****************** check dot****************
-  //USART3_Configuration2();
-
-  //changeBuatRate();
-  /*SendCH370(changeBaudRateByte, sizeof(changeBaudRateByte));
-    delay_ms(45);
-    SendCH370(ResetAll, sizeof(ResetAll));
-    delay_ms(100);
-
-
-    USART_InitStructure36.USART_BaudRate = 57600;
-    USART_InitStructure36.USART_WordLength = USART_WordLength_8b;
-    USART_InitStructure36.USART_StopBits = USART_StopBits_1;
-    USART_InitStructure36.USART_Parity = USART_Parity_No;
-    USART_InitStructure36.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStructure36.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-
-    USART_Init(USART3, &USART_InitStructure36);
-    //SendCH370(ResetAll, sizeof(ResetAll));
-    delay_ms(100);
-  */
 
   prepareSD_Card();
   stringToUnicodeAndSendToDisplay("Notepad");
+  printf("battery :%d %\r\n", getBatterry());
+  beepError();
   //command_ = 1;
 
   //configFlash();
@@ -412,16 +397,12 @@ int main(void)
       keyRead();
       searchFile2();
     }
-    /*while (mode == 2 && openFileStatus == 1)
-    {
-      //ReadFile();
-    }*/
     while (mode == 3)
     {
       GPIO_SetBits(GPIOC, GPIO_Pin_0);
       BluetoothMode();
       // keyboardMode();
-      if (becon == 0)
+      if (becon == 0) // ถ้ายังไม่มีการเชื่อมต่อ
       {
         //menu_s();
       }
@@ -431,6 +412,21 @@ int main(void)
       }
     }
   }
+  //-----------regex enter sign-----------------
+  strcpy(str_be[0], "abc-------");
+  strcpy(str_be[1], "efg-------");
+  strcpy(str_be[2], "----------");
+  strcpy(str_be[3], "123456789-");
+  for (i = 0; i <= 3; i++)
+  {
+    regexStrEnter(str_be[i]);
+  }
+  for (i = 0; i <= 3; i++)
+  {
+    printf("%s", str_be[i]);
+  }
+  ///////////// regex enter sign ///////////////
+  //return 0;
   //-notepad test
   //printf("batterry %d ",getBatterry());
   /*command_ = 1;
@@ -448,7 +444,34 @@ int main(void)
 
   //new
 }
+void regexStrEnter(char *str)
+{
+  int cc = 0;
+  char buffer_ln[2];
+  strcpy(buffer_ln, "\r\n");
+  while (cc < notepad_MaxinLine)
+  {
+    if (str[cc] != enterSign)
+      cc++;
+    else
+      break;
+  }
+  if (str_cut(str, cc, notepad_MaxinLine))
+  {
+    strcat(str, buffer_ln);
+  }
+}
+int str_cut(char *str, int begin, int len)
+{
+  int l = strlen(str);
 
+  if (len < 0)
+    len = l - begin;
+  if (begin + len > l)
+    len = l - begin;
+  memmove(str + begin, str + begin + len, l - len + 1);
+  return len;
+}
 void configFlash(void)
 {
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
@@ -534,8 +557,14 @@ void prepareSD_Card()
 }
 void beepError()
 {
-  USART_SendData(USART2, 155);
-  delay_ms(45);
+  sendCommandtoAtmega(155);
+}
+void sendCommandtoAtmega(int data)
+{
+  USART_SendData(USART2, data);
+  while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET)
+  {
+  }
 }
 void errorBreak()
 {
@@ -772,9 +801,7 @@ void notepad_main()
       {
         notepad_fillEnterSign(notepad_buffer_string[notepad_currentLine]); //--เติม enter ถ้าไม่เต็มบรรทัด
       }
-
       // เช็คความยาว ตัดมาแสดง ไม่เกิน 20 ตัว
-
       //
       if (debug)
       {
@@ -1261,12 +1288,24 @@ void keyRead()
           {
             count_menu++;
           }
+          else
+          {
+            delay_ms(50);
+            beepError();
+            printf("beep");
+          }
         }
         else if (keyCode == 38)
         { //down
           if (count_menu != 1)
           {
             count_menu -= 1;
+          }
+          else
+          {
+            delay_ms(50);
+            beepError();
+            printf("beep");
           }
         }
       }
@@ -2479,9 +2518,9 @@ void stringToUnicodeAndSendToDisplay(char *string)
       {
         cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
       }
-      else if (string[j] == 195)//enter sign
+      else if (string[j] == 195) //enter sign
       {
-        cell_sentdata(~unicodeTable[32]); 
+        cell_sentdata(~unicodeTable[32]);
       }
       else
       {

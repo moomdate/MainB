@@ -314,7 +314,7 @@ void sendCommandtoAtmega(int data);
 char numToASCII(int num);
 char notepad_buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
 char *subStringLanR(char *str, int p, int cur_);
-
+char *substring(char *string, int position, int length);
 int notepad_cursorPosition = 0;
 int notepad_multiplyCursor = 0;
 int display_f = 0;
@@ -325,7 +325,7 @@ int debug = 1;
 char keybuff[2] = "\0";
 
 //int enterSign = (int)'-';
-void regexStrEnter(char *str);
+//char *regexStrEnter(char *str);
 int str_cut(char *str, int begin, int len);
 
 int unicodeTable[] = {
@@ -356,8 +356,20 @@ int unicodeTable[] = {
   Return         : None
   Attention      : None
 *******************************************************************************/
+void convert_textto_buffer(char *str);
+#define readmode_maxsizeInLine 41
+#define readmode_MaxLineBuffer 102
+int read_mode_currentIndex_after = 0;
+int read_mode_contTextReaded = 0;
+int ccMain = 0;
+char readmode_bufferStr[readmode_MaxLineBuffer][readmode_maxsizeInLine];
+int cab = 1;
+int ccSector = 0;
 char str_ready[40];
 char str_be[10][11];
+void PrepareText(void);
+char str_test[500];
+char *strcocpyAt(char *source, int begin, int end);
 int main(void)
 {
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
@@ -379,7 +391,7 @@ int main(void)
 
   prepareSD_Card();
   stringToUnicodeAndSendToDisplay("Notepad");
-  printf("battery :%d %\r\n", getBatterry());
+  printf("battery :%d %%\r\n", getBatterry());
   beepError();
   //command_ = 1;
 
@@ -413,18 +425,7 @@ int main(void)
     }
   }
   //-----------regex enter sign-----------------
-  strcpy(str_be[0], "abc-------");
-  strcpy(str_be[1], "efg-------");
-  strcpy(str_be[2], "----------");
-  strcpy(str_be[3], "123456789-");
-  for (i = 0; i <= 3; i++)
-  {
-    regexStrEnter(str_be[i]);
-  }
-  for (i = 0; i <= 3; i++)
-  {
-    printf("%s", str_be[i]);
-  }
+
   ///////////// regex enter sign ///////////////
   //return 0;
   //-notepad test
@@ -444,10 +445,52 @@ int main(void)
 
   //new
 }
-void regexStrEnter(char *str)
+
+void convert_textto_buffer(char *str)
+{
+  int ccInLine = 0;
+  int lineCC = 0;
+  while (str[ccMain] != '\0')
+  {
+    if (lineCC >= readmode_MaxLineBuffer)
+    {
+      read_mode_currentIndex_after = ccMain;
+      break;
+    }
+    if (str[ccMain] != '\r')
+    {
+      if (ccInLine >= readmode_maxsizeInLine - 1)
+      {
+        //	printf("=:%c\r\n",str[ccMain]);
+        lineCC++;
+        ccInLine = 0;
+        readmode_bufferStr[lineCC][ccInLine] = str[ccMain];
+        ccInLine++;
+      }
+      else
+      {
+        readmode_bufferStr[lineCC][ccInLine] = str[ccMain];
+        ccInLine++;
+      }
+    }
+    else
+    {
+      lineCC++;
+      ccInLine = 0;
+      ccMain++;
+    }
+    ccMain++; // jump \r\n
+  }
+}
+//--------------------------------------------------
+// เตรียมสตริง สำหรับเขียนลง SD-card
+// โดยลบเครื่องหมาย Enter (Enter sign) และเติม \r\n
+////////////////////////////////////////////////////
+/*char *regexStrEnter(char *str)
 {
   int cc = 0;
   char buffer_ln[2];
+  char *pp;
   strcpy(buffer_ln, "\r\n");
   while (cc < notepad_MaxinLine)
   {
@@ -456,10 +499,59 @@ void regexStrEnter(char *str)
     else
       break;
   }
-  if (str_cut(str, cc, notepad_MaxinLine))
+  *pp = *substring(str, 1, cc);
+  return pp;
+}*/
+char *substringRemoveEnter(char *string, int position, int length)
+{
+  char *pointer;
+  int c;
+  int cc = 0;
+  while (cc < notepad_MaxinLine)
   {
-    strcat(str, buffer_ln);
+    if (string[cc] != enterSign)
+      cc++;
+    else
+      break;
   }
+  length = cc;
+  pointer = malloc(length + 1);
+
+  if (pointer == NULL)
+  {
+    printf("Unable to allocate memory.\n");
+    // exit(1);
+  }
+
+  for (c = 0; c < length; c++)
+  {
+    *(pointer + c) = *(string + position - 1);
+    string++;
+  }
+
+  *(pointer + c) = '\0';
+
+  return pointer;
+}
+char *strcocpyAt(char *source, int begin, int end)
+{
+  int cc = 0;
+  int cc2 = 0;
+  char buff[notepad_MaxinLine + 2];
+  while (source[cc] != '\0' && cc < end)
+  {
+    if (source[cc] != enterSign)
+    {
+      buff[cc2] = source[cc];
+      cc++;
+      cc2++;
+    }
+    else
+    {
+      break;
+    }
+  }
+  return buff;
 }
 int str_cut(char *str, int begin, int len)
 {
@@ -1573,10 +1665,14 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           //----------------------store last sector to flash rom-----------------------
           //
           /////////////////////////////////////////////////////////////////////////////
+
           SPI_FLASH_CS_LOW();
           SST25_R_BLOCK(0, SST25_buffer99, sector);
           SPI_FLASH_CS_HIGH();
           Delay(0xffff);
+          convert_textto_buffer(SST25_buffer99);
+          notepad_currentLine = 90;
+          printf("======================\r\n value:%s", notepad_buffer_string[0]);
           endReadFile = 1;
           //---------------------------------------------------------------------------
           //
@@ -2243,7 +2339,23 @@ void createFileAndWrite(char *fname)
   SendCH370(ResetAll, sizeof(ResetAll));
   delay_ms(100);
   command_ = 1;
-  writeFile4096(fname, notepad_buffer_string[notepad_currentLine]);
+  PrepareText();
+  writeFile4096(fname, str_test);
+}
+void PrepareText()
+{
+  int c;
+  for (c = 0; c < 5; c++)
+  {
+    // delay_ms(200);
+    printf("%s---------------\r\n", substringRemoveEnter(notepad_buffer_string[c],1,10));
+    
+    strcat(str_test,substringRemoveEnter(notepad_buffer_string[c],1,10));
+    strcat(str_test,"\r\n");
+    delay_ms(200);
+  }
+  //
+  //
 }
 //-----------------------write file less than 4096 or equal------------------
 //

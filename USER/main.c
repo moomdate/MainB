@@ -1671,8 +1671,8 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           SPI_FLASH_CS_HIGH();
           Delay(0xffff);
           convert_textto_buffer(SST25_buffer99);
-          notepad_currentLine = 90;
-          printf("======================\r\n value:%s", notepad_buffer_string[0]);
+          //notepad_currentLine = 90;
+          //printf("======================\r\n value:%s", notepad_buffer_string[0]);
           endReadFile = 1;
           //---------------------------------------------------------------------------
           //
@@ -1891,7 +1891,9 @@ void slidingFileFromRomToDisplay()
 
     printStringLR(buffer22Char, 0);
     //stringToUnicodeAndSendToDisplay(buffer22Char);
-    printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
+   // printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
+    printf("==============================\r\n");
+    printf("string:%s\r\n",buffer22Char);
     //-------------read data from flash rom--------------------------
     //Next line
     //อ่านข้อมูลจาก ROM ใน Sector ถัดไป
@@ -1911,6 +1913,7 @@ void slidingFileFromRomToDisplay()
       SPI_FLASH_CS_HIGH();
       Delay(0xffff);
       stringToUnicodeAndSendToDisplay(buffer22Char); // print againt
+      
       //delay_ms(1000);
     }
   }

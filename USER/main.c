@@ -122,8 +122,6 @@ int checkKeyError = 0;
 int keyCode = 0;
 int previousMode = 0;
 int connectData[] = {0xff, 0xff, 0xa2, 0x0b, 0x16, 0x14, 0x10, 0x53, 0x4c, 0x52, 0x49, 0x20, 0x56, 0x31, 0x2e, 0x30};
-int navRight[] = {0xff, 0xff, 0xa6, 0x03, 0x00, 0x08, 0x00};
-int navLeft[] = {0xff, 0xff, 0xa6, 0x03, 0x00, 0x04, 0x00};
 
 int countSector512 = 0;
 int countRoundSector512 = 0;
@@ -377,7 +375,10 @@ char *strcocpyAt(char *source, int begin, int end);
 void convert_text2_buffer(char *str);
 void slidText2Displayv2(void);
 int readmode_countLineInOneSector(char *str);
-
+void atName_(void);
+int atName[] = {0x41, 0x54, 0x2B, 0x4E, 0x41, 0x4D, 0x45, 0x3F};
+char *getBluetoothName(void);
+int sendStatus = 1;
 ///////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
@@ -396,16 +397,19 @@ int main(void)
 
   configDisplay();
   printDot(st_0, sizeof(st_0));
+  GPIO_SetBits(GPIOC, GPIO_Pin_0);
   delay_ms(1200);
-
   prepareSD_Card();
+
   stringToUnicodeAndSendToDisplay("notepad");
-  if (debug)
-    printf("battery :%d %%\r\n", getBatterry());
-  beepError();
+  //if (debug)
+  //printf("battery :%d %%\r\n", getBatterry());
+
+  // beepError();
+  printf("BT name:%s\r\n", getBluetoothName());
   //command_ = 1;
   //configFlash();
-  while (1)
+  /* while (1)
   {
     keyRead();
     //menu_s();
@@ -435,7 +439,7 @@ int main(void)
         keyboardMode();
       }
     }
-  }
+  }*/
 }
 /*
 -----------------------------------------------------------------------------
@@ -445,6 +449,45 @@ int main(void)
 ครั้งละไม่เกิน 40 ตัวอักษร
 -----------------------------------------------------------------------------
 */
+char *getBluetoothName()
+{
+  char *pp;
+  int onS = 1, inCC = 0;
+  int timeOut = 0;
+  pp = malloc(20 + 1);
+  if (pp == NULL)
+  {
+    printf("Unable to allocate memory.\n");
+    // exit(1);
+  }
+  while (onS)
+  {
+    timeOut++;
+    if (sendStatus)
+    {
+      SendCommandToBLE(atName, sizeof(atName));
+      sendStatus = 0;
+    }
+    if (USART_GetITStatus(UART4, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(UART4);
+      if (inCC >= 8)
+      {
+        *(pp + inCC - 8) = i1;
+      }
+      inCC++;
+      //printf("%c", i1);
+    }
+    if (inCC > 27)
+      break;
+    if (timeOut > 150000)
+    {
+      printf("timeOut\r\n");
+      break;
+    }
+  }
+  return pp;
+}
 int readmode_countLineInOneSector(char *str)
 {
   int count = 0;
@@ -3489,7 +3532,7 @@ void BluetoothMode()
   if (USART_GetITStatus(UART4, USART_IT_RXNE))
   { //if serial available
     hexbuffer = USART_ReceiveData(UART4);
-    printf("%c",hexbuffer);
+    printf("%c", hexbuffer);
     if (hexbuffer == 0xff && SeeHead == 0)
     {
       SeeHead = 1;
@@ -3528,7 +3571,7 @@ void BluetoothMode()
       {
         cell_sentdata(0xff); //clear
       }
-      
+
       Delay(0x55F);
       for (j = 23; j >= 0; j--)
       {
@@ -3559,6 +3602,19 @@ void BluetoothMode()
 //
 //
 //////////////////////////////////////////////////////////////////////////////
+void atName_()
+{
+  int x = 0;
+  printf("send:");
+  while (x < sizeof(atName) / sizeof(int))
+  {
+    printf("%c", atName[x]);
+    USART_SendData(UART4, atName[x++]);
+    while (USART_GetFlagStatus(UART4, USART_FLAG_TC) == RESET)
+    {
+    }
+  }
+}
 void ConnectBLE()
 {
   int x = 0;
@@ -3981,8 +4037,15 @@ PUTCHAR_PROTOTYPE
   {
     USART_SendData(USART3, (uint8_t)ch);
   }
+  if (sendUart4 == 1)
+  {
+    USART_SendData(UART4, (uint8_t)ch);
+  }
   //USART_SendData(UART4, (uint8_t) ch);
   /* Loop until the end of transmission */
+  while (USART_GetFlagStatus(UART4, USART_FLAG_TC) == RESET)
+  {
+  }
   while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET)
   {
   }

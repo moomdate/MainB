@@ -397,7 +397,7 @@ int main(void)
 
   configDisplay();
   printDot(st_0, sizeof(st_0));
-  GPIO_SetBits(GPIOC, GPIO_Pin_0);
+  //GPIO_SetBits(GPIOC, GPIO_Pin_0);
   delay_ms(1200);
   prepareSD_Card();
 
@@ -406,10 +406,10 @@ int main(void)
   //printf("battery :%d %%\r\n", getBatterry());
 
   // beepError();
-  printf("BT name:%s\r\n", getBluetoothName());
+  //printf("BT name:%s\r\n", getBluetoothName());
   //command_ = 1;
   //configFlash();
-  /* while (1)
+  while (1)
   {
     keyRead();
     //menu_s();
@@ -422,24 +422,28 @@ int main(void)
       keyRead();
       searchFile2();
     }
-    while (mode == 3)
+    if (mode == 3)
     {
-      BluetoothMode();
-
       GPIO_SetBits(GPIOC, GPIO_Pin_0);
+      delay_ms(800);
+      stringToUnicodeAndSendToDisplay(getBluetoothName());
+      while (mode == 3)
+      {
+        BluetoothMode();
 
-      // keyboardMode();
-      if (becon == 0) // ถ้ายังไม่มีการเชื่อมต่อ
-      {
-        keyRead();
-        //menu_s();
-      }
-      else
-      {
-        keyboardMode();
+        // keyboardMode();
+        if (becon == 0) // ถ้ายังไม่มีการเชื่อมต่อ
+        {
+          keyRead();
+          //menu_s();
+        }
+        else
+        {
+          keyboardMode();
+        }
       }
     }
-  }*/
+  }
 }
 /*
 -----------------------------------------------------------------------------
@@ -465,6 +469,7 @@ char *getBluetoothName()
     timeOut++;
     if (sendStatus)
     {
+      printf("Send command\r\n");
       SendCommandToBLE(atName, sizeof(atName));
       sendStatus = 0;
     }
@@ -479,9 +484,13 @@ char *getBluetoothName()
       //printf("%c", i1);
     }
     if (inCC > 27)
-      break;
-    if (timeOut > 150000)
     {
+      sendStatus = 1;
+      break;
+    }
+    if (timeOut > 300000)
+    {
+      sendStatus = 1;
       printf("timeOut\r\n");
       break;
     }
@@ -1600,6 +1609,7 @@ void keyRead()
       {
         mode = 0;
         GPIO_ResetBits(GPIOC, GPIO_Pin_0);
+        stringToUnicodeAndSendToDisplay("Bluetooth");
         //printf("exit from mode 3 \r\n");
       }
     }

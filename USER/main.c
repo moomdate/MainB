@@ -49,7 +49,7 @@ int countSector = 0;
 int addressSector = 0x00;
 int endReadFile = 0;
 char buffer22Char[42];
-int pointer22char = 0;
+int pointer22char = 1;
 int pointerSector = 0; //current sector
 int pointerSectorStatus = 0;
 int jumpCRLF = 0;
@@ -320,7 +320,8 @@ int notepad_multiplyCursor = 0;
 int display_f = 0;
 
 int notepad_currentLine = 0;
-int maxLineN = 0;
+
+int maxLineN = 0; // จำนวนบรรทัดมากสุดที่พิมพ์ไปในโหมด notepad
 int debug = 1;
 char keybuff[2] = "\0";
 
@@ -356,7 +357,7 @@ int unicodeTable[] = {
   Return         : None
   Attention      : None
 *******************************************************************************/
-void convert_textto_buffer(char *str);
+
 #define readmode_maxsizeInLine 41
 #define readmode_MaxLineBuffer 102
 int read_mode_currentIndex_after = 0;
@@ -368,8 +369,16 @@ int ccSector = 0;
 char str_ready[40];
 char str_be[10][11];
 void PrepareText(void);
-char str_test[500];
+char str_test[1000];
 char *strcocpyAt(char *source, int begin, int end);
+
+//-----------------------------------------------------------------------------
+//sliding to display v 2
+void convert_text2_buffer(char *str);
+void slidText2Displayv2(void);
+int readmode_countLineInOneSector(char *str);
+
+///////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
@@ -390,11 +399,11 @@ int main(void)
   delay_ms(1200);
 
   prepareSD_Card();
-  stringToUnicodeAndSendToDisplay("Notepad");
-  printf("battery :%d %%\r\n", getBatterry());
+  stringToUnicodeAndSendToDisplay("notepad");
+  if (debug)
+    printf("battery :%d %%\r\n", getBatterry());
   beepError();
   //command_ = 1;
-
   //configFlash();
   while (1)
   {
@@ -411,11 +420,14 @@ int main(void)
     }
     while (mode == 3)
     {
-      GPIO_SetBits(GPIOC, GPIO_Pin_0);
       BluetoothMode();
+
+      GPIO_SetBits(GPIOC, GPIO_Pin_0);
+
       // keyboardMode();
       if (becon == 0) // ถ้ายังไม่มีการเชื่อมต่อ
       {
+        keyRead();
         //menu_s();
       }
       else
@@ -424,29 +436,57 @@ int main(void)
       }
     }
   }
-  //-----------regex enter sign-----------------
-
-  ///////////// regex enter sign ///////////////
-  //return 0;
-  //-notepad test
-  //printf("batterry %d ",getBatterry());
-  /*command_ = 1;
-  while (1) // explorror and read mode
-  {
-
-    keyRead();
-    searchFile2();
-    //stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
-    for (i = 0; i < maxFile; i++)
-    {
-      printf("%s\r\n", fileLists[i]);
-    }
-  }*/
-
-  //new
 }
+/*
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+หลังจากทำการอ่านไฟล์จาก SD Card ลงใน Flash ROM เสร็จสิ้น ตัวแปร @endReadFile จะเป็น 1
+จะทำการอ่านจาก ROM มาไว้ในตัวแปรไม่เกิน 4096 และทำการดึงออกมาแสดงผล
+ครั้งละไม่เกิน 40 ตัวอักษร
+-----------------------------------------------------------------------------
+*/
+int readmode_countLineInOneSector(char *str)
+{
+  int count = 0;
+  int sum = 0;
+  while (str[count] != '\0' && count < 4096)
+  {
+    if (str[count] == 0x0d)
+    {
+      if (count != 4096 - 1)
+      {
+        if (str[count + 1] == 0x0a)
+        {
+          sum++;
+        }
+      }
+    }
+    count++;
+  }
+  return sum;
+}
+void slidText2Displayv2()
+{
+  if (keyCode == 40)
+  {
+    printf("this is right button\r\n");
+  }
+  else if (keyCode == 38)
+  {
+    printf("this is left button\r\n");
+  }
+  printf("file sector(%d)\r\n sed (%d)\r\n", AmountSector, AmountSectorT);
+  configFlash();
+  SPI_FLASH_CS_LOW();
+  SST25_R_BLOCK(0, SST25_buffer, sector);
+  SPI_FLASH_CS_HIGH();
+  Delay(0xffff);
+  printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer));
 
-void convert_textto_buffer(char *str)
+  AmountSector = addressWriteFlashTemp / sector;
+  AmountSectorT = addressWriteFlashTemp % sector;
+}
+void convert_text2_buffer(char *str)
 {
   int ccInLine = 0;
   int lineCC = 0;
@@ -522,15 +562,12 @@ char *substringRemoveEnter(char *string, int position, int length)
     printf("Unable to allocate memory.\n");
     // exit(1);
   }
-
   for (c = 0; c < length; c++)
   {
     *(pointer + c) = *(string + position - 1);
     string++;
   }
-
   *(pointer + c) = '\0';
-
   return pointer;
 }
 char *strcocpyAt(char *source, int begin, int end)
@@ -599,35 +636,40 @@ void prepareSD_Card()
     if (command_ == 1)
     {
       SendCH370(checkConnection, sizeof(checkConnection));
-      printf("Check connecttion \r\n");
+      if (debug)
+        printf("Check connecttion \r\n");
       command_++; //2
       delay_ms(45);
     }
     else if (command_ == 2)
     {
       SendCH370(setSDCard, sizeof(setSDCard));
-      printf("Set sd card\r\n");
+      if (debug)
+        printf("Set sd card\r\n");
       command_++; //4
       delay_ms(45);
     }
     else if (command_ == 3)
     {
       SendCH370(USBDiskMount, sizeof(USBDiskMount));
-      printf("Usb disk mount \r\n");
+      if (debug)
+        printf("Usb disk mount \r\n");
       command_++; //6
       delay_ms(45);
     }
     else if (command_ == 4)
     {
       SendCH370(setAllName, sizeof(setAllName));
-      printf("Fet all file \r\n");
+      if (debug)
+        printf("Fet all file \r\n");
       command_++; //10
       delay_ms(45);
     }
     else if (command_ == 5)
     {
       SendCH370(FileOpen, sizeof(FileOpen));
-      printf("File open \r\n");
+      if (debug)
+        printf("File open \r\n");
       command_++; //10
       delay_ms(45);
     }
@@ -642,10 +684,12 @@ void prepareSD_Card()
     if (USART_GetITStatus(USART3, USART_IT_RXNE))
     {
       i1 = USART_ReceiveData(USART3);
-      printf("Recieve:%x\r\n", i1);
+      if (debug)
+        printf("Recieve:%x\r\n", i1);
     }
   }
-  printf("End prepare\r\n");
+  if (debug)
+    printf("End prepare\r\n");
 }
 void beepError()
 {
@@ -747,12 +791,12 @@ void notepad_main()
       }
       else if ((bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x1 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x2 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x3 && bufferKey3digit[2] == 0x00))
       { // save
-        printf("\r\n-----------Save:------------\r\n");
+        if (debug)
+          printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
-      {                                                                                                         //enter key
-                                                                                                                // printf("New line \r\n");
+      {                                                                                                         //enter key                                                                                                       // printf("New line \r\n");
         if (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine)
         {
           while (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine) //40 ตัวอักษร
@@ -785,9 +829,11 @@ void notepad_main()
         if (notepad_lineIsEnter(notepad_buffer_string[notepad_currentLine]) == 1)
         {
           notepad_cursorPosition = 40;
-          printf("---------------line is enter all -----------------");
+          if (debug)
+            printf("---------------line is enter all -----------------");
         }
-        printf("cca aateaasd at :%d\r\n", notepad_cursorPosition + notepad_multiplyCursor);
+        if (debug)
+          printf("cca aateaasd at :%d\r\n", notepad_cursorPosition + notepad_multiplyCursor);
         if (notepad_countStr(notepad_buffer_string[notepad_currentLine]) < notepad_MaxinLine / 2) //กันบัค cursor
           notepad_multiplyCursor = 0;
         //  printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor]);
@@ -805,7 +851,8 @@ void notepad_main()
         {
           if (notepad_lineIsEnter(notepad_buffer_string[notepad_currentLine]) == 1)
           {
-            printf("---------------line is enter all -----------------");
+            if (debug)
+              printf("---------------line is enter all -----------------");
           }
           // printf("\r\n--------------------remove enter------------------------\r\n");
           while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == enterSign && notepad_cursorPosition >= 0)
@@ -1370,6 +1417,10 @@ void keyRead()
     printf("keycode:%d\r\n", keyCode);
     // end keymapping //
 
+    /*
+      mode:0
+      on menu
+    */
     if (mode == 0)
     { //key in mode 0
       if (count_menu >= 1 && count_menu <= maxMenu && mode == 0)
@@ -1490,7 +1541,6 @@ void keyRead()
         else
         {
           ex_exitOncePath();
-          //ex_openDir("..");
           ex_cdWithPath(Dirpath);
           command_ = 4;
         }
@@ -1498,7 +1548,16 @@ void keyRead()
       if (keyCode == 27)
       {
         mode = 0;
-        printf("exittttttttttttttttttttttttttt\r\n");
+        //printf("exittttttttttttttttttttttttttt\r\n");
+      }
+    }
+    if (mode == 3) //bluetooth mode
+    {
+      if (keyCode == 37)
+      {
+        mode = 0;
+        GPIO_ResetBits(GPIOC, GPIO_Pin_0);
+        //printf("exit from mode 3 \r\n");
       }
     }
     ///------
@@ -1506,7 +1565,6 @@ void keyRead()
     keyCode = 0;
     seeCur = 0;
   }
-  //tringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
 }
 
 //-----------------------------------------------------------------------------
@@ -1647,7 +1705,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       if (lastAscii == i1)
       {
         waitEnd++;
-        if (waitEnd == 100 * 100) // end of file
+        if (waitEnd == 100 * 100) // end of file check time out
         {
           beepError();
           // printf("end----------------------------------------------------------------------------------------------------------\r\n");
@@ -1670,7 +1728,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           SST25_R_BLOCK(0, SST25_buffer99, sector);
           SPI_FLASH_CS_HIGH();
           Delay(0xffff);
-          convert_textto_buffer(SST25_buffer99);
+          //convert_text2_buffer(SST25_buffer99);
           //notepad_currentLine = 90;
           //printf("======================\r\n value:%s", notepad_buffer_string[0]);
           endReadFile = 1;
@@ -1685,6 +1743,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           {
             buffer22Char[NextPoint - pointer22char] = SST25_buffer99[NextPoint];
           }
+          printf("String buffer is :%s \r\n", SST25_buffer99);
           printf("End\r\n%s:\r\n", buffer22Char);
           //stringToUnicodeAndSendToDisplay(buffer22Char);
           pointer22char += NextPoint + 2;
@@ -1769,20 +1828,6 @@ void slidingFileFromRomToDisplay()
           //
           // ถ้าเจอ CL ให้เพื่มค่าของ #countLFTwoStep
           countLFTwoStep++;
-          /*if (countLengthInLine == 5 && countLFTwoStep == 2)
-          {
-            pointer22char = varForLoop;
-            countLFTwoStep = 0;
-            printf("Length:--%d-- a\r\n", countLengthInLine);
-            break;
-          }
-          if (countLFTwoStep == 2)
-          { //check 0x0d 0x0a two event
-            pointer22char = varForLoop + 2;
-            countLFTwoStep = 0;
-            printf("Length:--%d--\r\n", countLengthInLine);
-            break;
-          }*/
           /*
           0x0d 0x0a 
           0x0d 0x0a 
@@ -1816,7 +1861,6 @@ void slidingFileFromRomToDisplay()
             printf("reading prevois sector -----------------------------\r\n");
           }
         }
-
         if (pointer22char + MaxInLine < addressWriteFlashTemp)
         {
           maxLengthLoopL22 = MaxInLine;
@@ -1891,9 +1935,9 @@ void slidingFileFromRomToDisplay()
 
     printStringLR(buffer22Char, 0);
     //stringToUnicodeAndSendToDisplay(buffer22Char);
-   // printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
+    // printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
     printf("==============================\r\n");
-    printf("string:%s\r\n",buffer22Char);
+    printf("string:%s\r\n", buffer22Char);
     //-------------read data from flash rom--------------------------
     //Next line
     //อ่านข้อมูลจาก ROM ใน Sector ถัดไป
@@ -1913,7 +1957,7 @@ void slidingFileFromRomToDisplay()
       SPI_FLASH_CS_HIGH();
       Delay(0xffff);
       stringToUnicodeAndSendToDisplay(buffer22Char); // print againt
-      
+
       //delay_ms(1000);
     }
   }
@@ -1936,6 +1980,7 @@ void slidingFileFromRomToDisplay()
     //printf("exit-------------\r\n");
   }
 }
+
 //----------------------- check file type ------------------------
 // *.TBT file return 1
 // *.BRF file return 2
@@ -2343,18 +2388,20 @@ void createFileAndWrite(char *fname)
   delay_ms(100);
   command_ = 1;
   PrepareText();
+  //printf("all text :%s\r\n====================================================== ", str_test);
+  //fileWrite(0,fname,"test head \r\n my name is surasak");
   writeFile4096(fname, str_test);
 }
 void PrepareText()
 {
   int c;
-  for (c = 0; c < 5; c++)
+  for (c = 0; c <= maxLineN; c++)
   {
     // delay_ms(200);
-    printf("%s---------------\r\n", substringRemoveEnter(notepad_buffer_string[c],1,10));
-    
-    strcat(str_test,substringRemoveEnter(notepad_buffer_string[c],1,10));
-    strcat(str_test,"\r\n");
+    printf("=====================removed======================\r\n");
+    printf("%s\r\n", substringRemoveEnter(notepad_buffer_string[c], 1, 10));
+    strcat(str_test, substringRemoveEnter(notepad_buffer_string[c], 1, 10));
+    strcat(str_test, "\r\n");
     delay_ms(200);
   }
   //
@@ -2805,7 +2852,10 @@ void setFileLength(char *str___)
     jjr = 128;
   }
   FileLength222[4] = jjr;
-  printf("\r\n str length2 in set file length:%d \r\n", FileLength222[4]);
+  if (debug)
+  {
+    printf("\r\n str length2 in set file length:%d \r\n", FileLength222[4]);
+  }
   SendCH370(FileLength222, sizeof(FileLength222));
 }
 //------------------------write string to ch376s--------------------
@@ -3221,7 +3271,6 @@ void menu_CH376()
         countKey = 0;
         SeeHead = 0;
       }
-
       printf("current mode:%d\r\n", mode);
       //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
       //////////////////////////////////menu selector ///////////////////////////////////
@@ -3287,30 +3336,6 @@ void caseMenu(int count_menu)
   case 3:
     printDot(st_bluetooth, sizeof(st_bluetooth));
     break;
-    /*case 1:
-        printDot(st_notepad, sizeof(st_notepad));
-        break;
-        case 2:
-        printDot(st_filemanage, sizeof(st_filemanage));
-        break;
-        case 3:
-        printDot(st_read, sizeof(st_read));
-        break;
-        case 4:
-        printDot(st_usbconnect, sizeof(st_usbconnect));
-        break;
-        case 5:
-        printDot(st_bluetooth, sizeof(st_bluetooth));
-        break;
-        case 6:
-        printDot(st_clock, sizeof(st_clock));
-        break;
-        case 7:
-        printDot(st_calcu, sizeof(st_calcu));
-        break;
-        case 8:
-        printDot(st_tools, sizeof(st_tools));
-        break;*/
   }
 }
 
@@ -3464,6 +3489,7 @@ void BluetoothMode()
   if (USART_GetITStatus(UART4, USART_IT_RXNE))
   { //if serial available
     hexbuffer = USART_ReceiveData(UART4);
+    printf("%c",hexbuffer);
     if (hexbuffer == 0xff && SeeHead == 0)
     {
       SeeHead = 1;
@@ -3500,9 +3526,9 @@ void BluetoothMode()
       Delay(0x55F);
       for (j = 20; j >= 0; j--)
       {
-        cell_sentdata(0xff);
+        cell_sentdata(0xff); //clear
       }
-      SPI_DISPLAY_CS_HIGH();
+      
       Delay(0x55F);
       for (j = 23; j >= 0; j--)
       {
@@ -3523,6 +3549,7 @@ void BluetoothMode()
           }
         }
       }
+      SPI_DISPLAY_CS_HIGH();
       pushToDisplay = 0;
       count = 0;
     }
@@ -3648,7 +3675,6 @@ void sendUart(int data)
     break;
   }
 }
-
 //-------------------------------------GPIO------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -3656,7 +3682,6 @@ void sendUart(int data)
 void GPIO_Configuration(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
   /* Configure PB.02 (ADC Channel8) as analog input -------------------------*/
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;

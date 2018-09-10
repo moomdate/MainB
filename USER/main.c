@@ -6,6 +6,8 @@
 #include <inttypes.h>
 #include <stdlib.h> //strtol
 #include "stm32f10x_spi.h"
+#include "ch376s.c"
+#include "readMode.c"
 
 #define RCC_APB2Periph_GPIO_SPI_FLASH_CS RCC_APB2Periph_GPIOD
 #define SPI_DISPLAY_CS_PORT GPIOD
@@ -323,6 +325,13 @@ int maxLineN = 0; // จำนวนบรรทัดมากสุดที�
 int debug = 1;
 char keybuff[2] = "\0";
 
+//-------------------------------------------------------------
+//get name bluetooth
+void atName_(void);
+char *getBluetoothName(void);
+int atName[] = {0x41, 0x54, 0x2B, 0x4E, 0x41, 0x4D, 0x45, 0x3F};
+int sendStatus = 1;
+/////////////////////////////////////////////////////////////////
 //int enterSign = (int)'-';
 //char *regexStrEnter(char *str);
 int str_cut(char *str, int begin, int len);
@@ -374,12 +383,16 @@ char *strcocpyAt(char *source, int begin, int end);
 //sliding to display v 2
 void convert_text2_buffer(char *str);
 void slidText2Displayv2(void);
-int readmode_countLineInOneSector(char *str);
-void atName_(void);
-int atName[] = {0x41, 0x54, 0x2B, 0x4E, 0x41, 0x4D, 0x45, 0x3F};
-char *getBluetoothName(void);
-int sendStatus = 1;
+
+typedef struct textProp
+{
+  int Length;
+  int totalSector;
+  int textScrap;
+} textprop;
+textprop text;
 ///////////////////////////////////////////////////////////////////////////////
+void readSecter(int sector_);
 int main(void)
 {
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
@@ -409,6 +422,7 @@ int main(void)
   //printf("BT name:%s\r\n", getBluetoothName());
   //command_ = 1;
   //configFlash();
+  test();
   while (1)
   {
     keyRead();
@@ -497,26 +511,7 @@ char *getBluetoothName()
   }
   return pp;
 }
-int readmode_countLineInOneSector(char *str)
-{
-  int count = 0;
-  int sum = 0;
-  while (str[count] != '\0' && count < 4096)
-  {
-    if (str[count] == 0x0d)
-    {
-      if (count != 4096 - 1)
-      {
-        if (str[count + 1] == 0x0a)
-        {
-          sum++;
-        }
-      }
-    }
-    count++;
-  }
-  return sum;
-}
+
 void slidText2Displayv2()
 {
   if (keyCode == 40)
@@ -527,16 +522,22 @@ void slidText2Displayv2()
   {
     printf("this is left button\r\n");
   }
-  printf("file sector(%d)\r\n sed (%d)\r\n", AmountSector, AmountSectorT);
-  configFlash();
-  SPI_FLASH_CS_LOW();
-  SST25_R_BLOCK(0, SST25_buffer, sector);
-  SPI_FLASH_CS_HIGH();
-  Delay(0xffff);
-  printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer));
 
+  printf("file sector(%d)\r\n sed (%d)\r\n", AmountSector, AmountSectorT);
+  readSecter(0);
+  printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer));
+  /*
   AmountSector = addressWriteFlashTemp / sector;
   AmountSectorT = addressWriteFlashTemp % sector;
+  */
+}
+void readSecter(int sector_)
+{
+  configFlash();
+  SPI_FLASH_CS_LOW();
+  SST25_R_BLOCK(sector_, SST25_buffer99, sector);
+  SPI_FLASH_CS_HIGH();
+  Delay(0xffff);
 }
 void convert_text2_buffer(char *str)
 {
@@ -836,7 +837,6 @@ void notepad_main()
         }
         else if (keyCode == 2)
         { //right
-
           if (notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]) > 20)
             display_f = 1;
         }
@@ -1519,7 +1519,8 @@ void keyRead()
     if (endReadFile == 1 && mode == 2) //mode 2
     {                                  // on mode read
       //printf("testttttttttttttttttttttttttt");
-      slidingFileFromRomToDisplay();
+      slidText2Displayv2();
+      //slidingFileFromRomToDisplay();
     }
     if (mode == 2 && endReadFile != 1)
     { //key in mode 2
@@ -1781,7 +1782,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           SST25_R_BLOCK(0, SST25_buffer99, sector);
           SPI_FLASH_CS_HIGH();
           Delay(0xffff);
-          //convert_text2_buffer(SST25_buffer99);
+          convert_text2_buffer(SST25_buffer99);
           //notepad_currentLine = 90;
           //printf("======================\r\n value:%s", notepad_buffer_string[0]);
           endReadFile = 1;
@@ -1802,6 +1803,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           pointer22char += NextPoint + 2;
           NextPoint = pointer22char;
           printStringLR(buffer22Char, 0);
+          text.Length = addressWriteFlashTemp / sector;
           AmountSector = addressWriteFlashTemp / sector;  //---- จำนวน sector ----
           AmountSectorT = addressWriteFlashTemp % sector; //---- เศษ ที่เหลือของ sector ---
           //-----------------------------------display string 20 charactor -----------------------------------

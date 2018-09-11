@@ -1,4 +1,3 @@
-
 #include "systick.h"
 #include <ctype.h> //use toupper
 #include <stdio.h>
@@ -271,6 +270,7 @@ SPI_InitTypeDef SPI_InitStructure; //global config.
 void beepError(void);
 void errorBreak(void);
 int getBatterry(void);
+int getMuteStatus(void);
 
 void prepareSD_Card(void);
 
@@ -279,7 +279,7 @@ void prepareSD_Card(void);
 #define notepad_Line 102 // 102 * 40 = 4080
 #define scrapSize (notepad_Line * notepad_MaxinLine) - bufferMaxSize
 #define notepad_MaxinLine 40
-#define maxMenu 3
+#define maxMenu 4
 int enterSign = 195; //escape
 char buffAs[2];
 
@@ -393,6 +393,14 @@ typedef struct textProp
 textprop text;
 ///////////////////////////////////////////////////////////////////////////////
 void readSecter(int sector_);
+
+//----mode 4----
+void mode4(void);
+void mainMenuDisplayMode4(int);
+#define maxMenu4 2
+int countMenuInMode4 = 0;
+int selectMode4 = 0;
+//----mode 4----e
 int main(void)
 {
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
@@ -457,16 +465,134 @@ int main(void)
         }
       }
     }
+    while (mode == 4)
+    {
+      mode4();
+    }
   }
 }
-/*
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-หลังจากทำการอ่านไฟล์จาก SD Card ลงใน Flash ROM เสร็จสิ้น ตัวแปร @endReadFile จะเป็น 1
-จะทำการอ่านจาก ROM มาไว้ในตัวแปรไม่เกิน 4096 และทำการดึงออกมาแสดงผล
-ครั้งละไม่เกิน 40 ตัวอักษร
------------------------------------------------------------------------------
-*/
+void mode4()
+{
+  int status____ = 0;
+  char stringBu[10];
+  char buff22__[4];
+  notepad_readKey();
+  if (countKey >= maxData)
+  {
+    seeHead = 0;
+    printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    if (checkKeyError == 0xff) // error catch
+    {
+      countKey = 0;
+      SeeHead = 0;
+    }
+    keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+    printf("keycode:%d\r\n", keyCode);
+    if (!selectMode4) //0
+    {
+      switch (keyCode)
+      {
+      case 40:                               //down
+        if (countMenuInMode4 < maxMenu4 - 1) //0-1
+          countMenuInMode4++;
+        break;
+      case 38: //up
+        if (countMenuInMode4 > 0)
+          countMenuInMode4--;
+        break;
+      case 39: //enter
+        selectMode4 = 1;
+        printf("Enter mode (%d)\r\n", countMenuInMode4);
+        break;
+      case 37: //exit
+        printf("exit to mode (4)\r\n");
+        stringToUnicodeAndSendToDisplay("Tools");
+        mode = 0;
+        selectMode4 = 0;
+        break;
+      }
+    }
+    if (selectMode4) //1
+    {
+      if (keyCode == 37)
+      {
+        selectMode4 = 0;
+      }
+      switch (countMenuInMode4)
+      {
+      case 0:
+        memset(stringBu, 0, sizeof(stringBu));
+        memset(buff22__, 0, sizeof(buff22__));
+        strcpy(stringBu, "Battery ");
+        sprintf(buff22__, "%d", getBatterry());
+        strcat(stringBu, buff22__);
+        strcat(stringBu, "%");
+        stringToUnicodeAndSendToDisplay(stringBu);
+        break;
+      case 1:
+        memset(stringBu, 0, sizeof(stringBu));
+        strcpy(stringBu, "Beep:");
+
+        //stringToUnicodeAndSendToDisplay("Beep:");
+        status____ = getMuteStatus();
+        if (status____ != 1 || status____ != 0)
+        {
+          status____ = getMuteStatus();
+        }
+
+        if (bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2)
+        {
+          if (status____ == 1)
+          {
+            sendCommandtoAtmega(148);
+            delay_ms(200);
+            //printf("Send mute\r\n");
+          }
+          else if (status____ == 0)
+          {
+            sendCommandtoAtmega(149);
+            delay_ms(100);
+            //printf("Send mute\r\n");
+          }
+
+        }
+        status____ = getMuteStatus();
+
+        if (status____ == 1)
+        {
+          strcat(stringBu, "On");
+        }
+        else
+        {
+          strcat(stringBu, "Off");
+        }
+        stringToUnicodeAndSendToDisplay(stringBu);
+        //printf("status:%d\r\n", status____);
+        break;
+      }
+    }
+    if (selectMode4 == 0 && mode != 0)
+      mainMenuDisplayMode4(countMenuInMode4);
+    clearKeyValue();
+  }
+}
+void mainMenuDisplayMode4(int numb)
+{
+  switch (numb)
+  {
+  case 0:
+    stringToUnicodeAndSendToDisplay("Power");
+    break;
+  case 1:
+    stringToUnicodeAndSendToDisplay("Beep");
+    break;
+
+  default:
+    stringToUnicodeAndSendToDisplay("Power");
+    break;
+  }
+}
+
 char *getBluetoothName()
 {
   char *pp;
@@ -763,6 +889,17 @@ void errorBreak()
 int getBatterry()
 {
   USART_SendData(USART2, 150);
+  delay_ms(45);
+  if (USART_GetITStatus(USART2, USART_IT_RXNE))
+  {
+    uart2Buffer = USART_ReceiveData(USART2);
+  }
+  return uart2Buffer;
+}
+
+int getMuteStatus()
+{
+  USART_SendData(USART2, 147);
   delay_ms(45);
   if (USART_GetITStatus(USART2, USART_IT_RXNE))
   {
@@ -1473,6 +1610,15 @@ void keyRead()
       mode:0
       on menu
     */
+    /*
+    ------------------------------------------------------------------------------------------------
+    ──────▄▀▄─────▄▀▄
+    ─────▄█░░▀▀▀▀▀░░█▄
+    ─▄▄──█░░░░░░░░░░░█──▄▄
+    █▄▄█─█░░▀░░┬░░▀░░█─█▄▄█
+    mode(0):default
+    ------------------------------------------------------------------------------------------------
+   */
     if (mode == 0)
     { //key in mode 0
       if (count_menu >= 1 && count_menu <= maxMenu && mode == 0)
@@ -1515,7 +1661,7 @@ void keyRead()
       }
       caseMenu(count_menu);
     }
-    //-------
+    //-----------------------------------end mode (10)-------------------------------
     if (endReadFile == 1 && mode == 2) //mode 2
     {                                  // on mode read
       //printf("testttttttttttttttttttttttttt");
@@ -1604,7 +1750,13 @@ void keyRead()
         //printf("exittttttttttttttttttttttttttt\r\n");
       }
     }
-    if (mode == 3) //bluetooth mode
+    //-----------------------------------end mode (2)-------------------------------
+    /*
+    --------------------------------------------------------------------------------
+     mode (3) :bluetooth
+     -------------------------------------------------------------------------------
+    */
+    if (mode == 3)
     {
       if (keyCode == 37)
       {
@@ -1614,7 +1766,12 @@ void keyRead()
         //printf("exit from mode 3 \r\n");
       }
     }
-    ///------
+    //-----------------------------------end mode (4)-------------------------------
+    if (mode == 4)
+    {
+      stringToUnicodeAndSendToDisplay("Power");
+    }
+    //-----------------------------------end mode (5)-------------------------------
     countKey = 0;
     keyCode = 0;
     seeCur = 0;
@@ -3390,6 +3547,9 @@ void caseMenu(int count_menu)
     break;
   case 3:
     printDot(st_bluetooth, sizeof(st_bluetooth));
+    break;
+  case 4:
+    stringToUnicodeAndSendToDisplay("Tools");
     break;
   }
 }

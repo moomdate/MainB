@@ -8,6 +8,13 @@
 #include "ch376s.c"
 #include "readMode.c"
 
+//------------------------ typedef boolean------------------------
+//================================================================
+typedef uint8_t bool;
+#define true 1
+#define false 0
+//================================================================
+
 #define RCC_APB2Periph_GPIO_SPI_FLASH_CS RCC_APB2Periph_GPIOD
 #define SPI_DISPLAY_CS_PORT GPIOD
 #define SPI_DISPLAY_CS_PIN GPIO_Pin_4
@@ -38,9 +45,6 @@
 #else
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
-
-/* Private define ------------------------------------------------------------*/
-#define ADC1_DR_Address ((u32)0x4001244C)
 
 void writeFlash(int address, int size);
 void writeFlash2(int address, int size);
@@ -125,19 +129,9 @@ int previousMode = 0;
 int connectData[] = {0xff, 0xff, 0xa2, 0x0b, 0x16, 0x14, 0x10, 0x53, 0x4c, 0x52, 0x49, 0x20, 0x56, 0x31, 0x2e, 0x30};
 
 int countSector512 = 0;
-int countRoundSector512 = 0;
-int countCounitueRead = 0; //512 ,round =24
-char bufferFromRead[25] = "";
-char bufferPrevoisRead[1000][25];
-int CountbufferFromRead = 0;
-int startRead = 0;
-int countPageWhenRead = 0;
-int continueReadFile = 0;
 int readstatus = 0;
 int becon = 0;
 
-int setFileNameLength = 5;
-int DiskconnectStatus[] = {0x00, 0x57, 0xab, 0x03}; //+
 int ex_openDirStatus = 0;
 //--readmode
 char dataTemp512[512];
@@ -154,7 +148,6 @@ int DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
 
 int d_Time = 0;
 int toggleCur = 0;
-int tempCur = 0;
 
 //------------------------------------------ ch370t data ------------------------------------//'
 char filelist[10][15];
@@ -177,8 +170,7 @@ void USART2_Configuration(void);
 void USART3_Configuration(void);
 void USART3_Configuration2(void);
 void UART4_Configuration(void);
-void ADC_Configuration(void);
-void sendUart(int);
+void sendUart(uint8_t);
 void UARTSend(const unsigned char *pucBuffer, unsigned long ulCount);
 void ConnectBLE(void);
 void BluetoothMode(void);
@@ -235,10 +227,10 @@ USART_InitTypeDef USART_InitStructure36;
 
 float AD_value;
 vu16 ADC_ConvertedValue;
-int sendUart1 = 0;
-int sendUart2 = 0;
-int sendUart3 = 0;
-int sendUart4 = 0;
+bool sendUart1 = false;
+bool sendUart2 = false;
+bool sendUart3 = false;
+bool sendUart4 = false;
 
 /*-----------------------------spi flash------------------------------------------*/
 extern void SPI_Flash_Init(void);
@@ -269,12 +261,21 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 SPI_InitTypeDef SPI_InitStructure; //global config.
 void beepError(void);
 void errorBreak(void);
-int getBatterry(void);
+uint8_t getBatterry(void);
 int getMuteStatus(void);
 
 void prepareSD_Card(void);
 
+//================================================================================
 //------------------------notepad function and variable---------------------------
+/*
+ _      ____  _____  _____ ____  ____  ____ 
+/ \  /|/  _ \/__ __\/  __//  __\/  _ \/  _ \
+| |\ ||| / \|  / \  |  \  |  \/|| / \|| | \|
+| | \||| \_/|  | |  |  /_ |  __/| |-||| |_/|
+\_/  \|\____/  \_/  \____\\_/   \_/ \|\____/
+                                            
+*/
 #define bufferMaxSize 4096
 #define notepad_Line 102 // 102 * 40 = 4080
 #define scrapSize (notepad_Line * notepad_MaxinLine) - bufferMaxSize
@@ -305,6 +306,9 @@ int unicode_to_ASCII(int);
 int mapCursor(int, int, int);
 int checkBit(int);
 int keyMapping(int, int, int);
+//=======================================================
+//=======================================================
+
 ///------------------------config------------------------
 void configFlash(void);
 void configDisplay(void);
@@ -322,7 +326,7 @@ int display_f = 0;
 int notepad_currentLine = 0;
 
 int maxLineN = 0; // จำนวนบรรทัดมากสุดที่พิมพ์ไปในโหมด notepad
-int debug = 1;
+uint8_t debug = 1;
 char keybuff[2] = "\0";
 
 //-------------------------------------------------------------
@@ -355,7 +359,60 @@ int unicodeTable[] = {
 
     0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/ //checked 8/6/2018
 };
-////////////////////////end notepad function/////////////////////
+
+/** notepad  ยังไม่เสร็จ**/
+#define readmode_maxsizeInLine 41
+#define readmode_MaxLineBuffer 102
+int read_mode_currentIndex_after = 0;
+int read_mode_contTextReaded = 0;
+int ccMain = 0;
+char readmode_bufferStr[readmode_MaxLineBuffer][readmode_maxsizeInLine];
+char str_ready[40];
+char str_be[10][11];
+void PrepareText(void);
+char str_test[1000];
+
+//-----------------------------------------------------------------------------
+//sliding to display v 2
+void convert_text2_buffer(char *str);
+void slidText2Displayv2(void);
+
+///////////////////////////////////////////////////////////////////////////////
+void readSecter(int sector_);
+
+//// add new ///
+//----mode 4----
+void mode4(void);
+void mainMenuDisplayMode4(int);
+#define maxMenu4 3
+int countMenuInMode4 = 0;
+int selectMode4 = 0;
+//----mode 4----e
+
+//-- read miode new ---
+void queryLine(int line);
+char bufferQueryLine[50];
+
+//-------------------------
+void MemSize()
+{
+  /*
+  ===============================
+  int  : 4 Byte
+  char : 1 Byte 
+  uint8_t
+  ===============================
+  */
+  printf("int      size :%d Byte\r\n", sizeof(int));
+  printf("char     size :%d Byte\r\n", sizeof(char));
+  //printf("uint4_t size :%d Byte\r\n",sizeof(uint4_t));
+  printf("uint8_t  size :%d Byte\r\n", sizeof(uint8_t));
+  printf("uint16_t size :%d Byte\r\n", sizeof(uint16_t));
+  printf("uint32_t size :%d Byte\r\n", sizeof(uint32_t));
+  printf("long     size :%d Byte\r\n", sizeof(long));
+}
+void displayPrepare(void);
+void testCell(void);
 /*******************************************************************************
   Function Name  : main
   Description    : Main program
@@ -364,49 +421,11 @@ int unicodeTable[] = {
   Return         : None
   Attention      : None
 *******************************************************************************/
-
-#define readmode_maxsizeInLine 41
-#define readmode_MaxLineBuffer 102
-int read_mode_currentIndex_after = 0;
-int read_mode_contTextReaded = 0;
-int ccMain = 0;
-char readmode_bufferStr[readmode_MaxLineBuffer][readmode_maxsizeInLine];
-int cab = 1;
-int ccSector = 0;
-char str_ready[40];
-char str_be[10][11];
-void PrepareText(void);
-char str_test[1000];
-char *strcocpyAt(char *source, int begin, int end);
-
-//-----------------------------------------------------------------------------
-//sliding to display v 2
-void convert_text2_buffer(char *str);
-void slidText2Displayv2(void);
-
-typedef struct textProp
-{
-  int Length;
-  int totalSector;
-  int textScrap;
-} textprop;
-textprop text;
-///////////////////////////////////////////////////////////////////////////////
-void readSecter(int sector_);
-
-//----mode 4----
-void mode4(void);
-void mainMenuDisplayMode4(int);
-#define maxMenu4 2
-int countMenuInMode4 = 0;
-int selectMode4 = 0;
-//----mode 4----e
 int main(void)
 {
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
   /* Configure the GPIO ports */
-  GPIO_Configuration(); //if config this can't use printf
-  //----------------------------
+  GPIO_Configuration();   //if config this can't use printf
   UART4_Configuration();  //9600
   USART2_Configuration(); //115200
   USART1_Configuration(); //115200
@@ -415,22 +434,13 @@ int main(void)
   Init_SPI();
   delay_init();
   sendUart(1);
-
   configDisplay();
-  printDot(st_0, sizeof(st_0));
-  //GPIO_SetBits(GPIOC, GPIO_Pin_0);
-  delay_ms(1200);
+  displayPrepare();
   prepareSD_Card();
-
-  stringToUnicodeAndSendToDisplay("notepad");
-  //if (debug)
-  //printf("battery :%d %%\r\n", getBatterry());
-
-  // beepError();
-  //printf("BT name:%s\r\n", getBluetoothName());
-  //command_ = 1;
-  //configFlash();
-  test();
+  /*
+  MemSize();
+  testCell();
+  */
   while (1)
   {
     keyRead();
@@ -447,12 +457,11 @@ int main(void)
     if (mode == 3)
     {
       GPIO_SetBits(GPIOC, GPIO_Pin_0);
-      delay_ms(800);
+      delay_ms(800); //wait bluetooth boot
       stringToUnicodeAndSendToDisplay(getBluetoothName());
       while (mode == 3)
       {
         BluetoothMode();
-
         // keyboardMode();
         if (becon == 0) // ถ้ายังไม่มีการเชื่อมต่อ
         {
@@ -470,6 +479,31 @@ int main(void)
       mode4();
     }
   }
+}
+void testCell()
+{
+  int i_ = 0, cc = 0;
+  int dl = 0;
+  clearDot();
+  for (i_ = 0; i_ < 20; i_++)
+  {
+    SPI_DISPLAY_CS_LOW();
+    cell_sentdata(~0xff);
+    SPI_DISPLAY_CS_HIGH();
+    dl++;
+    delay_ms(200);
+  }
+  clearDot();
+  delay_ms(200);
+  printDot(st_0, sizeof(st_0));
+  delay_ms(500);
+  clearDot();
+}
+void displayPrepare()
+{
+  printDot(st_0, sizeof(st_0));
+  delay_ms(1200);
+  stringToUnicodeAndSendToDisplay("notepad");
 }
 void mode4()
 {
@@ -531,7 +565,7 @@ void mode4()
         break;
       case 1:
         memset(stringBu, 0, sizeof(stringBu));
-        strcpy(stringBu, "Beep:");
+        strcpy(stringBu, "Sound:");
 
         //stringToUnicodeAndSendToDisplay("Beep:");
         status____ = getMuteStatus();
@@ -554,7 +588,6 @@ void mode4()
             delay_ms(100);
             //printf("Send mute\r\n");
           }
-
         }
         status____ = getMuteStatus();
 
@@ -569,6 +602,10 @@ void mode4()
         stringToUnicodeAndSendToDisplay(stringBu);
         //printf("status:%d\r\n", status____);
         break;
+      case 2:
+        testCell();
+        selectMode4 = 0;
+        break;
       }
     }
     if (selectMode4 == 0 && mode != 0)
@@ -581,14 +618,16 @@ void mainMenuDisplayMode4(int numb)
   switch (numb)
   {
   case 0:
-    stringToUnicodeAndSendToDisplay("Power");
+    stringToUnicodeAndSendToDisplay("Battery level");
     break;
   case 1:
-    stringToUnicodeAndSendToDisplay("Beep");
+    stringToUnicodeAndSendToDisplay("Sound Setting");
     break;
-
+  case 2:
+    stringToUnicodeAndSendToDisplay("Test cell");
+    break;
   default:
-    stringToUnicodeAndSendToDisplay("Power");
+    stringToUnicodeAndSendToDisplay("Battery level");
     break;
   }
 }
@@ -637,21 +676,47 @@ char *getBluetoothName()
   }
   return pp;
 }
-
+void queryLine(int line)
+{
+  int a, cc = 0, a2 = 0;
+  int length__ = 0;
+  length__ = strlen(SST25_buffer99);
+  memset(bufferQueryLine, 0, sizeof(bufferQueryLine));
+  for (a = 0; a < length__; a++)
+  {
+    if (SST25_buffer99[a] == '\n')
+    {
+      cc++;
+      a++;
+    }
+    if (cc > line)
+    {
+      break;
+    }
+    if (cc == line)
+    {
+      bufferQueryLine[a2++] = SST25_buffer[a];
+    }
+  }
+  printf("a is %d\r\n", a);
+}
 void slidText2Displayv2()
 {
   if (keyCode == 40)
   {
-    printf("this is right button\r\n");
+    queryLine(1);
+    printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer99));
+    printf("string:%s\r\n", bufferQueryLine);
   }
   else if (keyCode == 38)
   {
-    printf("this is left button\r\n");
+    queryLine(206);
+    printf("string:%s\r\n", bufferQueryLine);
   }
 
-  printf("file sector(%d)\r\n sed (%d)\r\n", AmountSector, AmountSectorT);
+  printf("======================\r\nfile sector(%d)\r\n sed (%d)\r\n", AmountSector, AmountSectorT);
   readSecter(0);
-  printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer));
+  //printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer));
   /*
   AmountSector = addressWriteFlashTemp / sector;
   AmountSectorT = addressWriteFlashTemp % sector;
@@ -749,26 +814,7 @@ char *substringRemoveEnter(char *string, int position, int length)
   *(pointer + c) = '\0';
   return pointer;
 }
-char *strcocpyAt(char *source, int begin, int end)
-{
-  int cc = 0;
-  int cc2 = 0;
-  char buff[notepad_MaxinLine + 2];
-  while (source[cc] != '\0' && cc < end)
-  {
-    if (source[cc] != enterSign)
-    {
-      buff[cc2] = source[cc];
-      cc++;
-      cc2++;
-    }
-    else
-    {
-      break;
-    }
-  }
-  return buff;
-}
+
 int str_cut(char *str, int begin, int len)
 {
   int l = strlen(str);
@@ -886,7 +932,7 @@ void errorBreak()
   USART_SendData(USART2, 151);
   delay_ms(45);
 }
-int getBatterry()
+uint8_t getBatterry()
 {
   USART_SendData(USART2, 150);
   delay_ms(45);
@@ -1769,7 +1815,7 @@ void keyRead()
     //-----------------------------------end mode (4)-------------------------------
     if (mode == 4)
     {
-      stringToUnicodeAndSendToDisplay("Power");
+      stringToUnicodeAndSendToDisplay("Battery level");
     }
     //-----------------------------------end mode (5)-------------------------------
     countKey = 0;
@@ -1954,13 +2000,12 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           {
             buffer22Char[NextPoint - pointer22char] = SST25_buffer99[NextPoint];
           }
-          printf("String buffer is :%s \r\n", SST25_buffer99);
-          printf("End\r\n%s:\r\n", buffer22Char);
+          //printf("String buffer is :%s \r\n", SST25_buffer99);
+          //printf("End\r\n%s:\r\n", buffer22Char);
           //stringToUnicodeAndSendToDisplay(buffer22Char);
           pointer22char += NextPoint + 2;
           NextPoint = pointer22char;
           printStringLR(buffer22Char, 0);
-          text.Length = addressWriteFlashTemp / sector;
           AmountSector = addressWriteFlashTemp / sector;  //---- จำนวน sector ----
           AmountSectorT = addressWriteFlashTemp % sector; //---- เศษ ที่เหลือของ sector ---
           //-----------------------------------display string 20 charactor -----------------------------------
@@ -3867,15 +3912,8 @@ void UART4Send(const unsigned char *pucBuffer, unsigned long ulCount) //UARTSend
     }
   }
 }
-/*******************************************************************************
-  Function Name  : GPIO_Configuration
-  Description    : Configures the different GPIO ports.
-  Input          : None
-  Output         : None
-  Return         : None
-  Attention    : None
-*******************************************************************************/
-void sendUart(int data)
+
+void sendUart(uint8_t data)
 {
   sendUart1 = 0;
   sendUart2 = 0;
@@ -3884,29 +3922,37 @@ void sendUart(int data)
   switch (data)
   {
   case 1:
-    sendUart1 = 1;
+    sendUart1 = true;
     break;
   case 2:
-    sendUart2 = 1;
+    sendUart2 = true;
     break;
   case 3:
-    sendUart3 = 1;
+    sendUart3 = true;
     break;
   case 4:
-    sendUart4 = 1;
+    sendUart4 = true;
     break;
   default:
-    sendUart1 = 0;
-    sendUart2 = 0;
-    sendUart3 = 0;
-    sendUart4 = 0;
+    sendUart1 = false;
+    sendUart2 = false;
+    sendUart3 = false;
+    sendUart4 = false;
     break;
   }
 }
 //-------------------------------------GPIO------------------------------------
 //
 //-----------------------------------------------------------------------------
-///////////////////////////////////////////////////////////////////////////////
+
+/*******************************************************************************
+  Function Name  : GPIO_Configuration
+  Description    : Configures the different GPIO ports.
+  Input          : None
+  Output         : None
+  Return         : None
+  Attention    : None
+*******************************************************************************/
 void GPIO_Configuration(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -4118,74 +4164,6 @@ void USART2_Configuration(void)
   USART_ClearFlag(USART2, USART_FLAG_TC);
   USART_Cmd(USART2, ENABLE);
 }
-/*******************************************************************************
-  Function Name  : ADC_Configuration
-  Description    : Configure the ADC.
-  Input          : None
-  Output         : None
-  Return         : None
-  Attention    : None
-*******************************************************************************/
-//----------------------------adc not use--------------------------------
-//
-//
-/////////////////////////////////////////////////////////////////////////
-void ADC_Configuration(void)
-{
-  ADC_InitTypeDef ADC_InitStructure;
-  DMA_InitTypeDef DMA_InitStructure;
-
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1 | RCC_APB2Periph_AFIO, ENABLE);
-  /* DMA channel1 configuration ----------------------------------------------*/
-  DMA_DeInit(DMA1_Channel1);
-  DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (u32)&ADC_ConvertedValue;
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
-  DMA_InitStructure.DMA_BufferSize = 1;
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-  DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-  DMA_Init(DMA1_Channel1, &DMA_InitStructure);
-
-  /* Enable DMA1 channel1 */
-  DMA_Cmd(DMA1_Channel1, ENABLE);
-
-  /* ADC1 configuration ------------------------------------------------------*/
-  ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
-  ADC_InitStructure.ADC_ScanConvMode = ENABLE;
-  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
-  ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
-  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
-  ADC_InitStructure.ADC_NbrOfChannel = 1;
-  ADC_Init(ADC1, &ADC_InitStructure);
-
-  /* ADC1 regular channel8 configuration */
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 1, ADC_SampleTime_55Cycles5);
-
-  /* Enable ADC1 DMA */
-  ADC_DMACmd(ADC1, ENABLE);
-
-  /* Enable ADC1 */
-  ADC_Cmd(ADC1, ENABLE);
-
-  /* Enable ADC1 reset calibaration register */
-  ADC_ResetCalibration(ADC1);
-  /* Check the end of ADC1 reset calibration register */
-  while (ADC_GetResetCalibrationStatus(ADC1))
-    ;
-  /* Start ADC1 calibaration */
-  ADC_StartCalibration(ADC1);
-  /* Check the end of ADC1 calibration */
-  while (ADC_GetCalibrationStatus(ADC1))
-    ;
-  /* Start ADC1 Software Conversion */
-  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
-}
 
 /**
     @brief  Retargets the C library printf function to the USART.
@@ -4197,19 +4175,19 @@ PUTCHAR_PROTOTYPE
   /* Place your implementation of fputc here */
   /* e.g. write a character to the USART */
   //USART_SendData(UART4, (uint8_t) ch);
-  if (sendUart1 == 1)
+  if (sendUart1 == true)
   {
     USART_SendData(USART1, (uint8_t)ch);
   }
-  if (sendUart2 == 1)
+  if (sendUart2 == true)
   {
     USART_SendData(USART2, (uint8_t)ch);
   }
-  if (sendUart3 == 1)
+  if (sendUart3 == true)
   {
     USART_SendData(USART3, (uint8_t)ch);
   }
-  if (sendUart4 == 1)
+  if (sendUart4 == true)
   {
     USART_SendData(UART4, (uint8_t)ch);
   }

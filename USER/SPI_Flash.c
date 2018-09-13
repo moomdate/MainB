@@ -16,16 +16,15 @@ void sect_clr(unsigned long a1);
 void SST25_W_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 unsigned char SST25_buffer[4096],fac_id,dev_id;
-unsigned char SST25_buffer99[4096];
 
-//++++++++++++Ð´Ê¹ÄÜ +++++++++++++++++
+//++++++++++++Ð´Ê¹ï¿½ï¿½ +++++++++++++++++
 void wen(void){
 	Select_Flash();
 	SPI_Flash_SendByte(0x06);
 	NotSelect_Flash();
 }
 
-//+++++ +++++++ Ð´½ûÖ¹ ++++++++++++++++++
+//+++++ +++++++ Ð´ï¿½ï¿½Ö¹ ++++++++++++++++++
 void wdis(void){
 
 	Select_Flash();
@@ -48,7 +47,7 @@ void wsr(void){
 	
 }
 
-//++++++++++ Ã¦¼ì²â +++++++++
+//++++++++++ Ã¦ï¿½ï¿½ï¿½ +++++++++
 void wip(void){
 	unsigned char a=1;
 	while((a&0x01)==1) a=rdsr();	
@@ -65,7 +64,7 @@ unsigned char rdsr(void){
 	
 }
             
-//+++++++++++++×Ö½ÚÐ´Èë+++++++++++++++++++++++
+//+++++++++++++ï¿½Ö½ï¿½Ð´ï¿½ï¿½+++++++++++++++++++++++
 void bw1(unsigned long a1,unsigned char a2){
 
 	
@@ -83,7 +82,7 @@ void bw1(unsigned long a1,unsigned char a2){
 	
 }
 
-//+++++++++×Ö½Ú¶Á++++++++++++++++++++++++++++
+//+++++++++ï¿½Ö½Ú¶ï¿½++++++++++++++++++++++++++++
 unsigned char br1(unsigned long a1){
 	unsigned char i;
 	Select_Flash();
@@ -97,7 +96,7 @@ unsigned char br1(unsigned long a1){
 }
 
 
-//++++++++++Á¬Ðø¶Á++++++++++++++++++++++++++++
+//++++++++++ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½++++++++++++++++++++++++++++
 void r_sect(unsigned long a){
 	unsigned int i;
 	Select_Flash();
@@ -111,7 +110,7 @@ void r_sect(unsigned long a){
 	NotSelect_Flash();
 }
 
-//+++++++++++++Á¬ÐøÐ´Èë+++++++++++++++++++++++
+//+++++++++++++ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½+++++++++++++++++++++++
 void w_sect(unsigned long a1){
 	unsigned int i=0,a2;
 	
@@ -143,7 +142,7 @@ void w_sect(unsigned long a1){
 	wip();	
 	
 }
-//++++++++++¿é¶Á++++++++++++++++++++++++++++
+//++++++++++ï¿½ï¿½ï¿½++++++++++++++++++++++++++++
 void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize){
 	unsigned int i=0;
 	Select_Flash();
@@ -156,10 +155,10 @@ void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize){
 	}
 	NotSelect_Flash();
 }
-//+++++++++++++¿éÐ´Èë+++++++++++++++++++++++
+//+++++++++++++ï¿½ï¿½Ð´ï¿½ï¿½+++++++++++++++++++++++
 void SST25_W_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize){
 	unsigned int i=0,a2;
-	sect_clr(addr);    //Çå³ýaddr¿ªÊ¼µÄ4096¸ö×Ö½ÚµÄ¿é
+	sect_clr(addr);    //ï¿½ï¿½ï¿½addrï¿½ï¿½Ê¼ï¿½ï¿½4096ï¿½ï¿½ï¿½Ö½ÚµÄ¿ï¿½
 	wsr();
   	wen(); 
 	Select_Flash();    
@@ -205,7 +204,7 @@ void sect_clr(unsigned long a1){
 	
 }
 
-//========¶ÁÆ÷¼þ³§¼ÒÐÅÏ¢
+//========ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 void FlashReadID(void)
 {
 

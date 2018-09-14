@@ -16,7 +16,7 @@ void sect_clr(unsigned long a1);
 void SST25_W_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 unsigned char SST25_buffer[4096],fac_id,dev_id;
-
+unsigned char SST25_bufferCC[4096];
 //++++++++++++дʹ�� +++++++++++++++++
 void wen(void){
 	Select_Flash();

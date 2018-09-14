@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "stdio.h": "c"
-    }
+    },
+    "editor.fontFamily": "SOV_monomon, 'Courier New', monospace"
 }

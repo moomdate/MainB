@@ -7,7 +7,6 @@
 #include "stm32f10x_spi.h"
 #include "ch376s.c"
 #include "readMode.c"
-
 //------------------------ typedef boolean------------------------
 //================================================================
 typedef uint8_t bool;
@@ -46,8 +45,8 @@ typedef uint8_t bool;
 #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
 #endif /* __GNUC__ */
 
-void writeFlash(int address, int size);
-void writeFlash2(int address, int size);
+void writeFlash(int address);
+void clearSector(int address);
 int addressWriteFlashTemp = 0x0;
 int countSector4096 = 0;
 int countSector = 0;
@@ -235,7 +234,7 @@ bool sendUart4 = false;
 /*-----------------------------spi flash------------------------------------------*/
 extern void SPI_Flash_Init(void);
 extern unsigned char SST25_buffer[];
-/* Private define ------------------------------------------------------------*/
+extern unsigned char SST25_bufferCC[];
 #define TxBufferSize1 (countof(TxBuffer1) - 1)
 #define RxBufferSize1 (countof(TxBuffer1) - 1)
 
@@ -407,21 +406,30 @@ void MemSize()
   printf("uint32_t size :%d Byte\r\n", sizeof(uint32_t));
   printf("long     size :%d Byte\r\n", sizeof(long));
 }
+
 void displayPrepare(void);
-void testCell(void);
-void StoreLine(void);
-void StoreLineClear(void);
-void initSlidnigMode(void);
+void testCell(void);  //test cell in mode
+void StoreLine(void); //store line in  struct [lineInsector]
+
+void StoreLineClear(void);        //clear store  in  struct [lineInsector]
+void initSlidingMode(void);       //befor use struce
+void clearUnsignChar(void);       //clear buffer SST25_buffer
+void clearReadlineInsector(void); //clear  struct [lineInsector]
+
+#define lineInSectorBufferSize 100 //100*2 byte
 
 typedef struct lineSlider
 {
-  int cerrentLine;
-  int cerrentSecter;
+  int currentLine;
+  //int currentSector;
   int TotalSector;
   int sesString;
   uint16_t currentSector;
-  uint16_t lineInsector[10];
+  uint16_t lineInsector[lineInSectorBufferSize];
+  char strTemp[42];
+  char strTemp2[42];
 } lineSlider;
+
 lineSlider read;
 
 /*******************************************************************************
@@ -491,6 +499,11 @@ int main(void)
       mode4();
     }
   }
+}
+void clearUnsignChar()
+{
+  for (i = 0; i < 4096; i++)
+    SST25_buffer[i] = '\0';
 }
 void testCell()
 {
@@ -643,7 +656,6 @@ void mainMenuDisplayMode4(int numb)
     break;
   }
 }
-
 char *getBluetoothName()
 {
   char *pp;
@@ -712,49 +724,111 @@ void queryLine(int line)
   }
   // printf("a is %d\r\n", a);
 }
+/*
+// sliding text after read text to rom 
+▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
+▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
+▒▒▄▀▀▄▄█░▒▒▒▒▒▒▓▒▒▒▒█░░▀▄▄▄▄▄▀░░█
+▒▒█░░░░█░▒▒▒▒▒▒▒▒▒▒▒█░░░░░░░░░░░█
+▒▒▒▀▀▄▄█░▒▒▒▒▓▒▒▒▓▒█░░░█▒░░░░█▒░░█
+▒▒▒▒▒▒▒█░▒▓▒▒▒▒▓▒▒▒█░░░░░░░▀░░░░░█
+▒▒▒▒▒▄▄█░▒▒▒▓▒▒▒▒▒▒▒█░░█▄▄█▄▄█░░█
+▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
+▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
+*/
+/*
+
+*/
 void slidText2Displayv2()
 {
+  //clearUnsignChar();
+  //readSecter(0);
+  //printf("string : %s \r\n stringlength %d \r\n", SST25_buffer,AmountSectorT);
+
   if (keyCode == 38)
   {
-    read.cerrentLine--;
-    queryLine(read.cerrentLine);
-    printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer));
-    printf("string (%d):%s\r\n", read.cerrentLine, bufferQueryLine);
+    if (read.currentLine > 0)
+    {
+      read.currentLine--;
+    }
+    /*else if (read.currentSector > 0) // next sector
+    {
+      read.currentSector--;
+      readSecter(read.currentSector * sector);
+      read.currentLine = read.lineInsector[read.currentSector];
+      printf("=========================================\r\n");
+      printf("previus sector \r\n");
+      printf("=========================================\r\n");
+    }*/
+    if (read.currentSector != 0 && read.currentLine == 0)
+    {
+      queryLine(read.currentLine);
+      strcpy(read.strTemp2, bufferQueryLine); // line 0
+      read.currentSector--;
+      readSecter(read.currentSector * sector);
+      read.currentLine = read.lineInsector[read.currentSector]; //last line in sector
+      queryLine(read.currentLine);
+      strcpy(read.strTemp, bufferQueryLine);
+      strcat(read.strTemp, read.strTemp2);
+
+      printf("=========================================\r\n");
+      printf("prevoiuse sector \r\n");
+      printf("=========================================\r\n");
+    }
   }
   else if (keyCode == 40)
   {
-    if (read.cerrentLine < read.lineInsector[read.cerrentSecter])
+    if (read.currentLine < read.lineInsector[read.currentSector])
     {
-      read.cerrentLine++;
+      read.currentLine++;
     }
-    else
+    /*=========================================================
+     แก้รอยต่อระหว่าง sector ตัวอย่างเช่น
+    sector 1: aaaaaaaaaaaaaaaaaaa
+               bbbbbbbbb
+    sector 2: bbbbbbbbbb
+              ccccccccccccccccccc
+    จะเห็นว่าบรรทัดสุด้ายของ Sector 1 ขาดไปอยู่ที่บรรทัดแรกของ Sector 2
+    ส่วนนี้จะทำหน้าที่ต่อเข้ากัน โดนใช้ strTemp in struct และอ่าน sector ถีดไป
+    =========================================================*/
+    if (read.currentLine == read.lineInsector[read.currentSector] && read.currentSector < read.TotalSector)
     {
-      if (read.cerrentSecter < read.TotalSector)
-      {
-        read.cerrentSecter++;
-        readSecter(read.cerrentSecter);
-      }
-    }
-    queryLine(read.cerrentLine);
-    printf("string (%d):%s\r\n", read.cerrentLine, bufferQueryLine);
-  }
-  for (i = 0; i <= read.TotalSector; i++)
-  {
-    printf("Line (%d)\r\n", read.lineInsector[i]);
-  }
-  //printf("======================\r\nfile sector(%d)\r\nsed (%d)\r\n", AmountSector, AmountSectorT);
+      queryLine(read.currentLine);
+      strcpy(read.strTemp, bufferQueryLine);
+      read.currentSector++;
+      readSecter(read.currentSector * sector);
+      read.currentLine = 0;
+      queryLine(read.currentLine);
+      strcat(read.strTemp, bufferQueryLine);
 
-  //printf("count r n (%d)\r\n", readmode_countLineInOneSector(SST25_buffer));
-  /*
-  AmountSector = addressWriteFlashTemp / sector;
-  AmountSectorT = addressWriteFlashTemp % sector;
-  */
+      printf("=========================================\r\n");
+      printf("next sector \r\n");
+      printf("=========================================\r\n");
+    }
+  }
+  if (strlen(read.strTemp) != 0)
+  {
+    printf("string:%s\r\n", read.strTemp);
+    memset(read.strTemp, '\0', sizeof(read.strTemp));
+    memset(read.strTemp2, '\0', sizeof(read.strTemp2));
+  }
+  else
+  {
+    queryLine(read.currentLine);
+    printf("string (%d) :%s\r\n", read.currentLine, bufferQueryLine);
+  }
+  /*for (i = 0; i <= read.TotalSector; i++)
+  {
+    printf("line %d\r\n", read.lineInsector[i]);
+  }*/
+  printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
 }
 void StoreLine()
 {
   for (i = 0; i <= read.TotalSector; i++)
   {
-    readSecter(i);
+    readSecter(i * sector);
     read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer);
   }
 }
@@ -1965,6 +2039,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
             for (i = addressWriteFlashTemp; i < addressWriteFlashTemp + 512; i++)
             {
               SST25_buffer[i - (sector * countSector)] = dataTemp512[i - addressWriteFlashTemp];
+              dataTemp512[i - addressWriteFlashTemp] = '\0'; //clear buffer
             }
             //  ทำการเพิ่มจำนวนตัวแปรที่นับ sector:countSector4096
             countSector4096++;
@@ -1979,7 +2054,9 @@ int readFileFromCH376sToFlashRom(char *fileName___)
               //////////////////////////////////////////////////////////////////
               //use variable:SST25_W_BLOCK
               // stringToUnicodeAndSendToDisplay("Reading....");
-              writeFlash(addressSector, sector);
+              writeFlash(addressSector);
+              clearUnsignChar();
+
               //Delay(0xff);
               stringToUnicodeAndSendToDisplay("Reading....");
               addressSector += sector;
@@ -2008,54 +2085,42 @@ int readFileFromCH376sToFlashRom(char *fileName___)
         if (waitEnd == 100 * 100) // end of file check time out
         {
           beepError();
-          // printf("end----------------------------------------------------------------------------------------------------------\r\n");
-          //---------------------------- last sector ----------------------------------
-          //
-          /////////////////////////////////////////////////////////////////////////////
           for (i = addressWriteFlashTemp; i < addressWriteFlashTemp + 512; i++)
           {
             SST25_buffer[i - (sector * countSector)] = dataTemp512[i - addressWriteFlashTemp];
           }
           configFlash();
-          writeFlash(addressSector, sector);
+          writeFlash(addressSector);
+
           addressWriteFlashTemp += countdataTemp512;
           waitEnd++;
           //----------------------store last sector to flash rom-----------------------
           //
           /////////////////////////////////////////////////////////////////////////////
-
-          SPI_FLASH_CS_LOW();
+         // readSecter(0);
+          //printf("string** : %s \r\nEND**", SST25_buffer);
+          /*SPI_FLASH_CS_LOW();
           SST25_R_BLOCK(0, SST25_buffer, sector);
           SPI_FLASH_CS_HIGH();
           Delay(0xffff);
-          convert_text2_buffer(SST25_buffer);
-          //notepad_currentLine = 90;
-          //printf("======================\r\n value:%s", notepad_buffer_string[0]);
+          convert_text2_buffer(SST25_buffer);*/
+
           endReadFile = 1;
-          //---------------------------------------------------------------------------
-          //
-          //NextPoint; -> ทำแหน่งที่จะอ่าน String ชุดถีดไป
-          //pointer22char -> buffer ทำแหน่ง string ล่าสุด รวม 0x0d,0x0a
-          /////////////////////////////////////////////////////////////////////////////
-          //- first line index at 0 to 0x0a->0x0d;
-          // \r,\n
+
           for (NextPoint = pointer22char; SST25_buffer[NextPoint] != 0x0d; NextPoint++)
           {
             buffer22Char[NextPoint - pointer22char] = SST25_buffer[NextPoint];
           }
-          //printf("String buffer is :%s \r\n", SST25_buffer);
-          //printf("End\r\n%s:\r\n", buffer22Char);
-          //stringToUnicodeAndSendToDisplay(buffer22Char);
+
           pointer22char += NextPoint + 2;
           NextPoint = pointer22char;
           printStringLR(buffer22Char, 0);
           AmountSector = addressWriteFlashTemp / sector;  //---- จำนวน sector ----
           AmountSectorT = addressWriteFlashTemp % sector; //---- เศษ ที่เหลือของ sector ---
 
-          initSlidnigMode();
-          //-----------------------------------display string 20 charactor -----------------------------------
-          //
-          ////////////////////////////////////////////////////////////////////////////////////////////////////
+          initSlidingMode();
+          //  read.currentLine = 210;
+          readSecter(0);
           while (endReadFile == 1)
           { // query string-
             // menu_s();
@@ -2068,13 +2133,19 @@ int readFileFromCH376sToFlashRom(char *fileName___)
   }
   return 0;
 }
-void initSlidnigMode()
+void initSlidingMode()
 {
   read.TotalSector = AmountSector;
   read.sesString = AmountSectorT;
-  read.cerrentLine = 0;
-  read.cerrentSecter = 0;
+  read.currentLine = 0;
+  read.currentSector = 0;
+  clearReadlineInsector();
   StoreLine();
+}
+void clearReadlineInsector()
+{
+  for (i = 0; i < sizeof(read.lineInsector) / sizeof(read.lineInsector[0]); i++)
+    read.lineInsector[i] = '\0';
 }
 //------------------slidingFileFromRomToDisplay--------------------------
 //.
@@ -3291,24 +3362,25 @@ void copy_string(char *target, char *source)
 //
 //
 ////////////////////////////////////////////////////////////////////
-void writeFlash(int address, int size)
+void writeFlash(int address)
 {
-  //-- งง --//
+  SPI_DISPLAY_CS_LOW(); //
+  configFlash();
+  SPI_FLASH_CS_LOW();
+  SST25_W_BLOCK(address, SST25_buffer, sector);
+  SPI_FLASH_CS_HIGH();
+}
+void clearSector(int address)
+{
   SPI_DISPLAY_CS_LOW();
-  //-- -- //
+  for (i = 0; i < 4096; i++)
+    SST25_bufferCC[i] = '\0';
   configFlash();
   SPI_FLASH_CS_LOW();
-  SST25_W_BLOCK(address, SST25_buffer, sector);
+  SST25_W_BLOCK(address, SST25_bufferCC, sector);
   SPI_FLASH_CS_HIGH();
 }
-void writeFlash2(int address, int size)
-{
-  configFlash();
-  SPI_FLASH_CS_LOW();
-  SST25_W_BLOCK(address, SST25_buffer, sector);
-  //printf("---test-----%s",SST25_buffer);
-  SPI_FLASH_CS_HIGH();
-}
+
 //------------------------read file ยังไม่ได้ Optimize-----------------
 //
 //

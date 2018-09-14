@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Sep 13 16:46:47 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Sep 14 17:22:35 2018
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -12,7 +12,7 @@ Call chain for Maximum Stack Depth:</H3>
 <H3>
 Mutually Recursive functions
 </H3> <LI><a href="#[1c]">ADC1_2_IRQHandler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[1c]">ADC1_2_IRQHandler</a><BR>
- <LI><a href="#[b9]">readFileFromCH376sToFlashRom</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[b6]">keyRead</a><BR>
+ <LI><a href="#[ba]">readFileFromCH376sToFlashRom</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[b7]">keyRead</a><BR>
 </UL>
 <P>
 <H3>
@@ -301,8 +301,8 @@ Global Symbols
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 </UL>
 
-<P><STRONG><a name="[dc]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<P><STRONG><a name="[dd]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
 </UL>
 
 <P><STRONG><a name="[4e]"></a>__aeabi_memset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, memseta.o(.text))
@@ -313,15 +313,17 @@ Global Symbols
 <P><STRONG><a name="[4d]"></a>__aeabi_memclr</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, memseta.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
+<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
 </UL>
 
 <P><STRONG><a name="[ac]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFile4096
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
 </UL>
 
@@ -330,8 +332,9 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[6d]"></a>strcat</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strcat.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR><BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_cdWithPath
@@ -339,26 +342,27 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[a6]"></a>strstr</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, strstr.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR><BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[a5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_checkFileType
 </UL>
 
-<P><STRONG><a name="[c7]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<P><STRONG><a name="[c8]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 
 <P><STRONG><a name="[a4]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFile4096
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_exitOncePath
@@ -366,10 +370,11 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[ad]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR><BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
 </UL>
 
@@ -422,11 +427,10 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_hd.o(RESET)
 </UL>
 <P><STRONG><a name="[5b]"></a>Delay</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.Delay))
-<BR><BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<BR><BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BluetoothMode
@@ -461,17 +465,16 @@ Global Symbols
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wen
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sect_clr
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
-<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BluetoothMode
 </UL>
@@ -481,15 +484,14 @@ Global Symbols
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wen
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sect_clr
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
-<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
@@ -561,7 +563,7 @@ Global Symbols
 <P><STRONG><a name="[6f]"></a>SPI_Flash_ReadByte</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, spi_flash.o(i.SPI_Flash_ReadByte))
 <BR><BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_SendByte
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
 </UL>
 
@@ -574,7 +576,7 @@ Global Symbols
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wen
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sect_clr
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_ReadByte
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
@@ -611,7 +613,6 @@ Global Symbols
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
 <P><STRONG><a name="[72]"></a>SST25_W_BLOCK</STRONG> (Thumb, 172 bytes, Stack size 0 bytes, spi_flash.o(i.SST25_W_BLOCK))
@@ -624,7 +625,7 @@ Global Symbols
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 </UL>
-<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 </UL>
 
 <P><STRONG><a name="[6]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.SVC_Handler))
@@ -637,9 +638,9 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFilename
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFileWrite
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFileLength
-<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fileWrite
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFileAndWrite
@@ -650,15 +651,15 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetFlagStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
+<BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 </UL>
 
-<P><STRONG><a name="[7c]"></a>StoreLine</STRONG> (Thumb, 62 bytes, Stack size 0 bytes, main.o(i.StoreLine))
+<P><STRONG><a name="[7c]"></a>StoreLine</STRONG> (Thumb, 64 bytes, Stack size 0 bytes, main.o(i.StoreLine))
 <BR><BR>[Calls]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readmode_countLineInOneSector
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initSlidnigMode
+<BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initSlidingMode
 </UL>
 
 <P><STRONG><a name="[9b]"></a>SysTick_CLKSourceConfig</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, misc.o(i.SysTick_CLKSourceConfig))
@@ -759,13 +760,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[55]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
-<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
-<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getMuteStatus
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBatterry
@@ -792,13 +793,13 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[56]"></a>USART_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ReceiveData))
-<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
-<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getMuteStatus
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBatterry
@@ -827,23 +828,24 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[57]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
-<BR><BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
+<BR><BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;substringRemoveEnter
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
-<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFileWrite
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFileLength
-<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
+<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFile
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PrepareText
@@ -856,37 +858,37 @@ Global Symbols
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 </UL>
 
-<P><STRONG><a name="[c3]"></a>__2sprintf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0sprintf$5))
-<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<P><STRONG><a name="[c4]"></a>__2sprintf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0sprintf$5))
+<BR><BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 </UL>
 
 <P><STRONG><a name="[8c]"></a>beepError</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, main.o(i.beepError))
 <BR><BR>[Calls]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendCommandtoAtmega
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
 <P><STRONG><a name="[8e]"></a>caseMenu</STRONG> (Thumb, 64 bytes, Stack size 0 bytes, main.o(i.caseMenu))
 <BR><BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
 <P><STRONG><a name="[5c]"></a>cell_sentdata</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.cell_sentdata))
 <BR><BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BluetoothMode
 </UL>
 
-<P><STRONG><a name="[c1]"></a>checkBit</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.checkBit))
-<BR><BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
+<P><STRONG><a name="[c2]"></a>checkBit</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.checkBit))
+<BR><BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
 </UL>
 
 <P><STRONG><a name="[92]"></a>clearDot</STRONG> (Thumb, 68 bytes, Stack size 0 bytes, main.o(i.clearDot))
@@ -895,20 +897,28 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 </UL>
 
-<P><STRONG><a name="[c5]"></a>clearKeyValue</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.clearKeyValue))
-<BR><BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<P><STRONG><a name="[c6]"></a>clearKeyValue</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.clearKeyValue))
+<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+</UL>
+
+<P><STRONG><a name="[b6]"></a>clearReadlineInsector</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, main.o(i.clearReadlineInsector))
+<BR><BR>[Called By]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initSlidingMode
+</UL>
+
+<P><STRONG><a name="[dc]"></a>clearUnsignChar</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, main.o(i.clearUnsignChar))
+<BR><BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
 <P><STRONG><a name="[93]"></a>configDisplay</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.configDisplay))
 <BR><BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<BR>[Called By]<UL><LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -916,13 +926,9 @@ Global Symbols
 <P><STRONG><a name="[95]"></a>configFlash</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.configFlash))
 <BR><BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-</UL>
-
-<P><STRONG><a name="[db]"></a>convert_text2_buffer</STRONG> (Thumb, 126 bytes, Stack size 0 bytes, main.o(i.convert_text2_buffer))
-<BR><BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
 <P><STRONG><a name="[96]"></a>createFile</STRONG> (Thumb, 266 bytes, Stack size 0 bytes, main.o(i.createFile))
@@ -943,7 +949,7 @@ Global Symbols
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PrepareText
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 </UL>
 
 <P><STRONG><a name="[9a]"></a>delay_init</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, systick.o(i.delay_init))
@@ -959,14 +965,14 @@ Global Symbols
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_GetFlagStatus
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CounterCmd
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
-<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getMuteStatus
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBatterry
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fileWrite
@@ -990,7 +996,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
 </UL>
 
 <P><STRONG><a name="[a2]"></a>ex_cdWithPath</STRONG> (Thumb, 132 bytes, Stack size 0 bytes, main.o(i.ex_cdWithPath))
@@ -998,13 +1004,13 @@ Global Symbols
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
 <P><STRONG><a name="[a5]"></a>ex_checkFileType</STRONG> (Thumb, 50 bytes, Stack size 0 bytes, main.o(i.ex_checkFileType))
 <BR><BR>[Calls]<UL><LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
 <P><STRONG><a name="[aa]"></a>ex_checkSlash</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.ex_checkSlash))
@@ -1013,7 +1019,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[a8]"></a>ex_countPath</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.ex_countPath))
-<BR><BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR><BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_exitOncePath
 </UL>
 
@@ -1021,7 +1027,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_countPath
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
 <P><STRONG><a name="[a3]"></a>ex_openDir</STRONG> (Thumb, 276 bytes, Stack size 0 bytes, main.o(i.ex_openDir))
@@ -1036,8 +1042,8 @@ Global Symbols
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_checkSlash
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_cdWithPath
 </UL>
 
@@ -1048,11 +1054,11 @@ Global Symbols
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_checkSlash
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
-<P><STRONG><a name="[de]"></a>fileName</STRONG> (Thumb, 342 bytes, Stack size 0 bytes, main.o(i.fileName))
-<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<P><STRONG><a name="[df]"></a>fileName</STRONG> (Thumb, 342 bytes, Stack size 0 bytes, main.o(i.fileName))
+<BR><BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
 </UL>
 
 <P><STRONG><a name="[ae]"></a>fileWrite</STRONG> (Thumb, 402 bytes, Stack size 0 bytes, main.o(i.fileWrite))
@@ -1079,7 +1085,7 @@ Global Symbols
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 </UL>
 
 <P><STRONG><a name="[b2]"></a>getBluetoothName</STRONG> (Thumb, 138 bytes, Stack size 0 bytes, main.o(i.getBluetoothName))
@@ -1098,22 +1104,23 @@ Global Symbols
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 </UL>
 
-<P><STRONG><a name="[b5]"></a>initSlidnigMode</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.initSlidnigMode))
-<BR><BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
+<P><STRONG><a name="[b5]"></a>initSlidingMode</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, main.o(i.initSlidingMode))
+<BR><BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearReadlineInsector
+<LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-</UL>
-
-<P><STRONG><a name="[b7]"></a>keyMapping</STRONG> (Thumb, 180 bytes, Stack size 0 bytes, main.o(i.keyMapping))
-<BR><BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
-<P><STRONG><a name="[b6]"></a>keyRead</STRONG> (Thumb, 906 bytes, Stack size 0 bytes, main.o(i.keyRead))
+<P><STRONG><a name="[b8]"></a>keyMapping</STRONG> (Thumb, 180 bytes, Stack size 0 bytes, main.o(i.keyMapping))
+<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+</UL>
+
+<P><STRONG><a name="[b7]"></a>keyRead</STRONG> (Thumb, 906 bytes, Stack size 0 bytes, main.o(i.keyRead))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
@@ -1121,9 +1128,9 @@ Global Symbols
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
-<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_exitOncePath
@@ -1133,12 +1140,12 @@ Global Symbols
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;caseMenu
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beepError
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ba]"></a>keyboardMode</STRONG> (Thumb, 152 bytes, Stack size 0 bytes, main.o(i.keyboardMode))
+<P><STRONG><a name="[bb]"></a>keyboardMode</STRONG> (Thumb, 152 bytes, Stack size 0 bytes, main.o(i.keyboardMode))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
@@ -1154,12 +1161,12 @@ Global Symbols
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendUart
-<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prepareSD_Card
+<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;displayPrepare
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configDisplay
@@ -1174,10 +1181,10 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[bf]"></a>mainMenuDisplayMode4</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.mainMenuDisplayMode4))
+<P><STRONG><a name="[c0]"></a>mainMenuDisplayMode4</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.mainMenuDisplayMode4))
 <BR><BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 </UL>
 
 <P><STRONG><a name="[b3]"></a>malloc</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, malloc.o(i.malloc))
@@ -1185,138 +1192,138 @@ Global Symbols
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 </UL>
 
-<P><STRONG><a name="[c0]"></a>mapCursor</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.mapCursor))
-<BR><BR>[Calls]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;checkBit
+<P><STRONG><a name="[c1]"></a>mapCursor</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.mapCursor))
+<BR><BR>[Calls]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;checkBit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[be]"></a>mode4</STRONG> (Thumb, 458 bytes, Stack size 0 bytes, main.o(i.mode4))
-<BR><BR>[Calls]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
+<P><STRONG><a name="[bf]"></a>mode4</STRONG> (Thumb, 458 bytes, Stack size 0 bytes, main.o(i.mode4))
+<BR><BR>[Calls]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
-<LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendCommandtoAtmega
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
-<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mainMenuDisplayMode4
-<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mainMenuDisplayMode4
+<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getMuteStatus
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBatterry
-<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
+<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[c6]"></a>notepad_append</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, main.o(i.notepad_append))
+<P><STRONG><a name="[c7]"></a>notepad_append</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, main.o(i.notepad_append))
 <BR><BR>[Calls]<UL><LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
 </UL>
 
-<P><STRONG><a name="[c8]"></a>notepad_checkEnterSignInLine</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_checkEnterSignInLine))
+<P><STRONG><a name="[c9]"></a>notepad_checkEnterSignInLine</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_checkEnterSignInLine))
 <BR><BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 </UL>
 
-<P><STRONG><a name="[c9]"></a>notepad_checkMaxLine</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.notepad_checkMaxLine))
-<BR><BR>[Calls]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
+<P><STRONG><a name="[ca]"></a>notepad_checkMaxLine</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.notepad_checkMaxLine))
+<BR><BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-</UL>
-
-<P><STRONG><a name="[cb]"></a>notepad_checkenterAndpush</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, main.o(i.notepad_checkenterAndpush))
-<BR><BR>[Calls]<UL><LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
-</UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[ce]"></a>notepad_countEnterSign</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.notepad_countEnterSign))
-<BR><BR>[Called By]<UL><LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<P><STRONG><a name="[cc]"></a>notepad_checkenterAndpush</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, main.o(i.notepad_checkenterAndpush))
+<BR><BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+</UL>
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[cd]"></a>notepad_countLinewithOutLNsign</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.notepad_countLinewithOutLNsign))
-<BR><BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<P><STRONG><a name="[cf]"></a>notepad_countEnterSign</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.notepad_countEnterSign))
+<BR><BR>[Called By]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 </UL>
 
-<P><STRONG><a name="[ca]"></a>notepad_countStr</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, main.o(i.notepad_countStr))
-<BR><BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
-<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
+<P><STRONG><a name="[ce]"></a>notepad_countLinewithOutLNsign</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.notepad_countLinewithOutLNsign))
+<BR><BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 </UL>
 
-<P><STRONG><a name="[cc]"></a>notepad_fillEnterSign</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.notepad_fillEnterSign))
+<P><STRONG><a name="[cb]"></a>notepad_countStr</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, main.o(i.notepad_countStr))
+<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
+</UL>
+
+<P><STRONG><a name="[cd]"></a>notepad_fillEnterSign</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.notepad_fillEnterSign))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countEnterSign
-<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countEnterSign
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-</UL>
-
-<P><STRONG><a name="[cf]"></a>notepad_getnullPostion</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.notepad_getnullPostion))
-<BR><BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[d1]"></a>notepad_lineIsEnter</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_lineIsEnter))
-<BR><BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<P><STRONG><a name="[d0]"></a>notepad_getnullPostion</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.notepad_getnullPostion))
+<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[bc]"></a>notepad_main</STRONG> (Thumb, 1954 bytes, Stack size 0 bytes, main.o(i.notepad_main))
+<P><STRONG><a name="[d2]"></a>notepad_lineIsEnter</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_lineIsEnter))
+<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+</UL>
+
+<P><STRONG><a name="[bd]"></a>notepad_main</STRONG> (Thumb, 1954 bytes, Stack size 0 bytes, main.o(i.notepad_main))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
-<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
-<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_lineIsEnter
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_getnullPostion
-<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
-<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
-<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
-<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
-<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
-<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
-<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
-<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
-<LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
+<LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
+<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
+<LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_lineIsEnter
+<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_getnullPostion
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
+<LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
+<LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
+<LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
+<LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[c2]"></a>notepad_readKey</STRONG> (Thumb, 134 bytes, Stack size 0 bytes, main.o(i.notepad_readKey))
+<P><STRONG><a name="[c3]"></a>notepad_readKey</STRONG> (Thumb, 134 bytes, Stack size 0 bytes, main.o(i.notepad_readKey))
 <BR><BR>[Calls]<UL><LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 </UL>
 
-<P><STRONG><a name="[d4]"></a>notepad_removeEnterSign</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, main.o(i.notepad_removeEnterSign))
-<BR><BR>[Calls]<UL><LI><a href="#[d2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<P><STRONG><a name="[d5]"></a>notepad_removeEnterSign</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, main.o(i.notepad_removeEnterSign))
+<BR><BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[bb]"></a>prepareSD_Card</STRONG> (Thumb, 330 bytes, Stack size 0 bytes, main.o(i.prepareSD_Card))
+<P><STRONG><a name="[bc]"></a>prepareSD_Card</STRONG> (Thumb, 330 bytes, Stack size 0 bytes, main.o(i.prepareSD_Card))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
@@ -1333,34 +1340,34 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<BR>[Called By]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;displayPrepare
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;caseMenu
 </UL>
 
-<P><STRONG><a name="[d5]"></a>printStringInLine</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
+<P><STRONG><a name="[d6]"></a>printStringInLine</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[d7]"></a>printStringLR</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, main.o(i.printStringLR))
+<P><STRONG><a name="[d8]"></a>printStringLR</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, main.o(i.printStringLR))
 <BR><BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
-<P><STRONG><a name="[d8]"></a>queryLine</STRONG> (Thumb, 80 bytes, Stack size 0 bytes, main.o(i.queryLine))
+<P><STRONG><a name="[d9]"></a>queryLine</STRONG> (Thumb, 80 bytes, Stack size 0 bytes, main.o(i.queryLine))
 <BR><BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
-<P><STRONG><a name="[d9]"></a>rdsr</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, spi_flash.o(i.rdsr))
+<P><STRONG><a name="[da]"></a>rdsr</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, spi_flash.o(i.rdsr))
 <BR><BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_SendByte
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_ReadByte
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
@@ -1369,26 +1376,24 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wip
 </UL>
 
-<P><STRONG><a name="[b9]"></a>readFileFromCH376sToFlashRom</STRONG> (Thumb, 916 bytes, Stack size 0 bytes, main.o(i.readFileFromCH376sToFlashRom))
-<BR><BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
+<P><STRONG><a name="[ba]"></a>readFileFromCH376sToFlashRom</STRONG> (Thumb, 904 bytes, Stack size 0 bytes, main.o(i.readFileFromCH376sToFlashRom))
+<BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
-<LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
-<LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
-<LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
-<LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFilename
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
-<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initSlidnigMode
-<LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;convert_text2_buffer
+<LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initSlidingMode
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configFlash
+<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearUnsignChar
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beepError
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
-<LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
 <P><STRONG><a name="[7d]"></a>readSecter</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.readSecter))
@@ -1398,24 +1403,24 @@ Global Symbols
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configFlash
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
 </UL>
 
 <P><STRONG><a name="[7e]"></a>readmode_countLineInOneSector</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.readmode_countLineInOneSector))
-<BR><BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
-<LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
+<BR><BR>[Called By]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
 </UL>
 
-<P><STRONG><a name="[d2]"></a>removeChar</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.removeChar))
+<P><STRONG><a name="[d3]"></a>removeChar</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.removeChar))
 <BR><BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
+<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[d0]"></a>saveName</STRONG> (Thumb, 644 bytes, Stack size 0 bytes, main.o(i.saveName))
+<P><STRONG><a name="[d1]"></a>saveName</STRONG> (Thumb, 644 bytes, Stack size 0 bytes, main.o(i.saveName))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
@@ -1423,15 +1428,15 @@ Global Symbols
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFileAndWrite
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[bd]"></a>searchFile2</STRONG> (Thumb, 590 bytes, Stack size 0 bytes, main.o(i.searchFile2))
+<P><STRONG><a name="[be]"></a>searchFile2</STRONG> (Thumb, 590 bytes, Stack size 0 bytes, main.o(i.searchFile2))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
@@ -1439,8 +1444,8 @@ Global Symbols
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFilename
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
-<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fileName
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fileName
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;errorBreak
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
@@ -1463,14 +1468,14 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_SendData
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetFlagStatus
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beepError
 </UL>
 
 <P><STRONG><a name="[59]"></a>sendUart</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, main.o(i.sendUart))
 <BR><BR>[Called By]<UL><LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFileWrite
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
+<LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BluetoothMode
 </UL>
 
@@ -1500,20 +1505,24 @@ Global Symbols
 <P><STRONG><a name="[97]"></a>setFilename</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.setFilename))
 <BR><BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fileWrite
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFile
 </UL>
 
-<P><STRONG><a name="[b8]"></a>slidText2Displayv2</STRONG> (Thumb, 190 bytes, Stack size 0 bytes, main.o(i.slidText2Displayv2))
+<P><STRONG><a name="[b9]"></a>slidText2Displayv2</STRONG> (Thumb, 350 bytes, Stack size 0 bytes, main.o(i.slidText2Displayv2))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
-<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readmode_countLineInOneSector
+<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
+<LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
+<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
 <P><STRONG><a name="[90]"></a>stringToUnicodeAndSendToDisplay</STRONG> (Thumb, 218 bytes, Stack size 0 bytes, main.o(i.stringToUnicodeAndSendToDisplay))
@@ -1524,20 +1533,20 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mainMenuDisplayMode4
+<BR>[Called By]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mainMenuDisplayMode4
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
+<LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;displayPrepare
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;caseMenu
 </UL>
 
-<P><STRONG><a name="[dd]"></a>stringToUnicodeAndSendToDisplayC</STRONG> (Thumb, 288 bytes, Stack size 0 bytes, main.o(i.stringToUnicodeAndSendToDisplayC))
+<P><STRONG><a name="[de]"></a>stringToUnicodeAndSendToDisplayC</STRONG> (Thumb, 288 bytes, Stack size 0 bytes, main.o(i.stringToUnicodeAndSendToDisplayC))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
@@ -1545,19 +1554,19 @@ Global Symbols
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<BR>[Called By]<UL><LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 </UL>
 
-<P><STRONG><a name="[d6]"></a>subStringLanR</STRONG> (Thumb, 146 bytes, Stack size 0 bytes, main.o(i.subStringLanR))
+<P><STRONG><a name="[d7]"></a>subStringLanR</STRONG> (Thumb, 146 bytes, Stack size 0 bytes, main.o(i.subStringLanR))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-<LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
 <P><STRONG><a name="[6c]"></a>substringRemoveEnter</STRONG> (Thumb, 88 bytes, Stack size 0 bytes, main.o(i.substringRemoveEnter))
@@ -1567,7 +1576,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PrepareText
 </UL>
 
-<P><STRONG><a name="[c4]"></a>testCell</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, main.o(i.testCell))
+<P><STRONG><a name="[c5]"></a>testCell</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, main.o(i.testCell))
 <BR><BR>[Calls]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
@@ -1575,13 +1584,13 @@ Global Symbols
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 </UL>
-<BR>[Called By]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
+<BR>[Called By]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 </UL>
 
-<P><STRONG><a name="[d3]"></a>unicode_to_ASCII</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, main.o(i.unicode_to_ASCII))
+<P><STRONG><a name="[d4]"></a>unicode_to_ASCII</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, main.o(i.unicode_to_ASCII))
 <BR><BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
+<BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
 <P><STRONG><a name="[76]"></a>wdis</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, spi_flash.o(i.wdis))
@@ -1603,7 +1612,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[77]"></a>wip</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, spi_flash.o(i.wip))
-<BR><BR>[Calls]<UL><LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<BR><BR>[Calls]<UL><LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wsr
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
@@ -1619,13 +1628,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFileAndWrite
 </UL>
 
-<P><STRONG><a name="[da]"></a>writeFlash</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.writeFlash))
+<P><STRONG><a name="[db]"></a>writeFlash</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.writeFlash))
 <BR><BR>[Calls]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configFlash
 </UL>
-<BR>[Called By]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
+<BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
 <P><STRONG><a name="[74]"></a>wsr</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, spi_flash.o(i.wsr))

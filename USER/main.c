@@ -599,18 +599,18 @@ void mode4()
           status____ = getMuteStatus();
         }
 
-        if (bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2)
+        if ((bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2)||(bufferKey3digit[0] == 0 && bufferKey3digit[1] == 10 && bufferKey3digit[2] == 0))
         {
           if (status____ == 1)
           {
             sendCommandtoAtmega(148);
-            delay_ms(200);
+            delay_ms(300);
             //printf("Send mute\r\n");
           }
-          else if (status____ == 0)
+          else 
           {
             sendCommandtoAtmega(149);
-            delay_ms(100);
+            delay_ms(200);
             //printf("Send mute\r\n");
           }
         }
@@ -801,7 +801,6 @@ void slidText2Displayv2()
       read.currentLine = 0;
       queryLine(read.currentLine);
       strcat(read.strTemp, bufferQueryLine);
-
       printf("=========================================\r\n");
       printf("next sector \r\n");
       printf("=========================================\r\n");
@@ -2055,7 +2054,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
               //use variable:SST25_W_BLOCK
               // stringToUnicodeAndSendToDisplay("Reading....");
               writeFlash(addressSector);
-              clearUnsignChar();
+              //clearUnsignChar();
 
               //Delay(0xff);
               stringToUnicodeAndSendToDisplay("Reading....");

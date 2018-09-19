@@ -751,16 +751,37 @@ void slidText2Displayv2()
     {
     }
   }
+  if (strlen(bufferQueryLine) <= 20)
+    read.DisplayLine = 0;
   if (keyCode == 2) // printf right
   {
 
     if (strlen(bufferQueryLine) <= 20 || read.DisplayLine == 1)
-      keyCode = 40;
-    read.DisplayLine = 1;
+    {
+      keyCode = 40;         //if current digit at last go to next line
+      read.DisplayLine = 0; //start at digit 0 - 19
+    }
+    else
+    {
+      read.DisplayLine = 1; //read digit 0-19
+    }
   }
-  else if (keyCode == 1)
+  else if (keyCode == 1) //printf left
   {
-    read.DisplayLine = 0;
+    if (read.DisplayLine == 0)
+    {
+      keyCode = 38;         //if current digit at last go to next line
+      read.DisplayLine = 1; //start at digit 0 - 19
+    }
+    else if (strlen(bufferQueryLine) <= 20)
+    {
+      //read.DisplayLine = 0;
+      keyCode = 38;
+    }
+    else
+    {
+      read.DisplayLine = 0;
+    }
   }
 
   if (keyCode == 38)
@@ -1484,7 +1505,7 @@ void printStringLR(char *str, int s)
     { // split right
       printf("printf right\r\n");
       begin = 20;
-      end = 40;
+      end = 41;
     }
     memset(buff, 0, strlen(buff));
     strncpy(buff, str + begin, end - begin);

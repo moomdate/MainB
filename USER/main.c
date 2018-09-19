@@ -413,7 +413,6 @@ void StoreLine(void); //store line in  struct [lineInsector]
 
 void StoreLineClear(void);        //clear store  in  struct [lineInsector]
 void initSlidingMode(void);       //befor use struce
-void clearUnsignChar(void);       //clear buffer SST25_buffer
 void clearReadlineInsector(void); //clear  struct [lineInsector]
 
 #define lineInSectorBufferSize 100 //100*2 byte
@@ -428,6 +427,7 @@ typedef struct lineSlider
   uint16_t lineInsector[lineInSectorBufferSize];
   char strTemp[42];
   char strTemp2[42];
+  bool DisplayLine;
 } lineSlider;
 
 lineSlider read;
@@ -454,6 +454,8 @@ int main(void)
   delay_init();
   sendUart(1);
   configDisplay();
+
+  //printStringLR("abcd11111111111111111111111",0);
   displayPrepare();
   prepareSD_Card();
   MemSize();
@@ -500,11 +502,7 @@ int main(void)
     }
   }
 }
-void clearUnsignChar()
-{
-  for (i = 0; i < 4096; i++)
-    SST25_buffer[i] = '\0';
-}
+
 void testCell()
 {
   int i_ = 0, cc = 0;
@@ -599,7 +597,7 @@ void mode4()
           status____ = getMuteStatus();
         }
 
-        if ((bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2)||(bufferKey3digit[0] == 0 && bufferKey3digit[1] == 10 && bufferKey3digit[2] == 0))
+        if ((bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2) || (bufferKey3digit[0] == 0 && bufferKey3digit[1] == 10 && bufferKey3digit[2] == 0))
         {
           if (status____ == 1)
           {
@@ -607,7 +605,7 @@ void mode4()
             delay_ms(300);
             //printf("Send mute\r\n");
           }
-          else 
+          else
           {
             sendCommandtoAtmega(149);
             delay_ms(200);
@@ -719,7 +717,8 @@ void queryLine(int line)
     }
     if (cc == line)
     {
-      bufferQueryLine[a2++] = SST25_buffer[a];
+      if (SST25_buffer[a] != 0x0d)
+        bufferQueryLine[a2++] = SST25_buffer[a];
     }
   }
   // printf("a is %d\r\n", a);
@@ -743,8 +742,26 @@ void queryLine(int line)
 void slidText2Displayv2()
 {
   //clearUnsignChar();
-  //readSecter(0);
-  //printf("string : %s \r\n stringlength %d \r\n", SST25_buffer,AmountSectorT);
+
+  if (keyCode == 660) // go to line
+  {
+    bool loopT = true;
+
+    while (loopT)
+    {
+    }
+  }
+  if (keyCode == 2) // printf right
+  {
+
+    if (strlen(bufferQueryLine) <= 20 || read.DisplayLine == 1)
+      keyCode = 40;
+    read.DisplayLine = 1;
+  }
+  else if (keyCode == 1)
+  {
+    read.DisplayLine = 0;
+  }
 
   if (keyCode == 38)
   {
@@ -752,15 +769,6 @@ void slidText2Displayv2()
     {
       read.currentLine--;
     }
-    /*else if (read.currentSector > 0) // next sector
-    {
-      read.currentSector--;
-      readSecter(read.currentSector * sector);
-      read.currentLine = read.lineInsector[read.currentSector];
-      printf("=========================================\r\n");
-      printf("previus sector \r\n");
-      printf("=========================================\r\n");
-    }*/
     if (read.currentSector != 0 && read.currentLine == 0)
     {
       queryLine(read.currentLine);
@@ -806,21 +814,21 @@ void slidText2Displayv2()
       printf("=========================================\r\n");
     }
   }
+  //printf("keycode %d\r\n",keyCode);
+
   if (strlen(read.strTemp) != 0)
   {
     printf("string:%s\r\n", read.strTemp);
+    printStringLR(read.strTemp, read.DisplayLine);
     memset(read.strTemp, '\0', sizeof(read.strTemp));
     memset(read.strTemp2, '\0', sizeof(read.strTemp2));
   }
   else
   {
     queryLine(read.currentLine);
+    printStringLR(bufferQueryLine, read.DisplayLine);
     printf("string (%d) :%s\r\n", read.currentLine, bufferQueryLine);
   }
-  /*for (i = 0; i <= read.TotalSector; i++)
-  {
-    printf("line %d\r\n", read.lineInsector[i]);
-  }*/
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
 }
 void StoreLine()
@@ -1465,13 +1473,16 @@ void printStringLR(char *str, int s)
   if (strlen(str) > 20)
   {
     //clear buff
-    if (!s)
-    { // split left
+    if (!s) //0
+    {       // split left
       begin = 0;
       end = 20;
+      printf("printf left\r\n");
+      ;
     }
     else
     { // split right
+      printf("printf right\r\n");
       begin = 20;
       end = 40;
     }
@@ -1717,6 +1728,11 @@ int keyMapping(int a, int b, int c)
   else if (a == 0x11 && b != 0x0)
   { //exit
     keyCode__ = 27;
+  }
+
+  else if (a == 0x1b && (b == 0x01 || b == 0x02 || b == 0x03) && c == 0x00)
+  { //space + g
+    keyCode__ = 660;
   }
   return keyCode__;
 }
@@ -2096,7 +2112,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           //----------------------store last sector to flash rom-----------------------
           //
           /////////////////////////////////////////////////////////////////////////////
-         // readSecter(0);
+          // readSecter(0);
           //printf("string** : %s \r\nEND**", SST25_buffer);
           /*SPI_FLASH_CS_LOW();
           SST25_R_BLOCK(0, SST25_buffer, sector);
@@ -3059,7 +3075,7 @@ void stringToUnicodeAndSendToDisplay(char *string)
       {
         cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
       }
-      else if (string[j] == 195) //enter sign
+      else if (string[j] == enterSign) //enter sign
       {
         cell_sentdata(~unicodeTable[32]);
       }
@@ -3074,7 +3090,32 @@ void stringToUnicodeAndSendToDisplay(char *string)
     }
   }
   SPI_DISPLAY_CS_HIGH();
-  Delay(0x55F);
+  //Delay(0x55F);
+}
+void stringToUnicodeAndSendToDisplayL(char *string, int ls)
+{
+  int strleng = 0;
+  configDisplay();
+  for (j = 0 + (20 * ls); j < 20 && string[j] != '\0' && string[j] != 0x0a; j++) //find length
+    strleng++;
+  SPI_DISPLAY_CS_LOW();
+  for (j = 20; j >= 0; j--)
+  {
+    if (j < strleng)
+    {
+      if (unicodeTable[((int)(string[j]))] != 0 || string[j] == 32)
+        cell_sentdata(~unicodeTable[((int)*(string + j))]); //send to display
+      else if (string[j] == enterSign)                      //enter sign
+        cell_sentdata(~unicodeTable[32]);                   //remove enter sign
+      else
+        cell_sentdata(((int)*(string + j)));
+    }
+    else
+    {
+      cell_sentdata(0xff); // null dot send to display
+    }
+  }
+  SPI_DISPLAY_CS_HIGH();
 }
 void stringToUnicodeAndSendToDisplayC(char *string, int po)
 { //cur position

@@ -71,58 +71,6 @@
     ส่งออก Serial2 
 ```
 Serial 2 command [Docs here](https://github.com/moomdate/Bkeyboard/blob/master/readme.md)
-#### Keyboard Input 
-```c
-  //อ่านคีย์บอร์ด
-  notepad_readKey(); 
-  //เมื่ออ่านครบแล้วให้ทำใน if
-  if (countKey >= maxData)
-  { 
-    //reset ค่าของ Event
-    seeHead = 0;
-    //แสดง Key
-    printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-    // ดักจับเออเร่อ
-    if (checkKeyError == 0xff) // error catch 
-    { 
-      countKey = 0;
-      SeeHead = 0;
-    }
-    // คีย์ที่ได้ Keycode
-    keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-    printf("keycode:%d\r\n", keyCode);
-    // Clear ค่า
-    clearKeyValue();
-  }
-```
-#### Mode (in void main)
-###### Bluetooth Mode
-```c
-  notepad();
-```
-###### Bluetooth Mode
-```c
-   while (mode == 5) { // while in bluetooth mode
-      BluetoothMode(); // 
-      // keyboardMode();
-      if (becon == 0) { 
-        menu_s();
-      }
-      else {
-        keyboardMode();  //connected use keyboard for bluetooth
-      }
-    }
-```
-###### Read Mode
-```c
-    while (mode == 3 && openFileStatus == 0) { //if enter to mode 3 search file and display
-      searchFile();
-    }
-    while (mode == 3 && openFileStatus == 1) { //if open file 
-      ReadFile();
-    }
-```
-
 
 
 

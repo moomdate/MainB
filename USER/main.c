@@ -51,7 +51,7 @@ int addressWriteFlashTemp = 0x0;
 int countSector4096 = 0;
 int countSector = 0;
 int addressSector = 0x00;
-int endReadFile = 0;
+bool endReadFile = false;
 
 int AmountSector = 0;
 int AmountSectorT = 0;
@@ -104,18 +104,18 @@ uint8_t FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
 uint8_t DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
 /////////////////////////////////////////////////////////////////////
 //---------------------- menu variable ------------------------------
-int count_menu = 1;
-int menu[6] = {0x01, 0x02, 0x04, 0x80, 0x04, 0x02};
-int st_bluetooth[] = {0x43, 0x07, 0x25, 0x11, 0x1e, 0x15, 0x15, 0x1e, 0x13}; //bluetooth
-int st_0[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-int st_notepad[] = {0x1d, 0x15, 0x1e, 0x11, 0x0f, 0x01, 0x19}; //notepad
-int st_read[] = {0x17, 0x11, 0x01, 0x19};
-int mode = 0; //1,2,3,4,5,6,7,8
+uint8_t count_menu = 1;
+uint8_t menu[6] = {0x01, 0x02, 0x04, 0x80, 0x04, 0x02};
+uint8_t st_bluetooth[] = {0x43, 0x07, 0x25, 0x11, 0x1e, 0x15, 0x15, 0x1e, 0x13}; //bluetooth
+uint8_t st_0[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t st_notepad[] = {0x1d, 0x15, 0x1e, 0x11, 0x0f, 0x01, 0x19}; //notepad
+uint8_t st_read[] = {0x17, 0x11, 0x01, 0x19};
+uint8_t mode = 0; //1,2,3,4,5,6,7,8
 ////////////////////////////////////////////////////////////////
 int checkKeyError = 0;
 int keyCode = 0;
 int previousMode = 0;
-int connectData[] = {0xff, 0xff, 0xa2, 0x0b, 0x16, 0x14, 0x10, 0x53, 0x4c, 0x52, 0x49, 0x20, 0x56, 0x31, 0x2e, 0x30};
+uint8_t connectData[] = {0xff, 0xff, 0xa2, 0x0b, 0x16, 0x14, 0x10, 0x53, 0x4c, 0x52, 0x49, 0x20, 0x56, 0x31, 0x2e, 0x30};
 
 int countSector512 = 0;
 int readstatus = 0;
@@ -164,7 +164,7 @@ void ConnectBLE(void);
 void BluetoothMode(void);
 void SendCommandToBLE(int data[], int sizeOfData);
 
-void printDot(int data[], int size);
+void printDot(uint8_t data[], uint8_t size);
 void stringToUnicodeAndSendToDisplay(char *str);
 void stringToUnicodeAndSendToDisplayC(char *string, int po); //cur position
 
@@ -184,7 +184,7 @@ void ReadFile(void);
 int createFile(char *name);
 int CreateFile__ = 1;
 void appendFile(void);
-void SendCH370(uint8_t data[], int);
+void SendCH370(uint8_t data[], uint8_t);
 
 void setFilename(char *name);
 
@@ -324,7 +324,7 @@ int sendStatus = 1;
 //char *regexStrEnter(char *str);
 int str_cut(char *str, int begin, int len);
 
-int unicodeTable[] = {
+uint8_t unicodeTable[] = {
     0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
     // !"#$%&'()*+,-./
@@ -1874,13 +1874,13 @@ void keyRead()
       caseMenu(count_menu);
     }
     //-----------------------------------end mode (10)-------------------------------
-    if (endReadFile == 1 && mode == 2) //mode 2
+    if (endReadFile == true && mode == 2) //mode 2
     {                                  // on mode read
       //printf("testttttttttttttttttttttttttt");
       slidText2Displayv2();
       //slidingFileFromRomToDisplay();
     }
-    if (mode == 2 && endReadFile != 1)
+    if (mode == 2 && endReadFile == false)
     { //key in mode 2
       if (keyCode == 38)
       {
@@ -2154,7 +2154,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           Delay(0xffff);
           convert_text2_buffer(SST25_buffer);*/
 
-          endReadFile = 1;
+          endReadFile = true;
 
          
           AmountSector = addressWriteFlashTemp / sector;  //---- จำนวน sector ----
@@ -2163,7 +2163,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           initSlidingMode();
           //  read.currentLine = 210;
           readSecter(0);
-          while (endReadFile == 1)
+          while (endReadFile == true)
           { // query string-
             // menu_s();
             keyRead();
@@ -2668,7 +2668,7 @@ void writeFile4096(char *fname, char *strSource)
     }
   }
 }
-//------------------------------from john-------------------------------------
+//------------------------------       -------------------------------------
 //
 //////////////////////////////////////////////////////////////////////////////
 int mapCursor(int P1, int P2, int P3)
@@ -3077,7 +3077,7 @@ void NextFile()
 ////////////////////////////////////////////////////////////////////
 void setFileLength(char *str___)
 {
-  int jjr = 0;
+  uint8_t jjr = 0;
   uint8_t FileLength222[] = {0x00, 0x57, 0xab, 0x3c, 0x00, 0x00};
   while (str___[jjr] != '\0')
   {
@@ -3579,9 +3579,9 @@ void caseMenu(int count_menu)
   }
 }
 
-void printDot(int data[], int size)
+void printDot(uint8_t data[], uint8_t size)
 {
-  int tsize = size / sizeof(int);
+  int tsize = size / sizeof(uint8_t);
   //  printf("%d", sizeof(testarray[0]) / sizeof(int));
   clearDot();
   SPI_DISPLAY_CS_LOW();
@@ -3815,7 +3815,7 @@ void atName_()
 void ConnectBLE()
 {
   int x = 0;
-  while (x < sizeof(connectData) / sizeof(int))
+  while (x < sizeof(connectData) / sizeof(uint8_t))
   {
     USART_SendData(UART4, connectData[x++]);
     while (USART_GetFlagStatus(UART4, USART_FLAG_TC) == RESET)
@@ -3838,10 +3838,10 @@ void SendCommandToBLE2(int data)
 //
 //
 //////////////////////////////////////////////////////////////////////////////
-void SendCH370(uint8_t data[], int sizeOfData)
+void SendCH370(uint8_t data[], uint8_t sizeOfData)
 {
   int x = 0;
-  while (x < sizeOfData / sizeof(int))
+  while (x < sizeOfData / sizeof(uint8_t))
   {
     USART_SendData(USART3, data[x++]);
     while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET)

@@ -52,22 +52,9 @@ int countSector4096 = 0;
 int countSector = 0;
 int addressSector = 0x00;
 int endReadFile = 0;
-char buffer22Char[42];
-int pointer22char = 1;
-int pointerSector = 0; //current sector
-int pointerSectorStatus = 0;
-int jumpCRLF = 0;
 
 int AmountSector = 0;
 int AmountSectorT = 0;
-
-int NextPoint = 0;
-int maxLengthLoopL22 = 22;
-int countLFTwoStep = 0;
-int TempPointer22char = 0;
-int varForLoop = 0;
-int readPreviousSector = 0;
-int countLengthInLine = 0;
 int seeCur = 0;
 
 uint16_t *str;
@@ -93,25 +80,28 @@ int hexbuffer = 0;
 int hexPrep = 0;
 int SeeHead = 0;
 //----------------*------ch376 command-------------------------------
-int data0[] = {0x57, 0xab, 0x27};
-int enumgo[] = {0x57, 0xab, 0x33};
-int FileOpen[] = {0x00, 0x57, 0xab, 0x32};
-int ResetAll[] = {0x00, 0x57, 0xab, 0x05};
-int ReadData[] = {0x00, 0x57, 0xAB, 0x27};
-int FileCreate[] = {0x00, 0x57, 0xab, 0x34};
-int FileUpdate[] = {0x00, 0x57, 0xab, 0x3d};
-int USBDiskMount[] = {0x00, 0x57, 0xab, 0x31};
-int continueRead[] = {0x00, 0x57, 0xab, 0x3b};
-int FileClose[] = {0x00, 0x57, 0xab, 0x36, 0x01};
-int setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03}; //+
-int setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
-int checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
-int SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00};      //15 = 21 character
-int setFilenameForFunction[] = {0x00, 0x57, 0xab, 0x2f};       // use vie function set file name
-int setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
-int changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
-int FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
-int FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
+uint8_t data0[] = {0x57, 0xab, 0x27};
+uint8_t enumgo[] = {0x57, 0xab, 0x33};
+uint8_t FileOpen[] = {0x00, 0x57, 0xab, 0x32};
+uint8_t ResetAll[] = {0x00, 0x57, 0xab, 0x05};
+uint8_t ReadData[] = {0x00, 0x57, 0xAB, 0x27};
+uint8_t FileCreate[] = {0x00, 0x57, 0xab, 0x34};
+uint8_t FileUpdate[] = {0x00, 0x57, 0xab, 0x3d};
+uint8_t USBDiskMount[] = {0x00, 0x57, 0xab, 0x31};
+uint8_t continueRead[] = {0x00, 0x57, 0xab, 0x3b};
+uint8_t FileClose[] = {0x00, 0x57, 0xab, 0x36, 0x01};
+uint8_t setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03}; //+
+uint8_t setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
+uint8_t checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
+uint8_t SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00};      //15 = 21 character
+uint8_t setFilenameForFunction[] = {0x00, 0x57, 0xab, 0x2f};       // use vie function set file name
+uint8_t setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
+uint8_t changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
+uint8_t FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
+uint8_t FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
+
+uint8_t FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
+uint8_t DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
 /////////////////////////////////////////////////////////////////////
 //---------------------- menu variable ------------------------------
 int count_menu = 1;
@@ -140,10 +130,9 @@ int lastAscii = 0;
 int nextAgain = 0;
 int readFileStatus___ = 0;
 int countFileLegth = 0;
-int FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
 
 int command_ = 0;
-int DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
+
 
 int d_Time = 0;
 int toggleCur = 0;
@@ -195,7 +184,7 @@ void ReadFile(void);
 int createFile(char *name);
 int CreateFile__ = 1;
 void appendFile(void);
-void SendCH370(int data[], int);
+void SendCH370(uint8_t data[], int);
 
 void setFilename(char *name);
 
@@ -217,7 +206,7 @@ int maxFile = 0;
 int fileSelect = 0;
 
 int readFileFromCH376sToFlashRom(char *filename);
-void slidingFileFromRomToDisplay(void);
+
 
 char Dirpath[30] = "";
 char fileLists[30][15];
@@ -301,7 +290,8 @@ int unicode_to_ASCII(int);
 int mapCursor(int, int, int);
 int checkBit(int);
 int keyMapping(int, int, int);
-//=======================================================
+
+
 //=======================================================
 
 ///------------------------config------------------------
@@ -311,14 +301,13 @@ void sendCommandtoAtmega(int data);
 //-------------------------------------------------------
 
 char numToASCII(int num);
-char notepad_buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
+//char Notepad.buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
 char *subStringLanR(char *str, int p, int cur_);
 char *substring(char *string, int position, int length);
-int notepad_cursorPosition = 0;
-int notepad_multiplyCursor = 0;
-int display_f = 0;
+//int Notepad.multiplyCursor = 0; //defualt is notepad_multiplyCursor
+//int Notepad.displayFirst = 0; //display_f
 
-int notepad_currentLine = 0;
+//int Notepad.currentLine = 0; //notepad_currentLine
 
 int maxLineN = 0; // จำนวนบรรทัดมากสุดที่พิมพ์ไปในโหมด notepad
 uint8_t debug = 1;
@@ -380,8 +369,8 @@ void readSecter(int sector_);
 void mode4(void);
 void mainMenuDisplayMode4(int);
 #define maxMenu4 3
-int countMenuInMode4 = 0;
-int selectMode4 = 0;
+uint8_t countMenuInMode4 = 0;
+bool selectMode4 = false;
 //----mode 4----e
 
 //-- read miode new ---
@@ -430,7 +419,16 @@ typedef struct lineSlider
   bool DisplayLine;
 } lineSlider;
 
+typedef struct notepad{
+  uint8_t cursorPosition;
+  uint8_t multiplyCursor;
+  bool displayFirst;
+  int currentLine;
+  char buffer_string[notepad_Line][notepad_MaxinLine];
+}notepad;
+//--- struce define----
 lineSlider read;
+notepad Notepad;
 
 /*******************************************************************************
   Function Name  : main
@@ -442,6 +440,10 @@ lineSlider read;
 *******************************************************************************/
 int main(void)
 {
+
+  Notepad.cursorPosition = 0;
+  Notepad.currentLine = 0;
+  Notepad.displayFirst = false;
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
   /* Configure the GPIO ports */
   GPIO_Configuration();   //if config this can't use printf
@@ -505,7 +507,7 @@ int main(void)
 
 void testCell()
 {
-  int i_ = 0, cc = 0;
+  int i_ = 0;
   int dl = 0;
   clearDot();
   for (i_ = 0; i_ < 20; i_++)
@@ -558,14 +560,14 @@ void mode4()
           countMenuInMode4--;
         break;
       case 39: //enter
-        selectMode4 = 1;
+        selectMode4 = true;
         printf("Enter mode (%d)\r\n", countMenuInMode4);
         break;
       case 37: //exit
         printf("exit to mode (4)\r\n");
         stringToUnicodeAndSendToDisplay("Tools");
         mode = 0;
-        selectMode4 = 0;
+        selectMode4 = false;
         break;
       }
     }
@@ -573,7 +575,7 @@ void mode4()
     {
       if (keyCode == 37)
       {
-        selectMode4 = 0;
+        selectMode4 = false;
       }
       switch (countMenuInMode4)
       {
@@ -751,8 +753,17 @@ void slidText2Displayv2()
     {
     }
   }
+  else if (keyCode == 661)
+  {
+    printf("Exit\r\n");
+  }
   if (strlen(bufferQueryLine) <= 20)
     read.DisplayLine = 0;
+
+  /*
+  ====================================================================
+  lefr and right button
+  */
   if (keyCode == 2) // printf right
   {
 
@@ -783,6 +794,7 @@ void slidText2Displayv2()
       read.DisplayLine = 0;
     }
   }
+  //======================================================================
 
   if (keyCode == 38)
   {
@@ -1123,50 +1135,50 @@ void notepad_main()
         if (keyCode == 40)
         { // next line
 
-          if (notepad_currentLine < notepad_Line && notepad_currentLine < maxLineN)
-            notepad_currentLine++;
-          if (notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]) < notepad_MaxinLine / 2) //
-            display_f = 0;
-          notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
+          if (Notepad.currentLine < notepad_Line && Notepad.currentLine < maxLineN)
+            Notepad.currentLine++;
+          if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) < notepad_MaxinLine / 2) //
+            Notepad.displayFirst = false;
+          Notepad.cursorPosition = notepad_getnullPostion(Notepad.buffer_string[Notepad.currentLine]);
           // บังคับห้ามมีค่าเกิน max
-          if (notepad_cursorPosition >= notepad_MaxinLine)
-            notepad_cursorPosition = notepad_MaxinLine;
-          k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
-          if (notepad_cursorPosition > k)
-            notepad_cursorPosition = k;
-          notepad_multiplyCursor = 0;
-          // printf("cursor position at :%d \r\n", notepad_cursorPosition);
+          if (Notepad.cursorPosition >= notepad_MaxinLine)
+            Notepad.cursorPosition = notepad_MaxinLine;
+          k = notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]); //ไม่นับ enter
+          if (Notepad.cursorPosition > k)
+            Notepad.cursorPosition = k;
+          Notepad.multiplyCursor = 0;
+          // printf("cursor position at :%d \r\n", Notepad.cursorPosition);
         }
         else if (keyCode == 38)
         { // previous line
-          if (notepad_currentLine > 0)
-            notepad_currentLine--;
-          if (notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]) < notepad_MaxinLine / 2)
-            display_f = 0;
-          notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
-          if (notepad_cursorPosition >= notepad_MaxinLine)
-            notepad_cursorPosition = notepad_MaxinLine;
-          k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); //ไม่นับ enter
-          if (notepad_cursorPosition > k)
-            notepad_cursorPosition = k;
-          notepad_multiplyCursor = 0;
-          //  printf("cursor position  k at :%d \r\n", notepad_cursorPosition);
+          if (Notepad.currentLine > 0)
+            Notepad.currentLine--;
+          if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) < notepad_MaxinLine / 2)
+            Notepad.displayFirst = false;
+          Notepad.cursorPosition = notepad_getnullPostion(Notepad.buffer_string[Notepad.currentLine]);
+          if (Notepad.cursorPosition >= notepad_MaxinLine)
+            Notepad.cursorPosition = notepad_MaxinLine;
+          k = notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]); //ไม่นับ enter
+          if (Notepad.cursorPosition > k)
+            Notepad.cursorPosition = k;
+          Notepad.multiplyCursor = 0;
+          //  printf("cursor position  k at :%d \r\n", Notepad.cursorPosition);
         }
         //----------------------------------------------------------------------------------------
         if (keyCode == 1)
         { //left
-          display_f = 0;
+          Notepad.displayFirst = false;
           k = 20;                         // ไม่นับถึง enter
-          if (notepad_cursorPosition > k) //กดได้ไม่เกิน enter
-            notepad_cursorPosition = k;
-          else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
-            notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
-          notepad_multiplyCursor = 0;
+          if (Notepad.cursorPosition > k) //กดได้ไม่เกิน enter
+            Notepad.cursorPosition = k;
+          else if (Notepad.cursorPosition > strlen(Notepad.buffer_string[Notepad.currentLine]))
+            Notepad.cursorPosition = strlen(Notepad.buffer_string[Notepad.currentLine]);
+          Notepad.multiplyCursor = 0;
         }
         else if (keyCode == 2)
         { //right
-          if (notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]) > 20)
-            display_f = 1;
+          if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) > 20)
+            Notepad.displayFirst = true;
         }
       }
       else if ((bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x1 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x2 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x3 && bufferKey3digit[2] == 0x00))
@@ -1177,110 +1189,110 @@ void notepad_main()
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
       {                                                                                                         //enter key                                                                                                       // printf("New line \r\n");
-        if (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine)
+        if (Notepad.cursorPosition + Notepad.multiplyCursor < notepad_MaxinLine)
         {
-          while (notepad_cursorPosition + notepad_multiplyCursor < notepad_MaxinLine) //40 ตัวอักษร
+          while (Notepad.cursorPosition + Notepad.multiplyCursor < notepad_MaxinLine) //40 ตัวอักษร
           {
-            notepad_append(notepad_buffer_string[notepad_currentLine], buffAs, notepad_cursorPosition + notepad_multiplyCursor);
-            if (notepad_cursorPosition + notepad_multiplyCursor >= notepad_MaxinLine) //defualt 40 charactor
+            notepad_append(Notepad.buffer_string[Notepad.currentLine], buffAs, Notepad.cursorPosition + Notepad.multiplyCursor);
+            if (Notepad.cursorPosition + Notepad.multiplyCursor >= notepad_MaxinLine) //defualt 40 charactor
             {
               //new line
-              notepad_currentLine++;
-              notepad_cursorPosition = 1;
+              Notepad.currentLine++;
+              Notepad.cursorPosition = 1;
             }
             else
             {
-              notepad_cursorPosition++;
-              if (notepad_cursorPosition + notepad_multiplyCursor == notepad_MaxinLine) // max size in line
+              Notepad.cursorPosition++;
+              if (Notepad.cursorPosition + Notepad.multiplyCursor == notepad_MaxinLine) // max size in line
               {
-                notepad_cursorPosition = 0;
-                notepad_currentLine++;
+                Notepad.cursorPosition = 0;
+                Notepad.currentLine++;
                 break;
               }
             }
           }
-          //notepad_currentLine++;
+          //Notepad.currentLine++;
         }
       }
       else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
       {
         //remove str at index
-        //notepad_cursorPosition = notepad_getnullPostion(notepad_buffer_string[notepad_currentLine]);
-        if (notepad_lineIsEnter(notepad_buffer_string[notepad_currentLine]) == 1)
+        //Notepad.cursorPosition = notepad_getnullPostion(Notepad.buffer_string[Notepad.currentLine]);
+        if (notepad_lineIsEnter(Notepad.buffer_string[Notepad.currentLine]) == 1)
         {
-          notepad_cursorPosition = 40;
+          Notepad.cursorPosition = notepad_MaxinLine;
           if (debug)
             printf("---------------line is enter all -----------------");
         }
         if (debug)
-          printf("cca aateaasd at :%d\r\n", notepad_cursorPosition + notepad_multiplyCursor);
-        if (notepad_countStr(notepad_buffer_string[notepad_currentLine]) < notepad_MaxinLine / 2) //กันบัค cursor
-          notepad_multiplyCursor = 0;
-        //  printf("remove char %d %c\r\n", notepad_cursorPosition, notepad_buffer_string[notepad_currentLine][notepad_cursorPosition + notepad_multiplyCursor]);
-        if (notepad_cursorPosition > 0) //มากกว่า 0
+          printf("cca aateaasd at :%d\r\n", Notepad.cursorPosition + Notepad.multiplyCursor);
+        if (notepad_countStr(Notepad.buffer_string[Notepad.currentLine]) < notepad_MaxinLine / 2) //กันบัค cursor
+          Notepad.multiplyCursor = 0;
+        //  printf("remove char %d %c\r\n", Notepad.cursorPosition, Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition + Notepad.multiplyCursor]);
+        if (Notepad.cursorPosition > 0) //มากกว่า 0
         {
-          notepad_cursorPosition--;
+          Notepad.cursorPosition--;
         }
-        else if (notepad_currentLine > 0) // เป็น 0 และไม่ใช่บรรทัด 0
+        else if (Notepad.currentLine > 0) // เป็น 0 และไม่ใช่บรรทัด 0
         {
-          notepad_cursorPosition = notepad_MaxinLine - 1;
-          notepad_currentLine--;
+          Notepad.cursorPosition = notepad_MaxinLine - 1;
+          Notepad.currentLine--;
         }
         //------------ถ้าเจอ enter ลบจนกว่าจะหมดไปใน line----------------------
-        if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == enterSign) //ลบ enter
+        if (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign) //ลบ enter
         {
-          if (notepad_lineIsEnter(notepad_buffer_string[notepad_currentLine]) == 1)
+          if (notepad_lineIsEnter(Notepad.buffer_string[Notepad.currentLine]) == 1)
           {
             if (debug)
               printf("---------------line is enter all -----------------");
           }
           // printf("\r\n--------------------remove enter------------------------\r\n");
-          while (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] == enterSign && notepad_cursorPosition >= 0)
+          while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0)
           {
 
-            removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition);
-            if (notepad_cursorPosition > 0)
-              notepad_cursorPosition--;
-            if (notepad_buffer_string[notepad_currentLine][notepad_cursorPosition] != enterSign) //ห้ามลบตัวอักษร
+            removeChar(Notepad.buffer_string[Notepad.currentLine], Notepad.cursorPosition);
+            if (Notepad.cursorPosition > 0)
+              Notepad.cursorPosition--;
+            if (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] != enterSign) //ห้ามลบตัวอักษร
               break;
           }
         }
         else
         {
-          removeChar(notepad_buffer_string[notepad_currentLine], notepad_cursorPosition + notepad_multiplyCursor); //ลบตัวอักษร
+          removeChar(Notepad.buffer_string[Notepad.currentLine], Notepad.cursorPosition + Notepad.multiplyCursor); //ลบตัวอักษร
         }
-        //printf("-*-*-*-*-*-* *-*  %s \r\n",notepad_buffer_string[notepad_currentLine]);
-        notepad_checkenterAndpush(notepad_buffer_string[notepad_currentLine]); //-----บัค
+        //printf("-*-*-*-*-*-* *-*  %s \r\n",Notepad.buffer_string[Notepad.currentLine]);
+        notepad_checkenterAndpush(Notepad.buffer_string[Notepad.currentLine]); //-----บัค
         /* // บัคตรงนี้
-        if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1) //fill enter
+        if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1) //fill enter
         {
           keybuff[0] = (char)enterSign;
-          notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_MaxinLine);
+          notepad_append(Notepad.buffer_string[Notepad.currentLine], keybuff, notepad_MaxinLine);
         }
         */
       }
       else if (seeCur == 1) // cursor key
       {
-        notepad_cursorPosition = mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-        k = notepad_countLinewithOutLNsign(notepad_buffer_string[notepad_currentLine]); // ไม่นับถึง enter
-        if (notepad_cursorPosition > k)                                                 //กดได้ไม่เกิน enter
-          notepad_cursorPosition = k;
-        else if (notepad_cursorPosition > strlen(notepad_buffer_string[notepad_currentLine]))
-          notepad_cursorPosition = strlen(notepad_buffer_string[notepad_currentLine]);
+        Notepad.cursorPosition = mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+        k = notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]); // ไม่นับถึง enter
+        if (Notepad.cursorPosition > k)                                                 //กดได้ไม่เกิน enter
+          Notepad.cursorPosition = k;
+        else if (Notepad.cursorPosition > strlen(Notepad.buffer_string[Notepad.currentLine]))
+          Notepad.cursorPosition = strlen(Notepad.buffer_string[Notepad.currentLine]);
 
-        //printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
-        if (display_f == 1)
+        //printf("set at------------------------%d ----k:%d---------------------\r\n", Notepad.cursorPosition, k);
+        if (Notepad.displayFirst == true)
         { //กำหนด cursor ตำแหน่ง 20-40
-          notepad_multiplyCursor = 20;
-          if (notepad_cursorPosition + notepad_multiplyCursor > k)
-            notepad_cursorPosition = k - notepad_multiplyCursor;
-          // printf("set at------------------------%d ----k:%d---------------------\r\n", notepad_cursorPosition, k);
+          Notepad.multiplyCursor = 20;
+          if (Notepad.cursorPosition + Notepad.multiplyCursor > k)
+            Notepad.cursorPosition = k - Notepad.multiplyCursor;
+          // printf("set at------------------------%d ----k:%d---------------------\r\n", Notepad.cursorPosition, k);
         }
         else
         {
-          notepad_multiplyCursor = 0;
+          Notepad.multiplyCursor = 0;
         }
-        //   printf("cursor set at:%d\r\n", notepad_cursorPosition + notepad_multiplyCursor);
+        //   printf("cursor set at:%d\r\n", Notepad.cursorPosition + Notepad.multiplyCursor);
       }
       else if (1 && seeCur != 1) //type message in notepad mode--------------------------------------------------------
       {
@@ -1291,54 +1303,54 @@ void notepad_main()
         if (keyCode == 0) //space bar edit in unicode table
           keyCode = 32;
 
-        if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
+        if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1)
         {
-          notepad_removeEnterSign(notepad_buffer_string[notepad_currentLine]);
+          notepad_removeEnterSign(Notepad.buffer_string[Notepad.currentLine]);
         }
         keybuff[0] = (char)keyCode;
-        //printf("current po at %d \r\n", notepad_cursorPosition);
+        //printf("current po at %d \r\n", Notepad.cursorPosition);
         // enter ตัวสุดท้ายจะถูกเบียดลง จะเกิน max ผมจะไม่ให้มันเบียด
-        //printf("///////////////////notepad_cursorPosition:%d notepad_multiplyCursor:%d //////////////////\r\n", notepad_cursorPosition, notepad_multiplyCursor);
-        notepad_append(notepad_buffer_string[notepad_currentLine], keybuff, notepad_cursorPosition + notepad_multiplyCursor);
+        //printf("///////////////////Notepad.cursorPosition:%d Notepad.multiplyCursor:%d //////////////////\r\n", Notepad.cursorPosition, Notepad.multiplyCursor);
+        notepad_append(Notepad.buffer_string[Notepad.currentLine], keybuff, Notepad.cursorPosition + Notepad.multiplyCursor);
 
-        if (notepad_cursorPosition >= notepad_MaxinLine) //เลื่อนบรรทัดอัตโนมัติ
+        if (Notepad.cursorPosition >= notepad_MaxinLine) //เลื่อนบรรทัดอัตโนมัติ
         {
           //เลื่อนบรรทัดอัตโนมัติ
-          notepad_currentLine++;
-          notepad_cursorPosition = 1;
+          Notepad.currentLine++;
+          Notepad.cursorPosition = 1;
         }
         else
         {
-          notepad_cursorPosition++;
+          Notepad.cursorPosition++;
 
-          if (notepad_cursorPosition == notepad_MaxinLine / 2) //เลื่อนชุดเซลล์อัตโนมัติ
-            display_f = 1;
+          if (Notepad.cursorPosition == notepad_MaxinLine / 2) //เลื่อนชุดเซลล์อัตโนมัติ
+            Notepad.displayFirst = true;
         }
       } //end key input -----------------------------------------------------------------------------------------------------
       notepad_checkMaxLine();
-      if (notepad_checkEnterSignInLine(notepad_buffer_string[notepad_currentLine]) == 1)
+      if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1)
       {
-        notepad_fillEnterSign(notepad_buffer_string[notepad_currentLine]); //--เติม enter ถ้าไม่เต็มบรรทัด
+        notepad_fillEnterSign(Notepad.buffer_string[Notepad.currentLine]); //--เติม enter ถ้าไม่เต็มบรรทัด
       }
       // เช็คความยาว ตัดมาแสดง ไม่เกิน 20 ตัว
       //
       if (debug)
       {
         printf("|////////////////////////////////////////////|\r\n");
-        printStringInLine(notepad_buffer_string[notepad_currentLine]);
+        printStringInLine(Notepad.buffer_string[Notepad.currentLine]);
         printf("\r\n|=================sub========================|\r\n");
         /* if (!toggleCur)
         {
-          subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, 99);
+          subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, 99);
         }
         else
         {*/
-        subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition);
+        subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition);
         // }
         printf("\r\n|============================================|\r\n");
-        printf("|current line (%d)", notepad_currentLine);
+        printf("|current line (%d)", Notepad.currentLine);
         printf("\r\n|============================================|\r\n");
-        printf("|current position index:(%d) and multi cur :(%d) \r\n", notepad_cursorPosition, notepad_multiplyCursor);
+        printf("|current position index:(%d) and multi cur :(%d) \r\n", Notepad.cursorPosition, Notepad.multiplyCursor);
         printf("|////////////////////////////////////////////|\r\n");
       }
       clearKeyValue(); // clear key buffer
@@ -1352,11 +1364,11 @@ void notepad_main()
         toggleCur = 0;
       if (!toggleCur)
       {
-        subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, 99);
+        subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, 99);
       }
       else
       {
-        subStringLanR(notepad_buffer_string[notepad_currentLine], display_f, notepad_cursorPosition + notepad_multiplyCursor);
+        subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
       }
       d_Time = 0;
     }
@@ -1384,10 +1396,10 @@ int notepad_lineIsEnter(char *str)
 void notepad_checkMaxLine()
 {
   int a = 0;
-  a = notepad_currentLine;
+  a = Notepad.currentLine;
   while (a < notepad_MaxinLine)
   {
-    if (notepad_countStr(notepad_buffer_string[a]) != 40)
+    if (notepad_countStr(Notepad.buffer_string[a]) != 40)
     {
       break;
     }
@@ -1747,14 +1759,15 @@ int keyMapping(int a, int b, int c)
     keyCode__ = 2;
   }
   else if (a == 0x11 && b != 0x0)
-  { //exit
-    keyCode__ = 27;
+  { //space + e
+    keyCode__ = 661;
   }
 
   else if (a == 0x1b && (b == 0x01 || b == 0x02 || b == 0x03) && c == 0x00)
   { //space + g
     keyCode__ = 660;
   }
+
   return keyCode__;
 }
 //โหลๆ
@@ -2143,14 +2156,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
 
           endReadFile = 1;
 
-          for (NextPoint = pointer22char; SST25_buffer[NextPoint] != 0x0d; NextPoint++)
-          {
-            buffer22Char[NextPoint - pointer22char] = SST25_buffer[NextPoint];
-          }
-
-          pointer22char += NextPoint + 2;
-          NextPoint = pointer22char;
-          printStringLR(buffer22Char, 0);
+         
           AmountSector = addressWriteFlashTemp / sector;  //---- จำนวน sector ----
           AmountSectorT = addressWriteFlashTemp % sector; //---- เศษ ที่เหลือของ sector ---
 
@@ -2183,219 +2189,8 @@ void clearReadlineInsector()
   for (i = 0; i < sizeof(read.lineInsector) / sizeof(read.lineInsector[0]); i++)
     read.lineInsector[i] = '\0';
 }
-//------------------slidingFileFromRomToDisplay--------------------------
-//.
-//อ่านข้อมูลจากROMมาเก็บในตัวแปลครั้งละ 4096 ตัวอักษรและดึงออกมาครั้งละไม่เกิน 20 หรือ 40
-//ตัวอักษร  โดยการกด key 38,40,1,2
-/////////////////////////////////////////////////////////////////////////
-void slidingFileFromRomToDisplay()
-{
-  // check #endReadFile status for do in this void.
-  //int MaxInLine = 42;
-  if ((keyCode == 38 || keyCode == 40) && endReadFile == 1)
-  {
-    if (keyCode == 40) //next line
-    {
-      // clear previous value
-      pointer22char += NextPoint - pointer22char;
 
-      //------------------------------------------------------------------
-      /*
-       ถ้าตำแหน่งปัจจุบัน + จำนวนข้้อควา่มที่จะอ่าน > จำนวน Sector(4096) 
-       และ ถ้าตำแหน่งปัจจุบัน + จำนวนข้้อควา่มที่จะอ่าน ยังน้อยกว่าความยาวของไฟล์ 
-      */
-      //-------------------------------------------------------------------
-      if (pointer22char + MaxInLine > sector && pointer22char + MaxInLine < addressWriteFlashTemp)
-      {
-        // sector more than (one)
-        pointerSectorStatus = 1;
-        printf("change sector\r\n");
-      }
-      //------------------------------------------------------------------
-      //
-      //------------------------------------------------------------------
-      if (pointer22char + MaxInLine < addressWriteFlashTemp) // can read.
-      {
-        // ให้ maxLengthLoopL22 ยาวเท่า MaxInLine
-        maxLengthLoopL22 = MaxInLine;
-      }
-      else
-      {
-        // maxLengthLoopL22 เก็บข้อมูลที่เหลือ ที่สามารถอ่านได้
-        maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value.
-        beepError();                                              // beep error sound
-      }
-    } //--end keyCode 40--
-    else if (keyCode == 38)
-    {
-      //prev line pointer22char   bug***************************
-      //-
-      //
-      //
-      ///////////////////////////////////////////////////////////
-      printf("\r\n \r\n pointer22char %d \r\n \r\n", pointer22char);
-      //NextPoint
-      TempPointer22char = pointer22char;
-      for (varForLoop = TempPointer22char; varForLoop > 0; varForLoop--)
-      { // edit condition > 0 ->   ??? > 1*pointerSector
-        countLengthInLine++;
-        if (SST25_buffer[varForLoop] == 0x0d) //see head
-        {
-          //
-          // ถ้าเจอ CL ให้เพื่มค่าของ #countLFTwoStep
-          countLFTwoStep++;
-          /*
-          0x0d 0x0a 
-          0x0d 0x0a 
-          0x0d [0x0a] <-- stop here!!!!
-          0x0d 0x0a |0xFF 0xFF 0xFF 0xFF 0xFF
-          0x0d 0x0a|
-          example :  current line is : (0xFF,0xFF,0xFF,0xFF)
-          */
-          if (countLFTwoStep == 2)
-          {                                 //ย้อนกลับปกติ แบบไม่มีบรรทัดว่าง
-                                            /* current = 0x0d
-            0x0d 0x0a
-            0x0d 0x0a
-            */
-                                            // ให้หยุดที่ var - 1
-            pointer22char = varForLoop + 2; //0x0a
 
-            countLFTwoStep = 0;
-            break;
-          }
-        }
-        else if (varForLoop == 1)
-        { //begin of file
-          pointer22char = 0;
-          // -- find max length --
-
-          //-- end find mx length --
-          if (pointerSector != 0)
-          {                         //if sector != 1
-            readPreviousSector = 1; //status for read previous sector
-            printf("reading prevois sector -----------------------------\r\n");
-          }
-        }
-        if (pointer22char + MaxInLine < addressWriteFlashTemp)
-        {
-          maxLengthLoopL22 = MaxInLine;
-        }
-        else
-        {
-          maxLengthLoopL22 = addressWriteFlashTemp - pointer22char; //last value
-        }
-        /// printf("%c=",SST25_buffer[j]);
-      }                      // end for loop:
-      countLengthInLine = 0; //clear
-    }                        //--end keyCode 38--
-
-    //--------------end query line for display string in line------------
-    //
-    //-------------------------------------------------------------------
-
-    //********************Prepare string [20-40] for display on braille dot********************
-    // NextPoint เท่ากับตำแหน่งปัจจุบัน ,ถ้า NextPoint น้อยกว่า (ตำแหน่งปัจจุบัน+ความยาวที่จะสามารถอ่านได้)
-    //-----------------------------------------------------------------------------------------
-    // ตำแหน่งปัจจุบัน; if()
-    for (NextPoint = pointer22char; NextPoint < (pointer22char + maxLengthLoopL22); NextPoint++)
-    {
-      //-------------------------query line [20,40]-----------------------------
-      //------------------------------------------------------------------------
-      if (NextPoint + (pointerSector * sector) < addressWriteFlashTemp)
-      {
-        if (SST25_buffer[NextPoint] == 0x0d) //next value-> 0x0a
-        {
-          // CRLF = 2
-          // MaxInLine = 40
-          /*
-          ยกเว้น ox0d,0x0a โดดข้ามไปเลย
-          */
-          jumpCRLF = pointer22char + (MaxInLine - CRLF) - NextPoint; //store index value whene amount string less than 20
-          NextPoint += CRLF;
-          break;
-        }
-
-        //-------------------Store String value in #buffer22Char-----------------
-        buffer22Char[NextPoint - pointer22char] = SST25_buffer[NextPoint];
-        //printf("%c/", SST25_buffer[NextPoint]);
-      }
-      else // ถ้าเกืนความยาวของไฟล์
-      {
-        break;
-      }
-    } // end for loop;
-    for (i = 40 - jumpCRLF; i < 40; i++)
-    {
-      //เคลียตัวอักษรที่นอกเหนือจากความยาวของ String ที่จะแสดงผล[hex is 0x00]
-      buffer22Char[i] = 0;
-    }
-
-    //*****************read data from flash rom***********************
-    //previous line
-    //ถ้ามีการบอกว่าต้องอ่านข้ิอมูลใน sector ก่อนหน้า
-    //////////////////////////////////////////////////////////////////
-    if (readPreviousSector == 1)
-    { //read previous sector when keycode == 38 && sector != 0
-      readPreviousSector = 0;
-      pointerSector--;
-      configFlash();
-      SPI_FLASH_CS_LOW();
-      SST25_R_BLOCK(pointerSector * sector, SST25_buffer, sector);
-      SPI_FLASH_CS_HIGH();
-      Delay(0xffff);
-      pointer22char = sector;
-    }
-    //check string buffer before push to display when < less than 20 charactor
-    //printf("\r\nString40ch:%s\r\n",buffer22Char);
-
-    printStringLR(buffer22Char, 0);
-    //stringToUnicodeAndSendToDisplay(buffer22Char);
-    // printf("//sector: %d //send: %d-- %s -\r\n", pointerSector, pointer22char, buffer22Char);
-    printf("==============================\r\n");
-    printf("string:%s\r\n", buffer22Char);
-    //-------------read data from flash rom--------------------------
-    //Next line
-    //อ่านข้อมูลจาก ROM ใน Sector ถัดไป
-    /////////////////////////////////////////////////////////////////
-    if (pointerSectorStatus == 1)
-    {
-      //read next sector [length more than 4096]
-      pointerSectorStatus = 0;
-      pointerSector++; // current sector
-      pointer22char = 0;
-      NextPoint = 0;
-      //printf("seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\r\n");
-      // print last string again
-      configFlash();
-      SPI_FLASH_CS_LOW();
-      SST25_R_BLOCK(pointerSector * sector, SST25_buffer, sector);
-      SPI_FLASH_CS_HIGH();
-      Delay(0xffff);
-      stringToUnicodeAndSendToDisplay(buffer22Char); // print againt
-
-      //delay_ms(1000);
-    }
-  }
-  else if (keyCode == 1 || keyCode == 2) //[left,right] button
-  {
-    if (keyCode == 2) //right button
-      printStringLR(buffer22Char, 1);
-    else // left button
-      printStringLR(buffer22Char, 0);
-  }
-  if (keyCode == 27)
-  { //exit
-
-    endReadFile = 0;
-    mode = 0;
-    readFileStatus___ = 0;
-    SendCH370(ResetAll, sizeof(ResetAll));
-    delay_ms(45);
-    stringToUnicodeAndSendToDisplay("Exit...");
-    //printf("exit-------------\r\n");
-  }
-}
 
 //----------------------- check file type ------------------------
 // *.TBT file return 1
@@ -2815,8 +2610,8 @@ void PrepareText()
   {
     // delay_ms(200);
     printf("=====================removed======================\r\n");
-    printf("%s\r\n", substringRemoveEnter(notepad_buffer_string[c], 1, 10));
-    strcat(str_test, substringRemoveEnter(notepad_buffer_string[c], 1, 10));
+    printf("%s\r\n", substringRemoveEnter(Notepad.buffer_string[c], 1, 10));
+    strcat(str_test, substringRemoveEnter(Notepad.buffer_string[c], 1, 10));
     strcat(str_test, "\r\n");
     delay_ms(200);
   }
@@ -3283,7 +3078,7 @@ void NextFile()
 void setFileLength(char *str___)
 {
   int jjr = 0;
-  int FileLength222[] = {0x00, 0x57, 0xab, 0x3c, 0x00, 0x00};
+  uint8_t FileLength222[] = {0x00, 0x57, 0xab, 0x3c, 0x00, 0x00};
   while (str___[jjr] != '\0')
   {
     jjr++;
@@ -3509,8 +3304,8 @@ void ex_OpenDir()
 
 void setFilename(char *filename)
 { //setFilenameForFunction //0x00 0x57 0xab 0x2f
-  int loovar = 0;
-  int tempLL[14];
+  uint8_t loovar = 0;
+  uint8_t tempLL[14];
   SendCH370(setFilenameForFunction, sizeof(setFilenameForFunction));
   while (filename[loovar] != '\0')
   {
@@ -4043,7 +3838,7 @@ void SendCommandToBLE2(int data)
 //
 //
 //////////////////////////////////////////////////////////////////////////////
-void SendCH370(int data[], int sizeOfData)
+void SendCH370(uint8_t data[], int sizeOfData)
 {
   int x = 0;
   while (x < sizeOfData / sizeof(int))

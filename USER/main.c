@@ -2008,8 +2008,8 @@ void keyRead()
         {
           maxFile = 0;
           for (i = 0; i < maxfileListBuffer; i++)
-            memset(Dirpath, 0, sizeof(Dirpath)); //clear path
-          memset(fileLists[i], 0, sizeof(filelist[i]));
+            memset(fileLists[i], 0, sizeof(filelist[i]));
+          memset(Dirpath, 0, sizeof(Dirpath)); //clear path
           // delay_ms(5000);
           //prepareSD_Card();
           printf("reset all \r\n");

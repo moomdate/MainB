@@ -827,6 +827,9 @@ void slidText2Displayv2()
   {
     printf("Exit\r\n");
     ROMR.endReadFile = false;
+    readFileStatus___ = 0;
+    keyCode = 0;
+    
     //mode = 0;
   }
   if (strlen(bufferQueryLine) <= 20)
@@ -2028,6 +2031,7 @@ void keyRead()
         mode = 0;
         printf("exittttttttttttttttttttttttttt\r\n");
       }*/
+     
     }
     //-----------------------------------end mode (2)-------------------------------
     /*
@@ -2051,6 +2055,7 @@ void keyRead()
       stringToUnicodeAndSendToDisplay("Battery level");
     }
     //-----------------------------------end mode (5)-------------------------------
+    
     countKey = 0;
     keyCode = 0;
     seeCur = 0;
@@ -2235,6 +2240,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
             keyRead();
             //readFileStatus___
           }
+          
         } // ทดสอบ
       }
     }
@@ -2314,10 +2320,9 @@ void mountStatus()
 void searchFile2()
 {
   int readStatus = 1;
-  //printf("Seaching............................\r\n");
-  //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
-  //printf("reset all\r\n");
   int time_check = 0;
+  printf("Seaching............................\r\n");
+  //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   //maxFile = 0;
   while (readStatus)
   {

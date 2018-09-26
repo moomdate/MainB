@@ -47,11 +47,10 @@ typedef uint8_t bool;
 
 void writeFlash(int address);
 void clearSector(int address);
-int addressWriteFlashTemp = 0x0;
+
 int countSector4096 = 0;
 int countSector = 0;
 int addressSector = 0x00;
-bool endReadFile = false;
 
 int AmountSector = 0;
 int AmountSectorT = 0;
@@ -123,16 +122,14 @@ int becon = 0;
 
 int ex_openDirStatus = 0;
 //--readmode
-char dataTemp512[512];
-int countdataTemp512 = 0;
-int waitEnd = 0; // 10
-int lastAscii = 0;
+
+// 10
+
 int nextAgain = 0;
 int readFileStatus___ = 0;
 int countFileLegth = 0;
 
 int command_ = 0;
-
 
 int d_Time = 0;
 int toggleCur = 0;
@@ -206,7 +203,6 @@ int maxFile = 0;
 int fileSelect = 0;
 
 int readFileFromCH376sToFlashRom(char *filename);
-
 
 char Dirpath[30] = "";
 char fileLists[30][15];
@@ -290,7 +286,6 @@ int unicode_to_ASCII(int);
 int mapCursor(int, int, int);
 int checkBit(int);
 int keyMapping(int, int, int);
-
 
 //=======================================================
 
@@ -418,17 +413,27 @@ typedef struct lineSlider
   char strTemp2[42];
   bool DisplayLine;
 } lineSlider;
-
-typedef struct notepad{
+typedef struct readROM
+{
+  uint16_t countdata_Temp512;
+  uint32_t waitEnd;
+  uint8_t lastAscii;
+  int addressWriteFlashTemp;
+  bool endReadFile;
+  char dataTemp512[512];
+} readROM;
+typedef struct notepad
+{
   uint8_t cursorPosition;
   uint8_t multiplyCursor;
   bool displayFirst;
   int currentLine;
   char buffer_string[notepad_Line][notepad_MaxinLine];
-}notepad;
+} notepad;
 //--- struce define----
-lineSlider read;
-notepad Notepad;
+readROM ROMR;    //[prepare]read file to rom
+lineSlider read; // read rom to display
+notepad Notepad; //notepad mode
 
 /*******************************************************************************
   Function Name  : main
@@ -438,12 +443,77 @@ notepad Notepad;
   Return         : None
   Attention      : None
 *******************************************************************************/
+#define MAX_LINE 60
+int line;
+int EnterLine(void);
+int EnterLine()
+{
+  int Line = 0;
+  int state = 1;
+  int curline = 0;
+  int i = 0;
+  char line[3];
+  char mainText[20];
+  strcmp(mainText, "Go to Line:");
+  while (state)
+  {
+    notepad_readKey();       // key recieve
+    if (countKey >= maxData) // do events
+    {                        //Recieve & checking key
+      seeHead = 0;
+      if (checkKeyError == 0xff)
+      { //clear error key
+        countKey = 0;
+        SeeHead = 0;
+      }
+
+      if (bufferKey3digit[0] == 0x80)
+      { // check key enter
+        Line = atoi(line);
+        if (Line > MAX_LINE)
+        {
+          printf("\r\n Over Max line !!\r\n");
+          state = 1;
+          memset(line, 0, 3);
+        }
+        else
+        {
+          state = 0;
+        }
+      }
+      i = unicode_to_ASCII(bufferKey3digit[0]); // convert key to ascii
+      if (i >= 48 && i <= 57)
+      { // check num 0 - 9
+        line[curline] = i;
+        curline++;
+        if (curline == 3)
+        {
+          curline = 0;
+        }
+      }
+      clearKeyValue();
+      //sprintf(str, "%d", someInt);
+      //strcat(mainText,line)
+      stringToUnicodeAndSendToDisplay(mainText);
+      // printf("\r\n EnterLine : %s/%d\r\n", line, MAX_LINE);
+    }
+  }
+
+  Line = atoi(line);
+
+  return Line;
+}
 int main(void)
 {
 
   Notepad.cursorPosition = 0;
   Notepad.currentLine = 0;
   Notepad.displayFirst = false;
+
+  ROMR.endReadFile = false;
+  ROMR.countdata_Temp512 = 0;
+  ROMR.lastAscii = 0;
+  ROMR.addressWriteFlashTemp = 0;
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
   /* Configure the GPIO ports */
   GPIO_Configuration();   //if config this can't use printf
@@ -465,6 +535,7 @@ int main(void)
   
   testCell();
   */
+
   while (1)
   {
     keyRead();
@@ -747,15 +818,14 @@ void slidText2Displayv2()
 
   if (keyCode == 660) // go to line
   {
-    bool loopT = true;
-
-    while (loopT)
-    {
-    }
+    //bool loopT = true;
+    read.currentLine = EnterLine();
   }
-  else if (keyCode == 661)
+  else if (keyCode == 661) //Exit read Mode
   {
     printf("Exit\r\n");
+    ROMR.endReadFile = false;
+    //mode = 0;
   }
   if (strlen(bufferQueryLine) <= 20)
     read.DisplayLine = 0;
@@ -807,7 +877,7 @@ void slidText2Displayv2()
       queryLine(read.currentLine);
       strcpy(read.strTemp2, bufferQueryLine); // line 0
       read.currentSector--;
-      readSecter(read.currentSector * sector);
+      readSecter(read.currentSector * sector);                  //
       read.currentLine = read.lineInsector[read.currentSector]; //last line in sector
       queryLine(read.currentLine);
       strcpy(read.strTemp, bufferQueryLine);
@@ -1114,27 +1184,26 @@ void notepad_main()
 {
   int doing = 1; //status for do something in notepad mode
 
-  while (doing)
+  while (doing) // do in notepad
   {
     notepad_readKey();       // key recieve
     if (countKey >= maxData) // do events
     {                        //Recieve & checking key
       seeHead = 0;
       // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-      if (checkKeyError == 0xff)
-      { //clear error key
+      if (checkKeyError == 0xff) //clear error key
+      {
         countKey = 0;
         SeeHead = 0;
       }
+      keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
       if ((bufferKey3digit[1] > 3 || bufferKey3digit[2] != 0) && seeCur != 1) // key control
       {
-        keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+
         //--- เลื่อนบรรทัด ----
         notepad_checkMaxLine();
-
         if (keyCode == 40)
         { // next line
-
           if (Notepad.currentLine < notepad_Line && Notepad.currentLine < maxLineN)
             Notepad.currentLine++;
           if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) < notepad_MaxinLine / 2) //
@@ -1181,11 +1250,15 @@ void notepad_main()
             Notepad.displayFirst = true;
         }
       }
-      else if ((bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x1 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x2 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x0e && bufferKey3digit[1] == 0x3 && bufferKey3digit[2] == 0x00))
-      { // save
+      else if (keyCode == 659) // save key (space + s) //save file
+      {                        // save
         if (debug)
           printf("\r\n-----------Save:------------\r\n");
         saveName();
+      }
+      else if (keyCode == 661)
+      {
+        printf("exit \r\n");
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
       {                                                                                                         //enter key                                                                                                       // printf("New line \r\n");
@@ -1261,15 +1334,7 @@ void notepad_main()
         {
           removeChar(Notepad.buffer_string[Notepad.currentLine], Notepad.cursorPosition + Notepad.multiplyCursor); //ลบตัวอักษร
         }
-        //printf("-*-*-*-*-*-* *-*  %s \r\n",Notepad.buffer_string[Notepad.currentLine]);
         notepad_checkenterAndpush(Notepad.buffer_string[Notepad.currentLine]); //-----บัค
-        /* // บัคตรงนี้
-        if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1) //fill enter
-        {
-          keybuff[0] = (char)enterSign;
-          notepad_append(Notepad.buffer_string[Notepad.currentLine], keybuff, notepad_MaxinLine);
-        }
-        */
       }
       else if (seeCur == 1) // cursor key
       {
@@ -1294,15 +1359,14 @@ void notepad_main()
         }
         //   printf("cursor set at:%d\r\n", Notepad.cursorPosition + Notepad.multiplyCursor);
       }
-      else if (1 && seeCur != 1) //type message in notepad mode--------------------------------------------------------
+      else if (seeCur != 1)
       {
+        // เก็บข้อความที่พิมพ์ตรงนี้
         keyCode = unicode_to_ASCII(bufferKey3digit[0]);
         if (keyCode > 127)
           keyCode = ~bufferKey3digit[0];
-
         if (keyCode == 0) //space bar edit in unicode table
           keyCode = 32;
-
         if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1)
         {
           notepad_removeEnterSign(Notepad.buffer_string[Notepad.currentLine]);
@@ -1339,12 +1403,6 @@ void notepad_main()
         printf("|////////////////////////////////////////////|\r\n");
         printStringInLine(Notepad.buffer_string[Notepad.currentLine]);
         printf("\r\n|=================sub========================|\r\n");
-        /* if (!toggleCur)
-        {
-          subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, 99);
-        }
-        else
-        {*/
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition);
         // }
         printf("\r\n|============================================|\r\n");
@@ -1549,17 +1607,6 @@ void notepad_fillEnterSign(char *str)
         notepad_append(str, keybuff, a++);
         c--;
       }
-      /*
-      while (a < notepad_MaxinLine - 1)
-      {
-        //str[b] = (char)enterSign; //fille enter sign
-
-        keybuff[0] = (char)enterSign;
-        //  if (str[a] == '\0')
-
-        notepad_append(str, keybuff, a);
-        a++;
-      }*/
     }
   }
 }
@@ -1759,13 +1806,20 @@ int keyMapping(int a, int b, int c)
     keyCode__ = 2;
   }
   else if (a == 0x11 && b != 0x0)
-  { //space + e
+  {
+    //space + e
     keyCode__ = 661;
   }
 
   else if (a == 0x1b && (b == 0x01 || b == 0x02 || b == 0x03) && c == 0x00)
-  { //space + g
+  {
+    //space + g
     keyCode__ = 660;
+  }
+  else if ((a == 0x0e && b == 0x1 && c == 0x00) || (a == 0x0e && b == 0x2 && c == 0x00) || (a == 0x0e && b == 0x3 && c == 0x00))
+  {
+    //space + s
+    keyCode__ = 659;
   }
 
   return keyCode__;
@@ -1864,8 +1918,8 @@ void keyRead()
       }
       if (keyCode == 39)
       {
-        if (mode == 0)
-        { //
+        if (mode == 0) //enter to mode
+        {              //
           previousMode = mode;
           mode = count_menu;
           printf("mode:%d", mode);
@@ -1874,13 +1928,13 @@ void keyRead()
       caseMenu(count_menu);
     }
     //-----------------------------------end mode (10)-------------------------------
-    if (endReadFile == true && mode == 2) //mode 2
-    {                                  // on mode read
+    if (ROMR.endReadFile == true && mode == 2) //mode 2
+    {                                          // on mode read
       //printf("testttttttttttttttttttttttttt");
       slidText2Displayv2();
       //slidingFileFromRomToDisplay();
     }
-    if (mode == 2 && endReadFile == false)
+    if (mode == 2 && ROMR.endReadFile == false)
     { //key in mode 2
       if (keyCode == 38)
       {
@@ -1948,7 +2002,16 @@ void keyRead()
         maxFile = 0;
         printf("pathD: %d\r\n", ex_countPath(Dirpath));
         if (ex_countPath(Dirpath) == 1)
+        {
+          //SendCH370(ResetAll, sizeof(ResetAll));
+          maxFile = 0;
+          for (i = 0; i < 30; i++)
+            memset(fileLists[i], 0, sizeof(filelist[i]));
+         // delay_ms(5000);
+          //prepareSD_Card();
+          printf("reset all \r\n");
           mode = 0;
+        }
         else
         {
           ex_exitOncePath();
@@ -1956,11 +2019,11 @@ void keyRead()
           command_ = 4;
         }
       }
-      if (keyCode == 27)
+      /*if (keyCode == 27)
       {
         mode = 0;
-        //printf("exittttttttttttttttttttttttttt\r\n");
-      }
+        printf("exittttttttttttttttttttttttttt\r\n");
+      }*/
     }
     //-----------------------------------end mode (2)-------------------------------
     /*
@@ -2052,22 +2115,22 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       {
         // printf("funk\r\n");
       }
-      else if (command_ == 100 && countSector512 < 4 && countdataTemp512 < 512)
+      else if (command_ == 100 && countSector512 < 4 && ROMR.countdata_Temp512 < 512)
       {
         if (i1 == '\0')
         {
           // printf("End of File\r\n");-
         }
-        else if (countdataTemp512 < ((128) * (countSector512 + 1)) - 1)
+        else if (ROMR.countdata_Temp512 < ((128) * (countSector512 + 1)) - 1)
         {
           //------------------------------128 byte----------------------------
           // เก็บcharactor 128 byte
           ////////////////////////////////////////////////////////////////////
-          dataTemp512[countdataTemp512] = i1;
-          countdataTemp512++;
+          ROMR.dataTemp512[ROMR.countdata_Temp512] = i1;
+          ROMR.countdata_Temp512++;
 
-          waitEnd = 0;
-          lastAscii = i1;
+          ROMR.waitEnd = 0;
+          ROMR.lastAscii = i1;
         }
         else
         {
@@ -2076,8 +2139,8 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           // ทำการเพิ่มคัวแปร countSector512
           ///////////////////////////////////////////////////////////////////
           countSector512++;
-          dataTemp512[countdataTemp512] = i1;
-          countdataTemp512++;
+          ROMR.dataTemp512[ROMR.countdata_Temp512] = i1;
+          ROMR.countdata_Temp512++;
           if (countSector512 >= 4)
           {
             //---------------------------512 byte-----------------------------
@@ -2085,15 +2148,15 @@ int readFileFromCH376sToFlashRom(char *fileName___)
             //
             //////////////////////////////////////////////////////////////////
             command_ = 95;
-            for (i = addressWriteFlashTemp; i < addressWriteFlashTemp + 512; i++)
+            for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
             {
-              SST25_buffer[i - (sector * countSector)] = dataTemp512[i - addressWriteFlashTemp];
-              dataTemp512[i - addressWriteFlashTemp] = '\0'; //clear buffer
+              SST25_buffer[i - (sector * countSector)] = ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp];
+              ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp] = '\0'; //clear buffer
             }
             //  ทำการเพิ่มจำนวนตัวแปรที่นับ sector:countSector4096
             countSector4096++;
-            //writeFlash(addressWriteFlashTemp);
-            addressWriteFlashTemp += countdataTemp512;
+            //writeFlash(ROMR.addressWriteFlashTemp);
+            ROMR.addressWriteFlashTemp += ROMR.countdata_Temp512;
             if (countSector4096 >= 8)
             {
               //---------------------------4096 byte---------------------------
@@ -2101,9 +2164,9 @@ int readFileFromCH376sToFlashRom(char *fileName___)
               //push (string 4096 charactor) to flash rom.
               //
               //////////////////////////////////////////////////////////////////
-              //use variable:SST25_W_BLOCK
+              //use variable:SST25_W_BLOCK //4096
               // stringToUnicodeAndSendToDisplay("Reading....");
-              writeFlash(addressSector);
+              writeFlash(addressSector); //1*4096
               //clearUnsignChar();
 
               //Delay(0xff);
@@ -2111,12 +2174,12 @@ int readFileFromCH376sToFlashRom(char *fileName___)
               addressSector += sector;
               countSector4096 = 0;
               //--------------------------------------------------------------------------------------------
-              //check this value `addressWriteFlashTemp`--
+              //check this value `ROMR.addressWriteFlashTemp`--
               //--------------------------------------------------------------------------------------------
               countSector++;
             }
             //--- reset temp sector---//
-            countdataTemp512 = 0;
+            ROMR.countdata_Temp512 = 0;
             countSector512 = 0;
           }
           else
@@ -2128,21 +2191,21 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     }
     else
     {
-      if (lastAscii == i1)
+      if (ROMR.lastAscii == i1)
       {
-        waitEnd++;
-        if (waitEnd == 100 * 100) // end of file check time out
+        ROMR.waitEnd++;
+        if (ROMR.waitEnd == 100 * 100) // end of file check time out
         {
           beepError();
-          for (i = addressWriteFlashTemp; i < addressWriteFlashTemp + 512; i++)
+          for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
           {
-            SST25_buffer[i - (sector * countSector)] = dataTemp512[i - addressWriteFlashTemp];
+            SST25_buffer[i - (sector * countSector)] = ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp];
           }
           configFlash();
           writeFlash(addressSector);
 
-          addressWriteFlashTemp += countdataTemp512;
-          waitEnd++;
+          ROMR.addressWriteFlashTemp += ROMR.countdata_Temp512;
+          ROMR.waitEnd++;
           //----------------------store last sector to flash rom-----------------------
           //
           /////////////////////////////////////////////////////////////////////////////
@@ -2154,16 +2217,15 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           Delay(0xffff);
           convert_text2_buffer(SST25_buffer);*/
 
-          endReadFile = true;
+          ROMR.endReadFile = true;
 
-         
-          AmountSector = addressWriteFlashTemp / sector;  //---- จำนวน sector ----
-          AmountSectorT = addressWriteFlashTemp % sector; //---- เศษ ที่เหลือของ sector ---
+          AmountSector = ROMR.addressWriteFlashTemp / sector;  //---- จำนวน sector ----
+          AmountSectorT = ROMR.addressWriteFlashTemp % sector; //---- เศษ ที่เหลือของ sector ---
 
           initSlidingMode();
           //  read.currentLine = 210;
           readSecter(0);
-          while (endReadFile == true)
+          while (ROMR.endReadFile == true)
           { // query string-
             // menu_s();
             keyRead();
@@ -2189,8 +2251,6 @@ void clearReadlineInsector()
   for (i = 0; i < sizeof(read.lineInsector) / sizeof(read.lineInsector[0]); i++)
     read.lineInsector[i] = '\0';
 }
-
-
 
 //----------------------- check file type ------------------------
 // *.TBT file return 1

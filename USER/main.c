@@ -205,7 +205,9 @@ int fileSelect = 0;
 int readFileFromCH376sToFlashRom(char *filename);
 
 char Dirpath[30] = "";
-char fileLists[30][15];
+#define maxfileListBuffer 30
+#define fileListBufferSize 15
+char fileLists[maxfileListBuffer][fileListBufferSize];
 USART_InitTypeDef USART_InitStructure36;
 //////////////////////////////////////////////////////////////////////////////
 
@@ -2001,16 +2003,18 @@ void keyRead()
         printf("exit\r\n");
         maxFile = 0;
         printf("pathD: %d\r\n", ex_countPath(Dirpath));
+        printf("dir past :%s \r\n", Dirpath);
         if (ex_countPath(Dirpath) == 1)
         {
-          //SendCH370(ResetAll, sizeof(ResetAll));
           maxFile = 0;
-          for (i = 0; i < 30; i++)
-            memset(fileLists[i], 0, sizeof(filelist[i]));
-         // delay_ms(5000);
+          for (i = 0; i < maxfileListBuffer; i++)
+            memset(Dirpath, 0, sizeof(Dirpath)); //clear path
+          memset(fileLists[i], 0, sizeof(filelist[i]));
+          // delay_ms(5000);
           //prepareSD_Card();
           printf("reset all \r\n");
           mode = 0;
+          stringToUnicodeAndSendToDisplay("read");
         }
         else
         {

@@ -392,7 +392,7 @@ void MemSize()
   printf("uint32_t size :%d Byte\r\n", sizeof(uint32_t));
   printf("long     size :%d Byte\r\n", sizeof(long));
 }
-
+char bluetoothNambuffer[20];
 void displayPrepare(void);
 void testCell(void);  //test cell in mode
 void StoreLine(void); //store line in  struct [lineInsector]
@@ -505,6 +505,7 @@ int EnterLine()
 
   return Line;
 }
+
 int main(void)
 {
 
@@ -555,7 +556,11 @@ int main(void)
     {
       GPIO_SetBits(GPIOC, GPIO_Pin_0);
       delay_ms(800); //wait bluetooth boot
-      stringToUnicodeAndSendToDisplay(getBluetoothName());
+      strcpy(bluetoothNambuffer, getBluetoothName());
+      if (strlen(bluetoothNambuffer) > 0)
+        stringToUnicodeAndSendToDisplay(bluetoothNambuffer);
+      else
+        stringToUnicodeAndSendToDisplay("Please check Module");
       while (mode == 3)
       {
         BluetoothMode();
@@ -767,6 +772,8 @@ char *getBluetoothName()
     if (timeOut > 300000)
     {
       sendStatus = 1;
+
+      //
       printf("timeOut\r\n");
       break;
     }
@@ -829,7 +836,7 @@ void slidText2Displayv2()
     ROMR.endReadFile = false;
     readFileStatus___ = 0;
     keyCode = 0;
-    
+
     //mode = 0;
   }
   if (strlen(bufferQueryLine) <= 20)
@@ -1264,6 +1271,8 @@ void notepad_main()
       else if (keyCode == 661)
       {
         printf("exit \r\n");
+        doing = 0;
+        mode = 0;
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
       {                                                                                                         //enter key                                                                                                       // printf("New line \r\n");
@@ -1434,6 +1443,10 @@ void notepad_main()
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
       }
       d_Time = 0;
+    }
+    if (doing == 0 && mode == 0)
+    {
+      stringToUnicodeAndSendToDisplay("notepad");
     }
   }
 }
@@ -2031,7 +2044,6 @@ void keyRead()
         mode = 0;
         printf("exittttttttttttttttttttttttttt\r\n");
       }*/
-     
     }
     //-----------------------------------end mode (2)-------------------------------
     /*
@@ -2055,7 +2067,7 @@ void keyRead()
       stringToUnicodeAndSendToDisplay("Battery level");
     }
     //-----------------------------------end mode (5)-------------------------------
-    
+
     countKey = 0;
     keyCode = 0;
     seeCur = 0;
@@ -2240,7 +2252,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
             keyRead();
             //readFileStatus___
           }
-          
+
         } // ทดสอบ
       }
     }

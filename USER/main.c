@@ -1441,7 +1441,8 @@ void notepad_main()
       else
       {
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
-      }
+      } 
+      
       d_Time = 0;
     }
     if (doing == 0 && mode == 0)

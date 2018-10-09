@@ -411,6 +411,7 @@ typedef struct lineSlider
   int sesString;
   uint16_t currentSector;
   uint16_t lineInsector[lineInSectorBufferSize];
+  uint16_t totalLine;
   char strTemp[42];
   char strTemp2[42];
   bool DisplayLine;
@@ -445,67 +446,22 @@ notepad Notepad; //notepad mode
   Return         : None
   Attention      : None
 *******************************************************************************/
-#define MAX_LINE 60
-int line;
-int EnterLine(void);
-int EnterLine()
-{
-  int Line = 0;
-  int state = 1;
-  int curline = 0;
-  int i = 0;
-  char line[3];
-  char mainText[20];
-  strcmp(mainText, "Go to Line:");
-  while (state)
-  {
-    notepad_readKey();       // key recieve
-    if (countKey >= maxData) // do events
-    {                        //Recieve & checking key
-      seeHead = 0;
-      if (checkKeyError == 0xff)
-      { //clear error key
-        countKey = 0;
-        SeeHead = 0;
-      }
 
-      if (bufferKey3digit[0] == 0x80)
-      { // check key enter
-        Line = atoi(line);
-        if (Line > MAX_LINE)
-        {
-          printf("\r\n Over Max line !!\r\n");
-          state = 1;
-          memset(line, 0, 3);
-        }
-        else
-        {
-          state = 0;
-        }
-      }
-      i = unicode_to_ASCII(bufferKey3digit[0]); // convert key to ascii
-      if (i >= 48 && i <= 57)
-      { // check num 0 - 9
-        line[curline] = i;
-        curline++;
-        if (curline == 3)
-        {
-          curline = 0;
-        }
-      }
-      clearKeyValue();
-      //sprintf(str, "%d", someInt);
-      //strcat(mainText,line)
-      stringToUnicodeAndSendToDisplay(mainText);
-      // printf("\r\n EnterLine : %s/%d\r\n", line, MAX_LINE);
-    }
-  }
+//-------------------------------------------------------------------------------
+//function go to line
+unsigned int gotoLine_EnterLine(int maxLine);
+int gotoLine_getLine(int Line, int Sector);
+int gotoLine_getSectorInline(int line);
+uint16_t gt_Sector = 0;
+int16_t gt_Line = 0;
+/*
+	Sector = gotoLine_getSectorInline(Line); //เนเธ”เน Sector
+	gotoLine_getLine(Line, Sector);			// เธ•เนเธญเธเนเธ”เน Line เนเธ Sector
+	printf("found Line in Sector (%d)\r\n", Sector);
+	printf("In line %d\r\n", gotoLine_getLine(Line, Sector));
+*/
 
-  Line = atoi(line);
-
-  return Line;
-}
-
+//-------------------------------------------------------------------------------
 int main(void)
 {
 
@@ -513,6 +469,7 @@ int main(void)
   Notepad.currentLine = 0;
   Notepad.displayFirst = false;
 
+  read.totalLine = 0;
   ROMR.endReadFile = false;
   ROMR.countdata_Temp512 = 0;
   ROMR.lastAscii = 0;
@@ -534,11 +491,6 @@ int main(void)
   displayPrepare();
   prepareSD_Card();
   MemSize();
-  /*
-  
-  testCell();
-  */
-
   while (1)
   {
     keyRead();
@@ -582,7 +534,153 @@ int main(void)
     }
   }
 }
+//======================================================
+//--------------fn go to line-------------------------*
+int gotoLine_getSectorInline(int line) //หาว่าบรรทัดนั้นอยู่ใน Sector ไหน
+{
+  int gg = 0;
+  int ccLine = 0;
+  int sector___ = 0;
+  while (ccLine < line)
+  {
+    ccLine += read.lineInsector[gg];
+    if (ccLine >= line)
+    {
+      sector___ = gg;
+      break;
+    }
+    gg++;
+  }
+  return sector___;
+}
+int gotoLine_getLine(int Line, int Sector) //หาใน Sector นั้นว่าบรรทัดที่เท้่าไหร่
+{
+  int line = Line;
+  int ccSector = 0;
+  if (Sector > 0)
+  {
+    while (1)
+    {
+      if (line > read.lineInsector[ccSector])
+        line -= read.lineInsector[ccSector];
+      if (line <= read.lineInsector[ccSector])
+      {
+        break;
+      }
+      if (ccSector >= sizeof(read.lineInsector) / sizeof(read.lineInsector[0])) //à¸šà¸±à¸‡à¸„à¸±à¸šà¹„à¸¡à¹ˆà¹ƒà¸«à¹‰à¹€à¸à¸´à¸™ Size
+        break;
+      else
+        ccSector++;
+    }
+  }
+  return line;
+}
+unsigned int gotoLine_EnterLine(int maxLine)
+{
+  unsigned int Line = 0;
+  int state = 1;
+  int curline = 0;
+  int i = 0;
+  char line[3];
+  char mainText[30];
+  char numbuffer[4];
+  strcpy(mainText, "Go to Line:");
+  strcpy(line, " ");
+  // memset(line, 0, 3);
+  // strcpy(mainText, "Go to Line:");
+  strcat(mainText, line);
+  strcat(mainText, "/"); //cursor+12
+  sprintf(numbuffer, "%d", maxLine);
+  strcat(mainText, numbuffer); //num to text
+  while (state)
+  {
+    notepad_readKey();       // key recieve
+    if (countKey >= maxData) // do events
+    {                        //Recieve & checking key
+      seeHead = 0;
+      if (checkKeyError == 0xff)
+      { //clear error key
+        countKey = 0;
+        SeeHead = 0;
+      }
+      //printf("key a:%x,b:%x,c:%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      if (bufferKey3digit[0] == 0x11 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x00)
+      {
+        state = 0;
+        Line = -1;
+        printf("Exit ---------------------------\r\n");
+      }
+      else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x00) //enter
+      {                                                                                                // check key enter
+        Line = atoi(line);
+        if (Line > maxLine)
+        {
+          stringToUnicodeAndSendToDisplay("Over Max line !!");
+          delay_ms(1000);
+          state = 1;
+          memset(line, 0, 3);
+          curline = 0;
+        }
+        else
+        {
+          state = 0;
+        }
+      }
+      else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x00)
+      { //remove
+        if (curline > 0)
+          curline--;
+        line[curline] = 0x00;
+      }
+      i = unicode_to_ASCII(bufferKey3digit[0]); // convert key to ascii
+      if (i >= 48 && i <= 57)                   //ถ้าเป็นเลข
+      {                                         // check num 0 - 9
+        if (curline < 3)
+        {
+          line[curline] = i;
+          // if (curline = 2)
+          curline++;
+          if (curline >= 3)
+            line[curline] = 0x00;
+        }
+        else
+        {
+          line[curline] = 0x00;
+        }
+        printf("this is line : %s\r\n", line);
+      }
+      //sprintf(str, "%d", someInt);
+      strcpy(mainText, "Go to Line:");
+      strcat(mainText, line);
+      strcat(mainText, " /");
+      strcat(mainText, numbuffer);
+      if (!toggleCur)
+        stringToUnicodeAndSendToDisplay(mainText);
+      else
+        stringToUnicodeAndSendToDisplayC(mainText, curline + 11);
+      printf("\r\n gotoLine_EnterLine : %s/%d\r\n", line, maxLine);
 
+      clearKeyValue();
+    }
+    d_Time++;
+    if (d_Time >= delayCur)
+    { //blink cu
+      if (toggleCur == 0)
+        toggleCur = 1;
+      else
+        toggleCur = 0;
+      if (!toggleCur)
+        stringToUnicodeAndSendToDisplay(mainText);
+      else
+        stringToUnicodeAndSendToDisplayC(mainText, curline + 11);
+      d_Time = 0;
+    }
+  }
+  if (Line == -1)
+    clearDot();
+  return Line;
+}
+//---------------------------- end fn. go to line ---------------------------
 void testCell()
 {
   int i_ = 0;
@@ -677,7 +775,7 @@ void mode4()
           status____ = getMuteStatus();
         }
 
-        if ((bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2) || (bufferKey3digit[0] == 0 && bufferKey3digit[1] == 10 && bufferKey3digit[2] == 0))
+        if ((bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2) || (bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0x10 && bufferKey3digit[2] == 0))
         {
           if (status____ == 1)
           {
@@ -821,14 +919,64 @@ void queryLine(int line)
 /*
 
 */
+
+void QueryLineWithCommand(int line)
+{
+  int gg = 0;
+  int ccLine = 0;
+  while (ccLine < line)
+  {
+    ccLine += read.lineInsector[gg]; // นับบรรทัด
+    if (ccLine > line)
+    {
+      read.currentSector = gg;
+    }
+    gg++;
+  }
+  /*{
+    if (read.currentLine < read.lineInsector[read.currentSector])
+    {
+      read.currentLine++;
+    }
+    if (read.currentLine == read.lineInsector[read.currentSector] && read.currentSector < read.TotalSector)
+    {
+      queryLine(read.currentLine);
+      strcpy(read.strTemp, bufferQueryLine);
+      read.currentSector++;
+      readSecter(read.currentSector * sector);
+      read.currentLine = 0;
+      queryLine(read.currentLine);
+      strcat(read.strTemp, bufferQueryLine);
+      printf("=========================================\r\n");
+      printf("next sector \r\n");
+      printf("=========================================\r\n");
+    }
+  }*/
+}
+/*------------------------------------------------------------------------
+ฟังก์ชั่นสำหรับแสดงผลไฟล์ที่อ่านลงรอม โดยฟังก์ชั่นนี้ทำหน้าที่อ่านข้อมูลจาก Rom มาแสดงที่ Display
+--------------------------------------------------------------------------*/
 void slidText2Displayv2()
 {
   //clearUnsignChar();
 
-  if (keyCode == 660) // go to line
+  if (keyCode == 660) // function go to line
   {
     //bool loopT = true;
-    read.currentLine = EnterLine();
+    gt_Line = gotoLine_EnterLine(read.totalLine); //รับค่าบรรทัดที่จะไป
+    printf("return line is %d\r\n", gt_Line);
+    if (gt_Line != -1)
+    {
+      gt_Sector = gotoLine_getSectorInline(gt_Line);  //หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); //แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+
+      read.currentSector = gt_Sector;          // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;              //ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector); // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);             // ทำการอ่านไฟล์ในบรรทัดนั้น
+    }
+    //printf("found Line in Sector (%d)\r\n", gt_Sector);
+    //printf("In line %d\r\n", gt_Line);
   }
   else if (keyCode == 661) //Exit read Mode
   {
@@ -841,11 +989,6 @@ void slidText2Displayv2()
   }
   if (strlen(bufferQueryLine) <= 20)
     read.DisplayLine = 0;
-
-  /*
-  ====================================================================
-  lefr and right button
-  */
   if (keyCode == 2) // printf right
   {
 
@@ -884,7 +1027,8 @@ void slidText2Displayv2()
     {
       read.currentLine--;
     }
-    if (read.currentSector != 0 && read.currentLine == 0)
+    // อ่าน Sector ก่อนหน้า
+    if (read.currentSector != 0 && read.currentLine == 0) //
     {
       queryLine(read.currentLine);
       strcpy(read.strTemp2, bufferQueryLine); // line 0
@@ -942,6 +1086,10 @@ void slidText2Displayv2()
   {
     queryLine(read.currentLine);
     printStringLR(bufferQueryLine, read.DisplayLine);
+    for (i = 0; i < sizeof(bufferQueryLine)/2;i++)
+    {
+      printf("0x%x,", bufferQueryLine[i]);
+    }
     printf("string (%d) :%s\r\n", read.currentLine, bufferQueryLine);
   }
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
@@ -952,6 +1100,7 @@ void StoreLine()
   {
     readSecter(i * sector);
     read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer);
+    read.totalLine += read.lineInsector[i];
   }
 }
 void StoreLineClear()
@@ -1192,6 +1341,9 @@ int getMuteStatus()
   }
   return uart2Buffer;
 }
+/*
+ฟังก์ชั่น Notepad สำหรับพิมพ์ 
+*/
 void notepad_main()
 {
   int doing = 1; //status for do something in notepad mode
@@ -1441,11 +1593,10 @@ void notepad_main()
       else
       {
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
-      } 
-      
+      }
       d_Time = 0;
     }
-    if (doing == 0 && mode == 0)
+    if (doing == 0 && mode == 0) //after exit form notepad mode
     {
       stringToUnicodeAndSendToDisplay("notepad");
     }
@@ -2260,6 +2411,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
   }
   return 0;
 }
+
 void initSlidingMode()
 {
   read.TotalSector = AmountSector;
@@ -2945,7 +3097,7 @@ int unicode_to_ASCII(int key)
     }
   }
 
-  printf("ascii is %c HEX:%x\r\n", asciT, asciT);
+  //printf("ascii is %c HEX:%x\r\n", asciT, asciT);
   return asciT;
 }
 //-----------new----------

@@ -32,7 +32,7 @@ typedef uint8_t bool;
 #define SPI_DISPLAY_CS_LOW() GPIO_ResetBits(GPIOD, GPIO_Pin_4) //SPI_FLASH_CS_LOW
 #define SPI_DISPLAY_CS_HIGH() GPIO_SetBits(GPIOD, GPIO_Pin_4)  //SPI_FLASH_CS_HIGH
 
-//--------------------------------spi flash------------------------------------
+//--------------------------------spi flash------------b------------------------
 #define SPI_FLASH_CS_LOW() GPIO_ResetBits(GPIOA, GPIO_Pin_4)
 #define SPI_FLASH_CS_HIGH() GPIO_SetBits(GPIOA, GPIO_Pin_4)
 
@@ -89,6 +89,7 @@ uint8_t FileUpdate[] = {0x00, 0x57, 0xab, 0x3d};
 uint8_t USBDiskMount[] = {0x00, 0x57, 0xab, 0x31};
 uint8_t continueRead[] = {0x00, 0x57, 0xab, 0x3b};
 uint8_t FileClose[] = {0x00, 0x57, 0xab, 0x36, 0x01};
+uint8_t FileClose0[] = {0x00, 0x57, 0xab, 0x36, 0x00};
 uint8_t setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03}; //+
 uint8_t setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
 uint8_t checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
@@ -891,14 +892,20 @@ void queryLine(int line)
       cc++;
       a++;
     }
-    if (cc > line)
+    if (cc > line) //ถ้าเกิน
     {
       break;
     }
     if (cc == line)
     {
       if (SST25_buffer[a] != 0x0d)
+      {
+        if (a2 == 0 && SST25_buffer[a] < 32) //error
+        {
+          a++;
+        }
         bufferQueryLine[a2++] = SST25_buffer[a];
+      }
     }
   }
   // printf("a is %d\r\n", a);
@@ -1086,7 +1093,7 @@ void slidText2Displayv2()
   {
     queryLine(read.currentLine);
     printStringLR(bufferQueryLine, read.DisplayLine);
-    for (i = 0; i < sizeof(bufferQueryLine)/2;i++)
+    for (i = 0; i < sizeof(bufferQueryLine) / 2; i++)
     {
       printf("0x%x,", bufferQueryLine[i]);
     }
@@ -2244,7 +2251,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     {
       setFilename(fileName___);
       command_++; //5
-      stringToUnicodeAndSendToDisplay("Reading....");
+      stringToUnicodeAndSendToDisplay("On Step Reading....");
       delay_ms(45);
     }
     else if (command_ == 5)
@@ -2343,7 +2350,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
               //clearUnsignChar();
 
               //Delay(0xff);
-              stringToUnicodeAndSendToDisplay("Reading....");
+              stringToUnicodeAndSendToDisplay("On read file Reading....");
               addressSector += sector;
               countSector4096 = 0;
               //--------------------------------------------------------------------------------------------
@@ -2369,6 +2376,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
         ROMR.waitEnd++;
         if (ROMR.waitEnd == 100 * 100) // end of file check time out
         {
+          SendCH370(FileClose, sizeof(FileClose));
           beepError();
           for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
           {
@@ -2862,7 +2870,7 @@ void writeFile4096(char *fname, char *strSource)
   int Sloop255 = 0;
   int iL = 0, pp = 0;
   char buffForWrite[128], buffForWrite2[128];
-  int WF = 0;
+  int WF = 0; //write before
   memset(buffForWrite2, 0, 256);
   maxSize = strlen(strSource);
   loop255 = maxSize / sizeWrite;

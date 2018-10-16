@@ -5,8 +5,6 @@
 #include <inttypes.h>
 #include <stdlib.h> //strtol
 #include "stm32f10x_spi.h"
-#include "ch376s.c"
-#include "readMode.c"
 //------------------------ typedef boolean------------------------
 //================================================================
 typedef uint8_t bool;
@@ -99,7 +97,8 @@ uint8_t setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
 uint8_t changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
 uint8_t FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
 uint8_t FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
-
+uint8_t Folder_DELETE[] = {0x00, 0x57, 0xab, 0x35};
+char buffascii[10];
 uint8_t FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
 uint8_t DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
 /////////////////////////////////////////////////////////////////////
@@ -178,7 +177,6 @@ const char *fileName(void);
 char DataForWrite[32] = "";
 char DataForWrite_aftersort[32] = "";
 //--- sd card---//
-void ReadFile(void);
 int createFile(char *name);
 int CreateFile__ = 1;
 void appendFile(void);
@@ -352,7 +350,7 @@ char readmode_bufferStr[readmode_MaxLineBuffer][readmode_maxsizeInLine];
 char str_ready[40];
 char str_be[10][11];
 void PrepareText(void);
-char str_test[1000];
+//char str_test[4000];
 
 //-----------------------------------------------------------------------------
 //sliding to display v 2
@@ -376,6 +374,8 @@ void queryLine(int line);
 char bufferQueryLine[50];
 
 //-------------------------
+char buffer_afterRemove[42];
+
 void MemSize()
 {
   /*
@@ -461,8 +461,78 @@ int16_t gt_Line = 0;
 	printf("found Line in Sector (%d)\r\n", Sector);
 	printf("In line %d\r\n", gotoLine_getLine(Line, Sector));
 */
+int readmode_countLineInOneSector(char *str)
+{
+  int count = 0;
+  int sum = 0;
+  while (str[count] != '\0' && count < 4096)
+  {
+    if (str[count] == 0x0d)
+    {
+      if (count != 4096 - 1)
+      {
+        if (str[count + 1] == 0x0a)
+        {
+          sum++;
+        }
+      }
+    }
+    count++;
+  }
+  return sum;
+}
 
 //-------------------------------------------------------------------------------
+void StoreDataTOSector()
+{
+  printf("PROCESSING..\r\n");
+  memset(SST25_buffer, '1', 4096); //เก็บค่าลงบัฟเฟอร์
+  writeFlash(0);                   //เอาบัฟเฟอร์เขียนลง ROM
+  memset(SST25_buffer, '2', 4096); //เก็บค่าลงบัฟเฟอร์
+  writeFlash(4096);                //เอาบัฟเฟอร์เขียนลง ROM
+}
+int findTotalSectorUSED()
+{
+  int secAd = 0;
+  while (1)
+  {
+    memset(SST25_buffer, 0, 4096);
+    readSecter(secAd * 4096);
+    secAd++;
+    if (strlen(SST25_buffer) != 4096)
+      break;
+    else
+      secAd++;
+  }
+  return secAd;
+}
+void appendToSECTOR()
+{
+  int sector__ = 0;
+  char shiftChar[2];
+  StoreDataTOSector();
+
+  memset(SST25_buffer, 0, 4096); // เคลียร์ ค่าใน บัฟเฟแร์
+
+  readSecter(sector__);      // อ่านค่าใน ROM
+  SST25_buffer[4095] = 0x00; //clear last char
+
+  notepad_append(SST25_buffer, "a", 35);
+
+  shiftChar[0] = SST25_buffer[4095];
+  readSecter(4096);          // อ่านค่าใน ROM
+  SST25_buffer[4095] = 0x00; //clear last char
+  notepad_append(SST25_buffer, shiftChar, 0);
+
+  writeFlash(4096);
+
+  readSecter(4096);
+  // printf("on use:%d", findTotalSectorUSED());
+}
+int DeleteFolder(char *str);
+void setFoldername(char *filename);
+void upperASCII(char *str);
+int confirm(void);
 int main(void)
 {
 
@@ -492,6 +562,8 @@ int main(void)
   displayPrepare();
   prepareSD_Card();
   MemSize();
+  printf("press enter");
+  // appendToSECTOR();
   while (1)
   {
     keyRead();
@@ -535,6 +607,227 @@ int main(void)
     }
   }
 }
+int removeDataInFileTemp(char *fileRe)
+{
+  int intdexPo = 0;
+  int lastIndex = 0;
+  //fileRe
+  //fileLists
+  for (i = 0; i < sizeof(fileLists) / sizeof(fileLists[0]); i++) //find last index
+  {
+    if (strlen(fileLists[i]) != 0)
+    {
+      lastIndex++;
+    }
+    else
+    {
+      break;
+    }
+  }
+  for (i = 0; i < lastIndex; i++) //หา ตำแหน่ง
+  {
+    if (strlen(fileLists[i]) != 0) // name of file not null
+    {
+      if (strcmp(fileRe, fileLists[i]) == 0) //compare str
+      {
+        intdexPo = i + 1;
+        break;
+      }
+    }
+  }
+  if (intdexPo >= lastIndex + 1)
+  {
+    printf("Deletion not possible.\n");
+  }
+  else
+  {
+    printf("delete on position %d \r\n", intdexPo);
+    for (i = intdexPo - 1; i < lastIndex - 1; i++)
+    {
+      strcpy(fileLists[i], fileLists[i + 1]);
+    }
+    printf("Resultant array:\n");
+    for (i = 0; i < lastIndex - 1; i++)
+    {
+      printf("%s\n", fileLists[i]);
+    }
+    maxFile--;
+    fileSelect--;
+  }
+  return 1;
+}
+int confirm()
+{
+  int status = 2;
+  int tmod = 1;
+  while (tmod)
+  {
+    notepad_readKey();       // key recieve
+    if (countKey >= maxData) // do events
+    {                        //Recieve & checking key
+      seeHead = 0;
+      if (checkKeyError == 0xff)
+      { //clear error key
+        countKey = 0;
+        SeeHead = 0;
+      }
+      printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      if (checkKeyError == 0xff)
+      { //clear error key
+        countKey = 0;
+        SeeHead = 0;
+      }
+      if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
+      {
+        status = 1;
+      }
+      else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
+      {
+        status = 0;
+      }
+      else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0x02)
+      {
+        status = 1;
+      }
+      else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0x10 && bufferKey3digit[2] == 0)
+      {
+        status = 1;
+      }
+      else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0x04)
+      {
+        status = 0;
+      }
+      else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0x20 && bufferKey3digit[2] == 0)
+      {
+        status = 0;
+      }
+      if (status != 2)
+        tmod = 0;
+      // key mapping //
+      // keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+      clearKeyValue();
+    }
+  }
+  return status;
+}
+void upperASCII(char *str)
+{
+  int i = 0;
+  while (*str != '\0')
+  {
+    if (*str >= 97 && *str <= 122)
+    {
+      buffascii[i] = *str - 32;
+    }
+    else
+    {
+      buffascii[i] = *str;
+    }
+    i++;
+    str++;
+  }
+}
+
+void setFoldername(char *filename)
+{ //setFilenameForFunction //0x00 0x57 0xab 0x2f
+  int loovar = 0;
+  uint8_t tempLL[14];
+  SendCH370(setFilenameForFunction, sizeof(setFilenameForFunction));
+  while (filename[loovar] != '\0')
+  {
+    tempLL[loovar] = filename[loovar];
+    loovar++;
+  }
+  tempLL[loovar] = '\0';
+  SendCH370(tempLL, sizeof(tempLL));
+}
+int DeleteFolder(char *name)
+{
+  int timeOut = 0;
+  int status_delete = 0;
+  command_ = 1;
+
+  while (1)
+  {
+    timeOut++;
+    if (command_ == 1)
+    {
+      SendCH370(checkConnection, sizeof(checkConnection));
+      command_++; //2
+      delay_ms(50);
+    }
+    else if (command_ == 2)
+    {
+      SendCH370(setSDCard, sizeof(setSDCard));
+      command_++; //4
+      delay_ms(50);
+    }
+    else if (command_ == 3)
+    {
+      SendCH370(USBDiskMount, sizeof(USBDiskMount));
+      command_++; //6
+      delay_ms(50);
+    }
+    else if (command_ == 4)
+    {
+      // setFoldername
+      // convert uppercase to name
+      upperASCII(name);
+      setFoldername(buffascii);
+      command_++; //8
+      delay_ms(50);
+    }
+    else if (command_ == 5)
+    {
+      SendCH370(Folder_DELETE, sizeof(Folder_DELETE));
+      delay_ms(80);
+      command_++; //10
+    }
+    else if (command_ == 6)
+    {
+      SendCH370(Folder_DELETE, sizeof(Folder_DELETE));
+      delay_ms(80);
+      command_++; //10
+    }
+
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(USART3);
+      if (i1 == 0x41)
+      {
+        printf("\r\n ERR_OPEN_DIR \r\n");
+      }
+      if (i1 == 0x82)
+      {
+        printf("\r\n ERR_DISK_DISCON  \r\n");
+      }
+      if (i1 == 0xa8)
+      {
+        printf("\r\n CMD_CHECK_EXIST \r\n");
+      }
+    }
+
+    if (timeOut > 300)
+    {
+      status_delete = 0;
+      printf("\r\nError Folder Delete\r\n");
+      break;
+    }
+    if (command_ == 7 && i1 == 0x14)
+    {
+      status_delete = 1;
+      printf("\r\nFolder Delete complete\r\n");
+      break;
+    }
+    if (command_ == 7 && i1 != 14)
+    {
+
+      command_ = 1;
+    }
+  }
+  return status_delete;
+}
+
 //======================================================
 //--------------fn go to line-------------------------*
 int gotoLine_getSectorInline(int line) //หาว่าบรรทัดนั้นอยู่ใน Sector ไหน
@@ -990,7 +1283,19 @@ void slidText2Displayv2()
     printf("Exit\r\n");
     ROMR.endReadFile = false;
     readFileStatus___ = 0;
+    /* SendCH370(ResetAll,sizeof(ResetAll));
+    printf("resetall\r\n");*/
     keyCode = 0;
+
+    maxFile = 0;
+    for (i = 0; i < maxfileListBuffer; i++)
+      memset(fileLists[i], 0, sizeof(filelist[i]));
+    memset(Dirpath, 0, sizeof(Dirpath)); //clear path
+    // delay_ms(5000);
+    //prepareSD_Card();
+    printf("reset all \r\n");
+    mode = 0;
+    stringToUnicodeAndSendToDisplay("read");
 
     //mode = 0;
   }
@@ -1093,10 +1398,10 @@ void slidText2Displayv2()
   {
     queryLine(read.currentLine);
     printStringLR(bufferQueryLine, read.DisplayLine);
-    for (i = 0; i < sizeof(bufferQueryLine) / 2; i++)
+    /*for (i = 0; i < sizeof(bufferQueryLine) / 2; i++)
     {
       printf("0x%x,", bufferQueryLine[i]);
-    }
+    }*/
     printf("string (%d) :%s\r\n", read.currentLine, bufferQueryLine);
   }
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
@@ -1181,6 +1486,28 @@ void convert_text2_buffer(char *str)
   *pp = *substring(str, 1, cc);
   return pp;
 }*/
+void substringRemoveEnter2(char *string)
+{
+  int c;
+  int cc = 0;
+  int length;
+  memset(buffer_afterRemove, 0, 42);
+  while (cc < notepad_MaxinLine)
+  {
+    if (string[cc] != enterSign)
+      cc++;
+    else
+      break;
+  }
+  length = cc;
+  for (c = 0; c < length; c++)
+  {
+    buffer_afterRemove[c] = *(string);
+    string++;
+  }
+  buffer_afterRemove[c] = '\0';
+}
+/*
 char *substringRemoveEnter(char *string, int position, int length)
 {
   char *pointer;
@@ -1209,7 +1536,7 @@ char *substringRemoveEnter(char *string, int position, int length)
   *(pointer + c) = '\0';
   return pointer;
 }
-
+*/
 int str_cut(char *str, int begin, int len)
 {
   int l = strlen(str);
@@ -1353,7 +1680,7 @@ int getMuteStatus()
 */
 void notepad_main()
 {
-  int doing = 1; //status for do something in notepad mode
+  int doing = 1; //status for do something n notepad mode
 
   while (doing) // do in notepad
   {
@@ -1571,6 +1898,7 @@ void notepad_main()
       }
       // เช็คความยาว ตัดมาแสดง ไม่เกิน 20 ตัว
       //
+
       if (debug)
       {
         printf("|////////////////////////////////////////////|\r\n");
@@ -1587,8 +1915,8 @@ void notepad_main()
       clearKeyValue(); // clear key buffer
     }                  //end key event
     d_Time++;
-    if (d_Time >= delayCur)
-    { //blink cu
+    if (d_Time >= delayCur) //blink cursor
+    {                       //blink cu
       if (toggleCur == 0)
         toggleCur = 1;
       else
@@ -1602,8 +1930,8 @@ void notepad_main()
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
       }
       d_Time = 0;
-    }
-    if (doing == 0 && mode == 0) //after exit form notepad mode
+    }                            //end blink cursor
+    if (doing == 0 && mode == 0) //after exit form notepad mode display 'notepad'
     {
       stringToUnicodeAndSendToDisplay("notepad");
     }
@@ -2138,6 +2466,22 @@ void keyRead()
       printf("%s\r\n", fileLists[fileSelect]);
       stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
       // printf("%s\r\n", Dirpath);
+      if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] != 0 && bufferKey3digit[2] == 0)
+      {
+        stringToUnicodeAndSendToDisplay("Delete this Folder");
+        if (confirm()) // confirm delete
+        {
+          if (DeleteFolder(fileLists[fileSelect]))
+          {
+            stringToUnicodeAndSendToDisplay("Deleted");
+            removeDataInFileTemp(fileLists[fileSelect]);
+          }
+        }
+        else
+        {
+          stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
+        }
+      }
       if (keyCode == 39)
       { //enter // right joy
         //command_ = 16;
@@ -2240,6 +2584,11 @@ void keyRead()
 int readFileFromCH376sToFlashRom(char *fileName___)
 {
   readFileStatus___ = 1;
+  ROMR.endReadFile = false;
+  ROMR.countdata_Temp512 = 0;
+  ROMR.lastAscii = 0;
+  ROMR.addressWriteFlashTemp = 0;
+  countSector512 = 0;
   //stringToUnicodeAndSendToDisplay("Reading....");
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   //printf("reading............ all\r\n");
@@ -2250,19 +2599,23 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     if (command_ == 4)
     {
       setFilename(fileName___);
+      printf("opening file (%s)", fileName___);
       command_++; //5
-      stringToUnicodeAndSendToDisplay("On Step Reading....");
+      stringToUnicodeAndSendToDisplay("Reading....");
+      //printf("reading \r\n");
       delay_ms(45);
     }
     else if (command_ == 5)
     {
       SendCH370(FileOpen, sizeof(FileOpen));
       command_++; //6
+      //printf("reading 2 \r\n");
       delay_ms(45);
     }
     else if (command_ == 6)
     {
       SendCH370(SetByteRead, sizeof(SetByteRead));
+      //printf("reading 3\r\n");
       //result 1D can read
       command_ = 99;
       delay_ms(30);
@@ -2270,23 +2623,29 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     else if (command_ == 95)
     {
       //left (prevois line)
+      //printf("reading 4\r\n");
       SendCH370(continueRead, sizeof(continueRead));
       command_++; //96
     }
     else if (command_ == 98)
     {
+      //printf("reading 5\r\n");
       //right (next line)
       command_ = 6;
     }
     else if (command_ == 99)
     {
+      // printf("reading 6\r\n");
       SendCH370(ReadData, sizeof(ReadData));
       command_++;
     }
+
     //menu_s();
     if (USART_GetITStatus(USART3, USART_IT_RXNE))
     {
+      // printf("a");
       i1 = USART_ReceiveData(USART3);
+      //printf("%c", i1);
       if (command_ == 96 && i1 == 0x14)
       {
         command_ = 6;
@@ -2843,18 +3202,20 @@ void createFileAndWrite(char *fname)
   PrepareText();
   //printf("all text :%s\r\n====================================================== ", str_test);
   //fileWrite(0,fname,"test head \r\n my name is surasak");
-  writeFile4096(fname, str_test);
+  writeFile4096(fname, SST25_buffer);
 }
 void PrepareText()
 {
   int c;
+  memset(SST25_buffer, 0, 4096);
   for (c = 0; c <= maxLineN; c++)
   {
     // delay_ms(200);
     printf("=====================removed======================\r\n");
-    printf("%s\r\n", substringRemoveEnter(Notepad.buffer_string[c], 1, 10));
-    strcat(str_test, substringRemoveEnter(Notepad.buffer_string[c], 1, 10));
-    strcat(str_test, "\r\n");
+    substringRemoveEnter2(Notepad.buffer_string[c]);
+    printf("%s\r\n", buffer_afterRemove);
+    strcat(SST25_buffer, buffer_afterRemove);
+    strcat(SST25_buffer, "\r\n");
     delay_ms(200);
   }
   //

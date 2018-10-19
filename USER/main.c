@@ -806,7 +806,6 @@ int DeleteFolder(char *name)
         printf("\r\n CMD_CHECK_EXIST \r\n");
       }
     }
-
     if (timeOut > 300)
     {
       status_delete = 0;

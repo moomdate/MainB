@@ -91,7 +91,7 @@ uint8_t FileClose0[] = {0x00, 0x57, 0xab, 0x36, 0x00};
 uint8_t setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03}; //+
 uint8_t setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
 uint8_t checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
-uint8_t SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00};      //15 = 21 character
+uint8_t SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00};      //128 character
 uint8_t setFilenameForFunction[] = {0x00, 0x57, 0xab, 0x2f};       // use vie function set file name
 uint8_t setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
 uint8_t changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
@@ -533,6 +533,7 @@ int DeleteFolder(char *str);
 void setFoldername(char *filename);
 void upperASCII(char *str);
 int confirm(void);
+
 int main(void)
 {
 
@@ -815,13 +816,14 @@ int DeleteFolder(char *name)
     if (command_ == 7 && i1 == 0x14)
     {
       status_delete = 1;
-      printf("\r\nFolder Delete complete\r\n");
+      // printf("\r\nFolder Delete complete\r\n");
       break;
     }
     if (command_ == 7 && i1 != 14)
     {
-
-      command_ = 1;
+      status_delete = 1;
+      break;
+      //command_ = 1;
     }
   }
   return status_delete;
@@ -1273,7 +1275,7 @@ void slidText2Displayv2()
       read.currentLine = gt_Line;              //ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
       readSecter(read.currentSector * sector); // ทำการอ่าน Sector นั้น
       queryLine(read.currentLine);             // ทำการอ่านไฟล์ในบรรทัดนั้น
-    }
+        }
     //printf("found Line in Sector (%d)\r\n", gt_Sector);
     //printf("In line %d\r\n", gt_Line);
   }
@@ -2286,7 +2288,7 @@ int keyMapping(int a, int b, int c)
     keyCode__ = 40; // ArrowDown
   }
   //----------------------------------------------------------
-  else if (b == 64 || c == 8)
+  else if ((a == 0x00 && b == 0x10 && c == 0x00) || (a == 0x00 && b == 0x00 && c == 0x02))
   {
     keyCode__ = 13; // enter
   }
@@ -2440,6 +2442,14 @@ void keyRead()
     }
     if (mode == 2 && ROMR.endReadFile == false)
     { //key in mode 2
+      if (keyCode == 13)
+      {
+        if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
+        {
+          //printf("is tbt ");
+          readFileFromCH376sToFlashRom(fileLists[fileSelect]);
+        }
+      }
       if (keyCode == 38)
       {
         if (fileSelect > 0)
@@ -2467,7 +2477,7 @@ void keyRead()
       // printf("%s\r\n", Dirpath);
       if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] != 0 && bufferKey3digit[2] == 0)
       {
-        stringToUnicodeAndSendToDisplay("Delete this Folder");
+        stringToUnicodeAndSendToDisplay("You want to delete");
         if (confirm()) // confirm delete
         {
           if (DeleteFolder(fileLists[fileSelect]))
@@ -2509,11 +2519,11 @@ void keyRead()
             command_ = 4;
           }
         } //readFileFromCH376sToFlashRom
-        else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2)
+          /* else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
         {
           //printf("is tbt ");
           readFileFromCH376sToFlashRom(fileLists[fileSelect]);
-        }
+        }*/
         //command_ = 16;
       }
       if (keyCode == 37)
@@ -2611,7 +2621,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       //printf("reading 2 \r\n");
       delay_ms(45);
     }
-    else if (command_ == 6)
+    else if (command_ == 6) //continue read
     {
       SendCH370(SetByteRead, sizeof(SetByteRead));
       //printf("reading 3\r\n");
@@ -2644,7 +2654,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     {
       // printf("a");
       i1 = USART_ReceiveData(USART3);
-      //printf("%c", i1);
+     // printf("%c", i1);
       if (command_ == 96 && i1 == 0x14)
       {
         command_ = 6;
@@ -2653,7 +2663,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       {
         // printf("funk\r\n");
       }
-      else if (command_ == 100 && countSector512 < 4 && ROMR.countdata_Temp512 < 512)
+      else if (command_ == 100 && countSector512 < 4 && ROMR.countdata_Temp512 < 512) //128*4
       {
         if (i1 == '\0')
         {
@@ -2708,7 +2718,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
               //clearUnsignChar();
 
               //Delay(0xff);
-              stringToUnicodeAndSendToDisplay("On read file Reading....");
+              stringToUnicodeAndSendToDisplay("Reading....");
               addressSector += sector;
               countSector4096 = 0;
               //--------------------------------------------------------------------------------------------
@@ -3365,13 +3375,13 @@ void saveName()
         { //back to notepad
           saving = 0;
         }
-        if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
+        if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
         {
-          keyCode = 8;
+          keyCode = 8; //remove
         }
-        if (bufferKey3digit[2] == 2 || bufferKey3digit[1] == 0x10)
-        { // save file
-          printf("\r\n enter \r\n");
+        if (bufferKey3digit[2] == 2 || bufferKey3digit[1] == 0x10 || (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0))
+        {                            // save file
+          printf("\r\n enter \r\n"); //enter for save
           i = 0;
           while (nameBuff[i] != '\0')
           {
@@ -3388,8 +3398,8 @@ void saveName()
           delay_ms(600);
           saving = 0;
         }
-        if (keyCode == 8)
-        { // delete file name
+        if (keyCode == 8) //remove
+        {                 // delete file name
           if (cc > 1)
           { // steel save root /
             cc--;

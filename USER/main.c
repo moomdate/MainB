@@ -50,8 +50,9 @@ int countSector4096 = 0;
 int countSector = 0;
 int addressSector = 0x00;
 
-int AmountSector = 0;
-int AmountSectorT = 0;
+//
+int AmountSector = 0;  // จำนวน Secter แต่ละ Sector ไม่เกิน 4096 Byte
+int AmountSectorT = 0; // จำนวนเศษที่เหลือจาก Secter
 int seeCur = 0;
 
 uint16_t *str;
@@ -67,7 +68,7 @@ int uart2Buffer = 0;
 int maxSize = 5;
 int count = 0;
 int count2 = 0;
-int Hex;
+
 int BLEConn = 0;
 int pushToDisplay = 0;
 int countConn = 0;
@@ -76,7 +77,7 @@ int bufferKey3digit[3] = {0};
 int hexbuffer = 0;
 int hexPrep = 0;
 int SeeHead = 0;
-//----------------*------ch376 command-------------------------------
+//----------------------ch376 command-------------------------------
 uint8_t data0[] = {0x57, 0xab, 0x27};
 uint8_t enumgo[] = {0x57, 0xab, 0x33};
 uint8_t FileOpen[] = {0x00, 0x57, 0xab, 0x32};
@@ -91,13 +92,16 @@ uint8_t FileClose0[] = {0x00, 0x57, 0xab, 0x36, 0x00};
 uint8_t setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03}; //+
 uint8_t setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
 uint8_t checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
-uint8_t SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00};      //128 character
+uint8_t SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00};      //15 = 21 character
 uint8_t setFilenameForFunction[] = {0x00, 0x57, 0xab, 0x2f};       // use vie function set file name
 uint8_t setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
 uint8_t changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
 uint8_t FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
 uint8_t FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
+
+// 0x00, 0x57, 0xab, 0x35
 uint8_t Folder_DELETE[] = {0x00, 0x57, 0xab, 0x35};
+
 char buffascii[10];
 uint8_t FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
 uint8_t DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
@@ -189,6 +193,9 @@ void searchFile2(void);
 void NextFile(void);
 void keyRead(void);
 //--------------------------------explorrer file---------------------------------
+// ฟังก์ชั่นสำหรับจัดการพาร์ทของ Directory
+// มีการจัดการกำการเข้าถึงโฟลเดอร์ และใช้คำสั่งกับ CH376 เพื่อเข้าโฟลเดอร์ หรืออ่านไฟล์ต่างๆ
+// ex. /testfile/text.tbt
 void ex_exitOncePath(void);
 void ex_cdWithPath(char *path);
 int ex_checkFileType(char *file);
@@ -250,12 +257,12 @@ void prepareSD_Card(void);
 //================================================================================
 //------------------------notepad function and variable---------------------------
 /*
- _      ____  _____  _____ ____  ____  ____ 
+ _      ____  _____  _____ ____  ____  ____
 / \  /|/  _ \/__ __\/  __//  __\/  _ \/  _ \
 | |\ ||| / \|  / \  |  \  |  \/|| / \|| | \|
 | | \||| \_/|  | |  |  /_ |  __/| |-||| |_/|
 \_/  \|\____/  \_/  \____\\_/   \_/ \|\____/
-                                            
+
 */
 #define bufferMaxSize 4096
 #define notepad_Line 102 // 102 * 40 = 4080
@@ -320,24 +327,25 @@ int sendStatus = 1;
 //char *regexStrEnter(char *str);
 int str_cut(char *str, int begin, int len);
 
-uint8_t unicodeTable[] = {
-    0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-    // !"#$%&'()*+,-./
-    0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x0c, //checked 8/6/2018
-    /*0-9*/
-    0x34, 0x02, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
-    /*:  ;  */
-    0x31, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48, //checked 8/6/2018 -- one check
-    /*A-Z*/
-    0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
-    0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/, //checked 8/6/2018
-    0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/                    //checked
+uint8_t unicodeTable[] =
+    {
+        0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        // !"#$%&'()*+,-./
+        0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x0c, //checked 8/6/2018
+        /*0-9*/
+        0x34, 0x02, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
+        /*:  ;  */
+        0x31, 0x06, 0x23, 0x3f, 0x1c, 0x39, 0x48, //checked 8/6/2018 -- one check
+        /*A-Z*/
+        0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
+        0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/, //checked 8/6/2018
+        0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/                    //checked
 
-    0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
-    0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
+        0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
+        0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
 
-    0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/ //checked 8/6/2018
+        0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/ //checked 8/6/2018
 };
 
 /** notepad  ยังไม่เสร็จ**/
@@ -379,12 +387,12 @@ char buffer_afterRemove[42];
 void MemSize()
 {
   /*
-  ===============================
-  int  : 4 Byte
-  char : 1 Byte 
-  uint8_t
-  ===============================
-  */
+    ===============================
+    int  : 4 Byte
+    char : 1 Byte
+    uint8_t
+    ===============================
+    */
   printf("int      size :%d Byte\r\n", sizeof(int));
   printf("char     size :%d Byte\r\n", sizeof(char));
   //printf("uint4_t size :%d Byte\r\n",sizeof(uint4_t));
@@ -455,11 +463,20 @@ int gotoLine_getLine(int Line, int Sector);
 int gotoLine_getSectorInline(int line);
 uint16_t gt_Sector = 0;
 int16_t gt_Line = 0;
+
+// manage sd card
+int DeleteFolder(char *str);
+int DeleteFile(char *str);
+void setFoldername(char *filename);
+
+void upperASCII(char *str);
+int confirm(void);
+
 /*
-	Sector = gotoLine_getSectorInline(Line); //เนเธ”เน Sector
-	gotoLine_getLine(Line, Sector);			// เธ•เนเธญเธเนเธ”เน Line เนเธ Sector
-	printf("found Line in Sector (%d)\r\n", Sector);
-	printf("In line %d\r\n", gotoLine_getLine(Line, Sector));
+  Sector = gotoLine_getSectorInline(Line); //เนเธ”เน Sector
+  gotoLine_getLine(Line, Sector);     // เธ•เนเธญเธเนเธ”เน Line เนเธ Sector
+  printf("found Line in Sector (%d)\r\n", Sector);
+  printf("In line %d\r\n", gotoLine_getLine(Line, Sector));
 */
 int readmode_countLineInOneSector(char *str)
 {
@@ -529,11 +546,7 @@ void appendToSECTOR()
   readSecter(4096);
   // printf("on use:%d", findTotalSectorUSED());
 }
-int DeleteFolder(char *str);
-void setFoldername(char *filename);
-void upperASCII(char *str);
-int confirm(void);
-
+void mainLoop();
 int main(void)
 {
 
@@ -563,8 +576,13 @@ int main(void)
   displayPrepare();
   prepareSD_Card();
   MemSize();
-  printf("press enter");
+  printf("press enter\r\n");
   // appendToSECTOR();
+  //if(DeleteFile("D.TBT")) //ใช้ได้
+   mainLoop();
+}
+void mainLoop()
+{
   while (1)
   {
     keyRead();
@@ -638,7 +656,7 @@ int removeDataInFileTemp(char *fileRe)
   }
   if (intdexPo >= lastIndex + 1)
   {
-    printf("Deletion not possible.\n");
+    printf("Delete not possible.\n");
   }
   else
   {
@@ -665,41 +683,50 @@ int confirm()
   {
     notepad_readKey();       // key recieve
     if (countKey >= maxData) // do events
-    {                        //Recieve & checking key
+    {
+      //Recieve & checking key
       seeHead = 0;
       if (checkKeyError == 0xff)
-      { //clear error key
+      {
+        //clear error key
         countKey = 0;
         SeeHead = 0;
       }
       printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
       if (checkKeyError == 0xff)
-      { //clear error key
+      {
+        //clear error key
         countKey = 0;
         SeeHead = 0;
       }
       if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
       {
+        // key 8
         status = 1;
       }
       else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
       {
+        // key 7
         status = 0;
       }
       else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0x02)
       {
+        // right joy enter
         status = 1;
       }
       else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0x10 && bufferKey3digit[2] == 0)
       {
+        // left joy enter
         status = 1;
       }
       else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0x04)
       {
+        // right joy arrow left
         status = 0;
       }
       else if (bufferKey3digit[0] == 00 && bufferKey3digit[1] == 0x20 && bufferKey3digit[2] == 0)
       {
+        // left joy arrow left
         status = 0;
       }
       if (status != 2)
@@ -730,7 +757,8 @@ void upperASCII(char *str)
 }
 
 void setFoldername(char *filename)
-{ //setFilenameForFunction //0x00 0x57 0xab 0x2f
+{
+  //setFilenameForFunction //0x00 0x57 0xab 0x2f
   int loovar = 0;
   uint8_t tempLL[14];
   SendCH370(setFilenameForFunction, sizeof(setFilenameForFunction));
@@ -747,7 +775,7 @@ int DeleteFolder(char *name)
   int timeOut = 0;
   int status_delete = 0;
   command_ = 1;
-
+  printf("delete folder");
   while (1)
   {
     timeOut++;
@@ -807,6 +835,7 @@ int DeleteFolder(char *name)
         printf("\r\n CMD_CHECK_EXIST \r\n");
       }
     }
+
     if (timeOut > 300)
     {
       status_delete = 0;
@@ -816,19 +845,104 @@ int DeleteFolder(char *name)
     if (command_ == 7 && i1 == 0x14)
     {
       status_delete = 1;
-      // printf("\r\nFolder Delete complete\r\n");
+      printf("\r\nFolder Delete complete\r\n");
       break;
     }
     if (command_ == 7 && i1 != 14)
     {
-      status_delete = 1;
-      break;
-      //command_ = 1;
+      command_ = 1;
     }
   }
   return status_delete;
 }
+int DeleteFile(char *name)
+{
+  int timeOut = 0;
+  int status_delete = 0;
+  command_ = 1;
+  printf("delete file");
+  while (1)
+  {
+    timeOut++;
+    if (command_ == 1)
+    {
+      // เช็คการเชื่อมต่อ
+      SendCH370(checkConnection, sizeof(checkConnection));
+      command_++; //2
+      delay_ms(50);
+    }
+    else if (command_ == 2)
+    {
+      // ตั้งค่า SD card
+      SendCH370(setSDCard, sizeof(setSDCard));
+      command_++; //4
+      delay_ms(50);
+    }
+    else if (command_ == 3)
+    {
+      // mount USB
+      SendCH370(USBDiskMount, sizeof(USBDiskMount));
+      command_++; //6
+      delay_ms(50);
+    }
+    else if (command_ == 4)
+    {
+      // ตั้งคือไฟล์สำหรับใช้งานคำสั่งต่อไป
+      printf("removing file %s\r\n", name);
+      setFilename(name);
+      command_++; //8
+      delay_ms(50);
+    }
+    else if (command_ == 5)
+    {
+      //SendCH370(FileOpen, sizeof(FileOpen));
+      delay_ms(80);
+      command_++; //10
+    }
+    else if (command_ == 6)
+    {
+      SendCH370(Folder_DELETE, sizeof(Folder_DELETE));
+      delay_ms(80);
+      command_++; //10
+    }
 
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(USART3);
+      switch (i1)
+      {
+      case 0x41:
+        printf("\r\n ERR_OPEN_DIR \r\n");
+        break;
+      case 0x82:
+        printf("\r\n ERR_DISK_DISCON  \r\n");
+        break;
+      case 0xa8:
+        printf("\r\n CMD_CHECK_EXIST \r\n");
+        break;
+      }
+    }
+
+    if (timeOut > 300)
+    {
+      status_delete = 0;
+      printf("\r\nError Folder Delete\r\n");
+      break;
+    }
+    if (command_ == 7 && i1 == 0x14)
+    {
+      status_delete = 1;
+      printf("\r\nFolder Delete complete\r\n");
+      break;
+    }
+    if (command_ == 7 && i1 != 14)
+    {
+
+      command_ = 1;
+    }
+  }
+  return status_delete;
+}
 //======================================================
 //--------------fn go to line-------------------------*
 int gotoLine_getSectorInline(int line) //หาว่าบรรทัดนั้นอยู่ใน Sector ไหน
@@ -891,10 +1005,12 @@ unsigned int gotoLine_EnterLine(int maxLine)
   {
     notepad_readKey();       // key recieve
     if (countKey >= maxData) // do events
-    {                        //Recieve & checking key
+    {
+      //Recieve & checking key
       seeHead = 0;
       if (checkKeyError == 0xff)
-      { //clear error key
+      {
+        //clear error key
         countKey = 0;
         SeeHead = 0;
       }
@@ -906,7 +1022,8 @@ unsigned int gotoLine_EnterLine(int maxLine)
         printf("Exit ---------------------------\r\n");
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x00) //enter
-      {                                                                                                // check key enter
+      {
+        // check key enter
         Line = atoi(line);
         if (Line > maxLine)
         {
@@ -922,14 +1039,16 @@ unsigned int gotoLine_EnterLine(int maxLine)
         }
       }
       else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x00)
-      { //remove
+      {
+        //remove
         if (curline > 0)
           curline--;
         line[curline] = 0x00;
       }
       i = unicode_to_ASCII(bufferKey3digit[0]); // convert key to ascii
       if (i >= 48 && i <= 57)                   //ถ้าเป็นเลข
-      {                                         // check num 0 - 9
+      {
+        // check num 0 - 9
         if (curline < 3)
         {
           line[curline] = i;
@@ -959,7 +1078,8 @@ unsigned int gotoLine_EnterLine(int maxLine)
     }
     d_Time++;
     if (d_Time >= delayCur)
-    { //blink cu
+    {
+      //blink cu
       if (toggleCur == 0)
         toggleCur = 1;
       else
@@ -1205,7 +1325,7 @@ void queryLine(int line)
   // printf("a is %d\r\n", a);
 }
 /*
-// sliding text after read text to rom 
+// sliding text after read text to rom
 ▒▒▒▒▒▒▒█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
 ▒▒▒▒▒▒▒█░▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒░█
 ▒▒▒▒▒▒▒█░▒▒▓▒▒▒▒▒▒▒▒▒▄▄▒▓▒▒░█░▄▄
@@ -1235,24 +1355,24 @@ void QueryLineWithCommand(int line)
     gg++;
   }
   /*{
-    if (read.currentLine < read.lineInsector[read.currentSector])
-    {
-      read.currentLine++;
-    }
-    if (read.currentLine == read.lineInsector[read.currentSector] && read.currentSector < read.TotalSector)
-    {
-      queryLine(read.currentLine);
-      strcpy(read.strTemp, bufferQueryLine);
-      read.currentSector++;
-      readSecter(read.currentSector * sector);
-      read.currentLine = 0;
-      queryLine(read.currentLine);
-      strcat(read.strTemp, bufferQueryLine);
-      printf("=========================================\r\n");
-      printf("next sector \r\n");
-      printf("=========================================\r\n");
-    }
-  }*/
+      if (read.currentLine < read.lineInsector[read.currentSector])
+      {
+        read.currentLine++;
+      }
+      if (read.currentLine == read.lineInsector[read.currentSector] && read.currentSector < read.TotalSector)
+      {
+        queryLine(read.currentLine);
+        strcpy(read.strTemp, bufferQueryLine);
+        read.currentSector++;
+        readSecter(read.currentSector * sector);
+        read.currentLine = 0;
+        queryLine(read.currentLine);
+        strcat(read.strTemp, bufferQueryLine);
+        printf("=========================================\r\n");
+        printf("next sector \r\n");
+        printf("=========================================\r\n");
+      }
+    }*/
 }
 /*------------------------------------------------------------------------
 ฟังก์ชั่นสำหรับแสดงผลไฟล์ที่อ่านลงรอม โดยฟังก์ชั่นนี้ทำหน้าที่อ่านข้อมูลจาก Rom มาแสดงที่ Display
@@ -1275,7 +1395,7 @@ void slidText2Displayv2()
       read.currentLine = gt_Line;              //ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
       readSecter(read.currentSector * sector); // ทำการอ่าน Sector นั้น
       queryLine(read.currentLine);             // ทำการอ่านไฟล์ในบรรทัดนั้น
-        }
+    }
     //printf("found Line in Sector (%d)\r\n", gt_Sector);
     //printf("In line %d\r\n", gt_Line);
   }
@@ -1285,7 +1405,7 @@ void slidText2Displayv2()
     ROMR.endReadFile = false;
     readFileStatus___ = 0;
     /* SendCH370(ResetAll,sizeof(ResetAll));
-    printf("resetall\r\n");*/
+        printf("resetall\r\n");*/
     keyCode = 0;
 
     maxFile = 0;
@@ -1364,14 +1484,14 @@ void slidText2Displayv2()
       read.currentLine++;
     }
     /*=========================================================
-     แก้รอยต่อระหว่าง sector ตัวอย่างเช่น
-    sector 1: aaaaaaaaaaaaaaaaaaa
-               bbbbbbbbb
-    sector 2: bbbbbbbbbb
-              ccccccccccccccccccc
-    จะเห็นว่าบรรทัดสุด้ายของ Sector 1 ขาดไปอยู่ที่บรรทัดแรกของ Sector 2
-    ส่วนนี้จะทำหน้าที่ต่อเข้ากัน โดนใช้ strTemp in struct และอ่าน sector ถีดไป
-    =========================================================*/
+         แก้รอยต่อระหว่าง sector ตัวอย่างเช่น
+        sector 1: aaaaaaaaaaaaaaaaaaa
+                   bbbbbbbbb
+        sector 2: bbbbbbbbbb
+                  ccccccccccccccccccc
+        จะเห็นว่าบรรทัดสุด้ายของ Sector 1 ขาดไปอยู่ที่บรรทัดแรกของ Sector 2
+        ส่วนนี้จะทำหน้าที่ต่อเข้ากัน โดนใช้ strTemp in struct และอ่าน sector ถีดไป
+        =========================================================*/
     if (read.currentLine == read.lineInsector[read.currentSector] && read.currentSector < read.TotalSector)
     {
       queryLine(read.currentLine);
@@ -1400,9 +1520,9 @@ void slidText2Displayv2()
     queryLine(read.currentLine);
     printStringLR(bufferQueryLine, read.DisplayLine);
     /*for (i = 0; i < sizeof(bufferQueryLine) / 2; i++)
-    {
-      printf("0x%x,", bufferQueryLine[i]);
-    }*/
+        {
+          printf("0x%x,", bufferQueryLine[i]);
+        }*/
     printf("string (%d) :%s\r\n", read.currentLine, bufferQueryLine);
   }
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
@@ -1446,7 +1566,7 @@ void convert_text2_buffer(char *str)
     {
       if (ccInLine >= readmode_maxsizeInLine - 1)
       {
-        //	printf("=:%c\r\n",str[ccMain]);
+        //  printf("=:%c\r\n",str[ccMain]);
         lineCC++;
         ccInLine = 0;
         readmode_bufferStr[lineCC][ccInLine] = str[ccMain];
@@ -1677,7 +1797,7 @@ int getMuteStatus()
   return uart2Buffer;
 }
 /*
-ฟังก์ชั่น Notepad สำหรับพิมพ์ 
+ฟังก์ชั่น Notepad สำหรับพิมพ์
 */
 void notepad_main()
 {
@@ -1687,7 +1807,8 @@ void notepad_main()
   {
     notepad_readKey();       // key recieve
     if (countKey >= maxData) // do events
-    {                        //Recieve & checking key
+    {
+      //Recieve & checking key
       seeHead = 0;
       // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
       if (checkKeyError == 0xff) //clear error key
@@ -1702,7 +1823,8 @@ void notepad_main()
         //--- เลื่อนบรรทัด ----
         notepad_checkMaxLine();
         if (keyCode == 40)
-        { // next line
+        {
+          // next line
           if (Notepad.currentLine < notepad_Line && Notepad.currentLine < maxLineN)
             Notepad.currentLine++;
           if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) < notepad_MaxinLine / 2) //
@@ -1718,7 +1840,8 @@ void notepad_main()
           // printf("cursor position at :%d \r\n", Notepad.cursorPosition);
         }
         else if (keyCode == 38)
-        { // previous line
+        {
+          // previous line
           if (Notepad.currentLine > 0)
             Notepad.currentLine--;
           if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) < notepad_MaxinLine / 2)
@@ -1734,7 +1857,8 @@ void notepad_main()
         }
         //----------------------------------------------------------------------------------------
         if (keyCode == 1)
-        { //left
+        {
+          //left
           Notepad.displayFirst = false;
           k = 20;                         // ไม่นับถึง enter
           if (Notepad.cursorPosition > k) //กดได้ไม่เกิน enter
@@ -1744,25 +1868,32 @@ void notepad_main()
           Notepad.multiplyCursor = 0;
         }
         else if (keyCode == 2)
-        { //right
+        {
+          //right
           if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) > 20)
             Notepad.displayFirst = true;
         }
       }
       else if (keyCode == 659) // save key (space + s) //save file
-      {                        // save
+      {
+        // save
+        // บันทึกไฟล์ หลังจากทำการพิมพ์ในโหมด Notepad
+        // หน้าจอ Braille Display จะแสดง Name:_
+        // ไฟล์ที่ได้จะเป็นไฟล์ .TBT
         if (debug)
           printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
       else if (keyCode == 661)
       {
+        // ออกจากโหมด notepad โดยจะยังไม่เคลียค่าที่พิมพ์
         printf("exit \r\n");
         doing = 0;
         mode = 0;
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
-      {                                                                                                         //enter key                                                                                                       // printf("New line \r\n");
+      {
+        //enter key                                                                                                       // printf("New line \r\n");
         if (Notepad.cursorPosition + Notepad.multiplyCursor < notepad_MaxinLine)
         {
           while (Notepad.cursorPosition + Notepad.multiplyCursor < notepad_MaxinLine) //40 ตัวอักษร
@@ -1848,7 +1979,8 @@ void notepad_main()
 
         //printf("set at------------------------%d ----k:%d---------------------\r\n", Notepad.cursorPosition, k);
         if (Notepad.displayFirst == true)
-        { //กำหนด cursor ตำแหน่ง 20-40
+        {
+          //กำหนด cursor ตำแหน่ง 20-40
           Notepad.multiplyCursor = 20;
           if (Notepad.cursorPosition + Notepad.multiplyCursor > k)
             Notepad.cursorPosition = k - Notepad.multiplyCursor;
@@ -1917,7 +2049,8 @@ void notepad_main()
     }                  //end key event
     d_Time++;
     if (d_Time >= delayCur) //blink cursor
-    {                       //blink cu
+    {
+      //blink cu
       if (toggleCur == 0)
         toggleCur = 1;
       else
@@ -2033,12 +2166,14 @@ char *subStringLanR(char *str, int p, int cur__)
   {
     //clear buff
     if (!p)
-    { // split left
+    {
+      // split left
       begin = 0;
       end = 20;
     }
     else
-    { // split right
+    {
+      // split right
       begin = 20;
       end = 40;
     }
@@ -2071,14 +2206,16 @@ void printStringLR(char *str, int s)
   {
     //clear buff
     if (!s) //0
-    {       // split left
+    {
+      // split left
       begin = 0;
       end = 20;
       printf("printf left\r\n");
       ;
     }
     else
-    { // split right
+    {
+      // split right
       printf("printf right\r\n");
       begin = 20;
       end = 41;
@@ -2146,7 +2283,8 @@ int notepad_checkEnterSignInLine(char *str)
     while (str[cc] != 0x00 && cc < notepad_MaxinLine)
     {
       if (str[cc] == enterSign)
-      { // '-
+      {
+        // '-
         st = 1;
         break;
       }
@@ -2206,7 +2344,8 @@ int notepad_getnullPostion(char *str)
 {
   int cc_m = 0;
   while (str[cc_m] != 0)
-  { // null byte
+  {
+    // null byte
     cc_m++;
   }
   return cc_m;
@@ -2229,7 +2368,8 @@ void notepad_readKey()
       seeCur = 1;
     }
     if (countKey >= 4 && countKey <= 6)
-    {                                              //-
+    {
+      //-
       bufferKey3digit[countKey - 4] = uart2Buffer; //-
     }
     if (countKey == 2) //error checking
@@ -2288,7 +2428,7 @@ int keyMapping(int a, int b, int c)
     keyCode__ = 40; // ArrowDown
   }
   //----------------------------------------------------------
-  else if ((a == 0x00 && b == 0x10 && c == 0x00) || (a == 0x00 && b == 0x00 && c == 0x02))
+  else if (b == 64 || c == 8)
   {
     keyCode__ = 13; // enter
   }
@@ -2304,11 +2444,13 @@ int keyMapping(int a, int b, int c)
   //-----------------on read sector----------------
   //
   else if (a == 0x00 && b == 0x04 && c == 0x00)
-  { // left button (readMode)
+  {
+    // left button (readMode)
     keyCode__ = 1;
   }
   else if (a == 0x00 && b == 0x08 && c == 0x00)
-  { // right button (readMode)
+  {
+    // right button (readMode)
     keyCode__ = 2;
   }
   else if (a == 0x11 && b != 0x0)
@@ -2337,13 +2479,15 @@ int keyMapping(int a, int b, int c)
 //
 ///////////////////////////////////////////////////
 void keyRead()
-{ //used
+{
+  //used
   if (USART_GetITStatus(USART2, USART_IT_RXNE))
   {
     //----------------------------- uart to key--------------------------------
     uart2Buffer = USART_ReceiveData(USART2); //-
     if (uart2Buffer == 0xff && SeeHead == 0)
-    {               //-
+    {
+      //-
       SeeHead = 1;  //-
       countKey = 0; //-
     }               //-
@@ -2352,7 +2496,8 @@ void keyRead()
       seeCur = 1;
     }
     if (countKey >= 4 && countKey <= 6)
-    {                                              //-
+    {
+      //-
       bufferKey3digit[countKey - 4] = uart2Buffer; //-
     }
     if (countKey == 2) //checkKeyError
@@ -2364,11 +2509,13 @@ void keyRead()
     // printf("[%x]\r\n",uart2Buffer);
   }
   if (countKey >= maxData)
-  { //Recieve & checking key
+  {
+    //Recieve & checking key
     seeHead = 0;
     printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
     if (checkKeyError == 0xff)
-    { //clear error key
+    {
+      //clear error key
       countKey = 0;
       SeeHead = 0;
     }
@@ -2379,24 +2526,27 @@ void keyRead()
     // end keymapping //
 
     /*
-      mode:0
-      on menu
-    */
+          mode:0
+          on menu
+        */
     /*
-    ------------------------------------------------------------------------------------------------
-    ──────▄▀▄─────▄▀▄
-    ─────▄█░░▀▀▀▀▀░░█▄
-    ─▄▄──█░░░░░░░░░░░█──▄▄
-    █▄▄█─█░░▀░░┬░░▀░░█─█▄▄█
-    mode(0):default
-    ------------------------------------------------------------------------------------------------
-   */
+        ------------------------------------------------------------------------------------------------
+        ──────▄▀▄─────▄▀▄
+        ─────▄█░░▀▀▀▀▀░░█▄
+        ─▄▄──█░░░░░░░░░░░█──▄▄
+        █▄▄█─█░░▀░░┬░░▀░░█─█▄▄█
+        mode(0):default
+        ------------------------------------------------------------------------------------------------
+        */
     if (mode == 0)
-    { //key in mode 0
+    {
+      //key in mode 0
       if (count_menu >= 1 && count_menu <= maxMenu && mode == 0)
-      { //select menu //modemenu
+      {
+        //select menu //modemenu
         if (keyCode == 40)
-        { //up
+        {
+          //up
           if (count_menu != maxMenu)
           {
             count_menu++;
@@ -2409,7 +2559,8 @@ void keyRead()
           }
         }
         else if (keyCode == 38)
-        { //down
+        {
+          //down
           if (count_menu != 1)
           {
             count_menu -= 1;
@@ -2425,7 +2576,8 @@ void keyRead()
       if (keyCode == 39)
       {
         if (mode == 0) //enter to mode
-        {              //
+        {
+          //
           previousMode = mode;
           mode = count_menu;
           printf("mode:%d", mode);
@@ -2435,69 +2587,81 @@ void keyRead()
     }
     //-----------------------------------end mode (10)-------------------------------
     if (ROMR.endReadFile == true && mode == 2) //mode 2
-    {                                          // on mode read
+    {
+      // mode 2 และทำการเปิดอ่านไฟล์แล้ว จะแยกกันกับฟังก์ชั่น path
+      // on mode read
       //printf("testttttttttttttttttttttttttt");
       slidText2Displayv2();
       //slidingFileFromRomToDisplay();
     }
     if (mode == 2 && ROMR.endReadFile == false)
-    { //key in mode 2
-      if (keyCode == 13)
-      {
-        if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
-        {
-          //printf("is tbt ");
-          readFileFromCH376sToFlashRom(fileLists[fileSelect]);
-        }
-      }
-      if (keyCode == 38)
+    {
+      // mode 2 แต่ยังไม่ได้ทำการเปิดอ่านไฟล์
+      // key in mode 2
+      if (keyCode == 38) //เลือกไฟล์
       {
         if (fileSelect > 0)
         {
-          fileSelect--;
+          fileSelect--; // เลื่อนลง
         }
         else
         {
-          beepError();
+          beepError(); // สุด
         }
       }
-      else if (keyCode == 40)
+      else if (keyCode == 40) //เลือกไฟล์
       {
         if (fileSelect < maxFile - 1)
         {
-          fileSelect++;
+          fileSelect++; //เลื่อนขึ้น
         }
         else
         {
-          beepError();
+          beepError(); // สุด
         }
       }
       printf("%s\r\n", fileLists[fileSelect]);
       stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
       // printf("%s\r\n", Dirpath);
+
+      // delete item (key 7 + space)
       if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] != 0 && bufferKey3digit[2] == 0)
       {
-        stringToUnicodeAndSendToDisplay("You want to delete");
+        stringToUnicodeAndSendToDisplay("Delete this Folder");
         if (confirm()) // confirm delete
         {
-          if (DeleteFolder(fileLists[fileSelect]))
+          // ยืนยันทำการลบ
+          if (ex_checkFileType(fileLists[fileSelect])) // ถ้าประเภทไฟล์ไม่เป็น 0
+          {
+            if (DeleteFile(fileLists[fileSelect]))
+            {
+              stringToUnicodeAndSendToDisplay("the file has Deleted");
+              removeDataInFileTemp(fileLists[fileSelect]);
+            }
+          }
+          else if (DeleteFolder(fileLists[fileSelect]))
           {
             stringToUnicodeAndSendToDisplay("Deleted");
             removeDataInFileTemp(fileLists[fileSelect]);
+            //beep();
           }
         }
         else
         {
+
           stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
         }
       }
       if (keyCode == 39)
-      { //enter // right joy
-        //command_ = 16;
+      {
+        // enter // right joy
+        // command_ = 16;
         printf("Opening %s\r\n", fileLists[fileSelect]);
         printf("type:%d\r\n", ex_checkFileType(fileLists[fileSelect]));
-        if (ex_checkFileType(fileLists[fileSelect]) == 0)
-        { // is folder
+        // ถ้าเป็นโฟลเดอร์
+        if (ex_checkFileType(fileLists[fileSelect]) == 0) // folder type 0
+        {
+          // is folder
           maxFile = 0;
           delay_ms(45);
           if (ex_openDir(fileLists[fileSelect]))
@@ -2505,13 +2669,15 @@ void keyRead()
             if (strstr(fileLists[fileSelect], "..") != NULL)
             {
               if (ex_countPath(Dirpath) > 0)
-              {                         //back and clear path
+              {
+                //back and clear path
                 ex_exitOncePath();      // remove current path
                 ex_cdWithPath(Dirpath); //back one path
               }
             }
             else
-            { //save path
+            {
+              //save path
               ex_savePath(fileLists[fileSelect]);
             }
             fileSelect = 0;
@@ -2519,15 +2685,18 @@ void keyRead()
             command_ = 4;
           }
         } //readFileFromCH376sToFlashRom
-          /* else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
+        // ถ้าเป็นไฟล์ tbt brf หรือ txt
+        else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
         {
           //printf("is tbt ");
           readFileFromCH376sToFlashRom(fileLists[fileSelect]);
-        }*/
+        }
         //command_ = 16;
       }
       if (keyCode == 37)
-      { // left joy
+      {
+        // โยกจอยทางซ้าย ย้อนกลับออกจาก directory
+        // left joy
         printf("exit\r\n");
         maxFile = 0;
         printf("pathD: %d\r\n", ex_countPath(Dirpath));
@@ -2552,17 +2721,17 @@ void keyRead()
         }
       }
       /*if (keyCode == 27)
-      {
-        mode = 0;
-        printf("exittttttttttttttttttttttttttt\r\n");
-      }*/
+            {
+              mode = 0;
+              printf("exittttttttttttttttttttttttttt\r\n");
+            }*/
     }
     //-----------------------------------end mode (2)-------------------------------
     /*
-    --------------------------------------------------------------------------------
-     mode (3) :bluetooth
-     -------------------------------------------------------------------------------
-    */
+        --------------------------------------------------------------------------------
+         mode (3) :bluetooth
+         -------------------------------------------------------------------------------
+        */
     if (mode == 3)
     {
       if (keyCode == 37)
@@ -2588,12 +2757,12 @@ void keyRead()
 
 //-----------------------------------------------------------------------------
 //---------------------------------readFileFromCH376sToFlashRom-----------------
-// อ่านข้อมูลจาก CH376 ลง Flash rom
+// อ่านข้อมูลจาก SD Card โดยใช้ chip CH376 ลง Flash rom
 ////////////////////////////////////////////////////////////////////////////////
 int readFileFromCH376sToFlashRom(char *fileName___)
 {
-  readFileStatus___ = 1;
-  ROMR.endReadFile = false;
+  readFileStatus___ = 1;    //ค่าเริ่มต้นการอ่าน เพื่อให้ติดหลูปการอ่านไฟล์
+  ROMR.endReadFile = false; //จบการอ่่าน
   ROMR.countdata_Temp512 = 0;
   ROMR.lastAscii = 0;
   ROMR.addressWriteFlashTemp = 0;
@@ -2607,11 +2776,11 @@ int readFileFromCH376sToFlashRom(char *fileName___)
   {
     if (command_ == 4)
     {
-      setFilename(fileName___);
-      printf("opening file (%s)", fileName___);
-      command_++; //5
+
+      setFilename(fileName___);                 // ใช้คำสั่ง set ชื่อไฟล์
+      printf("opening file (%s)", fileName___); // กำลังเปิดไฟล์ ชื่อไฟล์
+      command_++;                               // 5
       stringToUnicodeAndSendToDisplay("Reading....");
-      //printf("reading \r\n");
       delay_ms(45);
     }
     else if (command_ == 5)
@@ -2621,11 +2790,13 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       //printf("reading 2 \r\n");
       delay_ms(45);
     }
-    else if (command_ == 6) //continue read
+    else if (command_ == 6)
     {
+
       SendCH370(SetByteRead, sizeof(SetByteRead));
       //printf("reading 3\r\n");
       //result 1D can read
+      //ID สามารถอ่านไฟล์ได้
       command_ = 99;
       delay_ms(30);
     }
@@ -2654,7 +2825,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     {
       // printf("a");
       i1 = USART_ReceiveData(USART3);
-     // printf("%c", i1);
+      //printf("%c", i1);
       if (command_ == 96 && i1 == 0x14)
       {
         command_ = 6;
@@ -2663,7 +2834,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       {
         // printf("funk\r\n");
       }
-      else if (command_ == 100 && countSector512 < 4 && ROMR.countdata_Temp512 < 512) //128*4
+      else if (command_ == 100 && countSector512 < 4 && ROMR.countdata_Temp512 < 512)
       {
         if (i1 == '\0')
         {
@@ -2709,7 +2880,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
             {
               //---------------------------4096 byte---------------------------
               // ข้อมูลครบ 512*8 = 4096 ----> 1 sector
-              //push (string 4096 charactor) to flash rom.
+              // push (string 4096 charactor) to flash rom.
               //
               //////////////////////////////////////////////////////////////////
               //use variable:SST25_W_BLOCK //4096
@@ -2718,7 +2889,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
               //clearUnsignChar();
 
               //Delay(0xff);
-              stringToUnicodeAndSendToDisplay("Reading....");
+              stringToUnicodeAndSendToDisplay("On read file Reading....");
               addressSector += sector;
               countSector4096 = 0;
               //--------------------------------------------------------------------------------------------
@@ -2742,6 +2913,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       if (ROMR.lastAscii == i1)
       {
         ROMR.waitEnd++;
+        //กำหนดระยะเวลา หากไม่มีข้อมูลแล้ว จะเข้าในเงื่อนไขนี้
         if (ROMR.waitEnd == 100 * 100) // end of file check time out
         {
           SendCH370(FileClose, sizeof(FileClose));
@@ -2761,10 +2933,10 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           // readSecter(0);
           //printf("string** : %s \r\nEND**", SST25_buffer);
           /*SPI_FLASH_CS_LOW();
-          SST25_R_BLOCK(0, SST25_buffer, sector);
-          SPI_FLASH_CS_HIGH();
-          Delay(0xffff);
-          convert_text2_buffer(SST25_buffer);*/
+                    SST25_R_BLOCK(0, SST25_buffer, sector);
+                    SPI_FLASH_CS_HIGH();
+                    Delay(0xffff);
+                    convert_text2_buffer(SST25_buffer);*/
 
           ROMR.endReadFile = true;
 
@@ -2775,7 +2947,8 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           //  read.currentLine = 210;
           readSecter(0);
           while (ROMR.endReadFile == true)
-          { // query string-
+          {
+            // query string-
             // menu_s();
             keyRead();
             //readFileStatus___
@@ -2809,7 +2982,8 @@ void clearReadlineInsector()
 // *.TXT file return 3
 /////////////////////////////////////////////////////////////////
 int ex_checkFileType(char *file)
-{ //used
+{
+  //used
   int type = 0;
   if (strstr(file, ".TBT") != NULL)
   {
@@ -2828,7 +3002,8 @@ int ex_checkFileType(char *file)
 //------------- function for reset [module ch376] and mount-------------
 /////////////////////////////////////////////////////////////////////////
 void mountStatus()
-{ //used
+{
+  //used
   int mountStatus = 1;
   command_ = 1;
   printf("Reset CH376 and mount\r\n");
@@ -2932,7 +3107,8 @@ void searchFile2()
       i1 = USART_ReceiveData(USART3);
       // printf("%x %d",i1,command_);
       if (i1 == 0x1d && countFileLegth == 0)
-      { // if see file
+      {
+        // if see file
         nextAgain = 1;
         DataForWrite[0] = 42;
       }
@@ -3009,7 +3185,8 @@ int ex_openDir(char *dirPath__)
   command_ = 1;
   //memset(buff,0,30);
   if (strstr(dirPath__, "..") != NULL)
-  { // if see ".." -> /..
+  {
+    // if see ".." -> /..
     strcat(buff, dirPath__);
   }
   while (Open_stats)
@@ -3050,7 +3227,8 @@ int ex_openDir(char *dirPath__)
         //  printf(" status 1 \r\n ");
       }
       else if (command_ == 3 && i1 == 0x42)
-      { // error not found path
+      {
+        // error not found path
         output = 2;
         // printf(" status 2 \r\n ");
       }
@@ -3085,7 +3263,8 @@ int ex_openDir(char *dirPath__)
 //
 //////////////////////////////////////////////////////////////////////////////
 int ex_savePath(char *pathName)
-{ //used
+{
+  //used
   char prepareStr[30] = "";
   if (ex_checkSlash(pathName))
   {
@@ -3105,7 +3284,8 @@ int ex_savePath(char *pathName)
 //ex: path = "ab/cd/" --> path "ab/"
 //////////////////////////////////////////////////////////////////////////////
 void ex_exitOncePath()
-{ //used
+{
+  //used
   int start = ex_countPath(Dirpath);
   int longL = strlen(Dirpath);
   if (start > 0)
@@ -3122,7 +3302,8 @@ void ex_exitOncePath()
 // ex_cdWithPath(path);
 //////////////////////////////////////////////////////////////////////////////
 void ex_cdWithPath(char *path)
-{ //used
+{
+  //used
   int L = 0;
   char buffer[15] = "";
   int bbuf = 0;
@@ -3166,7 +3347,8 @@ void ex_cdWithPath(char *path)
 //Output: number of path
 //////////////////////////////////////////////////////////////////////////////
 int ex_countPath(char *pathSource)
-{ //used
+{
+  //used
   int ex_countPath = 0;
   while (*pathSource)
   {
@@ -3179,7 +3361,8 @@ int ex_countPath(char *pathSource)
   return ex_countPath;
 }
 int ex_checkSlash(char *pathName)
-{ //used
+{
+  //used
   int seeS = 0;
   while (*pathName)
   {
@@ -3197,7 +3380,8 @@ int ex_checkSlash(char *pathName)
 // test function --
 //////////////////////////////////////////////////////////////////////////////
 void createFileAndWrite(char *fname)
-{ //use
+{
+  //use
   command_ = 0;
   command_++;
   while (1)
@@ -3234,7 +3418,8 @@ void PrepareText()
 //
 //////////////////////////////////////////////////////////////////////////////
 void writeFile4096(char *fname, char *strSource)
-{ //use
+{
+  //use
   int maxSize = 0, sizeWrite = 128;
   int loop255 = 0;
   int Sloop255 = 0;
@@ -3246,14 +3431,16 @@ void writeFile4096(char *fname, char *strSource)
   loop255 = maxSize / sizeWrite;
   Sloop255 = maxSize % sizeWrite;
   while (iL < loop255)
-  { //
+  {
+    //
     buffForWrite[pp - iL * sizeWrite] = strSource[pp];
     pp++;
     if (pp % sizeWrite == 0)
     {
       command_ = 1;
       while (1)
-      { //save 255
+      {
+        //save 255
         if (fileWrite(WF, fname, buffForWrite) == 1)
         {
           iL++;
@@ -3273,7 +3460,8 @@ void writeFile4096(char *fname, char *strSource)
   }
   command_ = 1;
   while (1)
-  { //save 255
+  {
+    //save 255
     if (fileWrite(WF, fname, buffForWrite2) == 1)
     {
       break;
@@ -3343,16 +3531,19 @@ void saveName()
       //----------------------------- uart to key--------------------------------
       uart2Buffer = USART_ReceiveData(USART2); //-
       if (uart2Buffer == 0xff && SeeHead == 0)
-      {               //-
+      {
+        //-
         SeeHead = 1;  //-
         countKey = 0; //-
       }
       if (countKey == 2 && uart2Buffer == 0xa4)
-      { // if cursor
+      {
+        // if cursor
         seeCur = 1;
       }
       if (countKey >= 4 && countKey <= 6)
-      {                                              //-
+      {
+        //-
         bufferKey3digit[countKey - 4] = uart2Buffer; //-
       }
 
@@ -3366,22 +3557,25 @@ void saveName()
       {
         seeHead = 0;
         if (checkKeyError == 0xff)
-        { //check error key
+        {
+          //check error key
           //printf("Key Error");
           countKey = 0;
           SeeHead = 0;
         }
         if ((bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x20 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x04))
-        { //back to notepad
+        {
+          //back to notepad
           saving = 0;
         }
-        if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
+        if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
         {
-          keyCode = 8; //remove
+          keyCode = 8;
         }
-        if (bufferKey3digit[2] == 2 || bufferKey3digit[1] == 0x10 || (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0))
-        {                            // save file
-          printf("\r\n enter \r\n"); //enter for save
+        if (bufferKey3digit[2] == 2 || bufferKey3digit[1] == 0x10)
+        {
+          // save file
+          printf("\r\n enter \r\n");
           i = 0;
           while (nameBuff[i] != '\0')
           {
@@ -3398,16 +3592,19 @@ void saveName()
           delay_ms(600);
           saving = 0;
         }
-        if (keyCode == 8) //remove
-        {                 // delete file name
+        if (keyCode == 8)
+        {
+          // delete file name
           if (cc > 1)
-          { // steel save root /
+          {
+            // steel save root /
             cc--;
             nameBuff[cc] = '\0';
             //printf("Delete:%s \r\n", nameBuff);
           }
           else if (cc == 1)
-          { // last cha
+          {
+            // last cha
             nameBuff[cc] = '\0';
             //printf("delete 22 \r\n");
           }
@@ -3423,7 +3620,8 @@ void saveName()
             }
           }
           if (i >= 33 && i < 126 && cc <= 10)
-          { // name length less than 10
+          {
+            // name length less than 10
             nameBuff[cc] = i;
             //printf("Filename:%s\r\n", nameBuff);
 
@@ -3436,8 +3634,8 @@ void saveName()
         //stringToUnicodeAndSendToDisplay(bufferDisplay);
         stringToUnicodeAndSendToDisplayC(bufferDisplay, cc + 5);
         /*-----------------------
-          print file name here
-          -----------------------*/
+                  print file name here
+                  -----------------------*/
         countKey = 0;
         keyCode = 0;
         seeCur = 0;
@@ -3445,7 +3643,8 @@ void saveName()
     }
     d_Time++;
     if (d_Time >= delayCur)
-    { //blink cu
+    {
+      //blink cu
       if (toggleCur == 0)
         toggleCur = 1;
       else
@@ -3546,7 +3745,8 @@ void stringToUnicodeAndSendToDisplayL(char *string, int ls)
   SPI_DISPLAY_CS_HIGH();
 }
 void stringToUnicodeAndSendToDisplayC(char *string, int po)
-{ //cur position
+{
+  //cur position
   int strleng = 0;
   configDisplay();
   //clearDot();
@@ -3767,7 +3967,8 @@ int fileWrite(int k, char *filename, char *string__)
     delay_ms(50);
   }
   else if (command_ == 7)
-  { //FileLength
+  {
+    //FileLength
 
     setFileLength(string__);
     //  printf("File Length--\r\n");
@@ -3855,7 +4056,8 @@ void clearSector(int address)
 ////////////////////////////////////////////////////////////////////
 
 void ex_OpenDir()
-{ //readf
+{
+  //readf
   //printf("ex_OpenDir....\r\n");
   command_ = 0;
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
@@ -3893,7 +4095,8 @@ void ex_OpenDir()
       delay_ms(50);
     }
     else if (command_ == 5)
-    { ///FileOpen
+    {
+      ///FileOpen
       SendCH370(FileOpen, sizeof(FileOpen));
       printf("File Open\r\n");
       command_++; //6
@@ -3912,20 +4115,23 @@ void ex_OpenDir()
     }
   }
 }
+// ---------------------------------------------------------------------------
+// ฟังก์ชั่น set ชื่อไฟล์สำหรับ CH376
 //
-
+//----------------------------------------------------------------------------
 void setFilename(char *filename)
-{ //setFilenameForFunction //0x00 0x57 0xab 0x2f
+{
+  //setFilenameForFunction //0x00 0x57 0xab 0x2f
   uint8_t loovar = 0;
   uint8_t tempLL[14];
   SendCH370(setFilenameForFunction, sizeof(setFilenameForFunction));
-  while (filename[loovar] != '\0')
+  while (filename[loovar] != '\0') // วนค่าส่งสำหรับเอา character จากตัวแปร filename เก็บทีละตัวอักษรฝากไว้กับตัวแปร temlLL
   {
     tempLL[loovar] = filename[loovar];
     loovar++;
   }
   tempLL[loovar] = '\0';
-  SendCH370(tempLL, sizeof(tempLL));
+  SendCH370(tempLL, sizeof(tempLL)); // ส่งไปยัง CH376s
 }
 //-------------------------------create file in sd card --------------------------
 //return status:1
@@ -3981,40 +4187,41 @@ int createFile(char *name)
 
   return status_create;
 }
-//---------------------------- fillter file name for display------------------
-//
-//
-//////////////////////////////////////////////////////////////////////////////
+//---------------------------- fillter file name for display----------------------
+// ฟังก์ชั่นสำหรับกรองชื่อไฟล์ หรือโฟลเดอร์ แต่ยังไม่เสถียร สำหรับ '.' และหากมีไฟล์ที่มีตัอัักษรเดียวกันกับ
+// นามสกุลของไฟล์ จะเพี้ยนทันที
+//////////////////////////////////////////////////////////////////////////////////
 const char *fileName()
 {
   int loop = 0;
   int count_char = 0;
   int seeT = 0, seeBr = 0, seeTx = 0;
   /*printf("data for write \r\n");
-  for (i = 0; i < 32; i++)
-  {
-    printf("%d ", DataForWrite[i]);
-  }*/
+    for (i = 0; i < 32; i++)
+    {
+      printf("%d ", DataForWrite[i]);
+    }*/
 
   for (loop = 0; loop < 32; loop++)
   {
-    if (((int)DataForWrite[loop] >= 33 && (int)DataForWrite[loop] <= 126) && DataForWrite[loop] != 42 && loop < 12)
-    { //end of 12
+    if (((int)DataForWrite[loop] >= 33 && (int)DataForWrite[loop] <= 126) && DataForWrite[loop] != 42 && loop < 12) // เอาส่วนที่มีชื่อไฟล์เก็บไว้ในตัวแปร [DataForWrite_aftersort]
+    {
+      //end of 12
       DataForWrite_aftersort[count_char] = DataForWrite[loop];
       count_char++;
     }
   }
-  while (count_char < 32)
+  while (count_char < 32) // ทำอะไรไม่รู้ ลืม
   {
     DataForWrite_aftersort[count_char] = 0;
     count_char++;
   }
   count_char = 0;
-  while (DataForWrite_aftersort[count_char] != '\0')
+  while (DataForWrite_aftersort[count_char] != '\0') // เช็คไฟล์ tbt
   {
     if (DataForWrite_aftersort[count_char] == 'T' && seeT == 0)
     {
-      if (DataForWrite_aftersort[count_char + 1] == 'B' && DataForWrite_aftersort[count_char + 2] == 'T')
+      if (DataForWrite_aftersort[count_char + 1] == 'B' && DataForWrite_aftersort[count_char + 2] == 'T') // เริ่มต้นด้วย t ตามด้วย b และ t
       {
         seeT = 1;
         DataForWrite_aftersort[count_char] = '.';
@@ -4035,7 +4242,7 @@ const char *fileName()
   {
     if (DataForWrite_aftersort[count_char] == 'B' && seeBr == 0)
     {
-      if (DataForWrite_aftersort[count_char + 1] == 'R' && DataForWrite_aftersort[count_char + 2] == 'F')
+      if (DataForWrite_aftersort[count_char + 1] == 'R' && DataForWrite_aftersort[count_char + 2] == 'F') // เริ่มต้นด้วย b ตามด้วย r และ f
       {
         seeBr = 1;
         DataForWrite_aftersort[count_char] = '.';
@@ -4056,7 +4263,7 @@ const char *fileName()
   {
     if (DataForWrite_aftersort[count_char] == 'T' && seeTx == 0)
     {
-      if (DataForWrite_aftersort[count_char + 1] == 'X' && DataForWrite_aftersort[count_char + 2] == 'T')
+      if (DataForWrite_aftersort[count_char + 1] == 'X' && DataForWrite_aftersort[count_char + 2] == 'T') // เริ่มต้นด้วย t ตามด้วย x และ t
       {
         seeTx = 1;
         DataForWrite_aftersort[count_char] = '.';
@@ -4073,10 +4280,10 @@ const char *fileName()
     count_char++;
   }
   /*if (seeT == 1) {
-    printf("this's tbt file\r\n");
-    } else {
-    printf("this's Dir\r\n");
-    }*/
+      printf("this's tbt file\r\n");
+      } else {
+      printf("this's Dir\r\n");
+      }*/
   return DataForWrite_aftersort;
 }
 void menu_CH376()
@@ -4084,83 +4291,81 @@ void menu_CH376()
   if (USART_GetITStatus(USART2, USART_IT_RXNE))
   {
     //----------------------------- uart to key--------------------------------
-    uart2Buffer = USART_ReceiveData(USART2); //-
-    if (uart2Buffer == 0xff && SeeHead == 0)
-    {               //-
-      SeeHead = 1;  //-
-      countKey = 0; //-
-    }               //-
-    if (countKey == 2 && uart2Buffer == 0xa4)
+    uart2Buffer = USART_ReceiveData(USART2); // อ่านค่าจาก serial 2
+    if (uart2Buffer == 0xff && SeeHead == 0) // ทำการตัดค่าออก
+    {
+      SeeHead = 1;
+      countKey = 0;
+    }
+    if (countKey == 2 && uart2Buffer == 0xa4) // ถ้า key ที่กดเป็น cursor
     {
       seeCur = 1;
     }
-    if (countKey >= 4 && countKey <= 6)
-    {                                              //-
-      bufferKey3digit[countKey - 4] = uart2Buffer; //-
+    if (countKey >= 4 && countKey <= 6) // ตัดค่าเอาเฉพาะตำแหน่ง 4 5 6 เก็บลงใน bufferkey3digit
+    {
+      bufferKey3digit[countKey - 4] = uart2Buffer;
     }
-    if (countKey == 2) //checkKeyError
+    if (countKey == 2) // checkKeyError
     {
       checkKeyError = uart2Buffer;
     }
     countKey++;
     if (countKey >= maxData)
-    { //Recieve & checking key
+    {
+      // Recieve & checking key
       seeHead = 0;
-
-      if (seeCur == 1)
+      if (seeCur == 1) // ถ้าปุ่มที่กด เป็น cursor
       {
         printf("see cur \r\n");
       }
-      else
+      else // ถ้าปุ่มที่กดเป็น key ทั่วไป
       {
         printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
       }
-      if (checkKeyError == 0xff)
-      { //check error key
+      if (checkKeyError == 0xff) // check error key
+      {
+
         countKey = 0;
         SeeHead = 0;
       }
       printf("current mode:%d\r\n", mode);
       //printf("%d\r\n",sizeof(mode_1)/sizeof(int));
       //////////////////////////////////menu selector ///////////////////////////////////
+      //joy menu
       if (bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0)
-      { //joy menu
+      {
+
         // ---------------------------- to key code -----------------------------
-        if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20)
-        {               // joy is down
-          keyCode = 40; // arrow down
-          // command_++;
+        if (bufferKey3digit[2] == 1 || bufferKey3digit[2] == 0x20) // joy is down
+        {
+          keyCode = 40; // arrow down mapping key code
         }
-        else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2)
-        {               // joy is up
+        else if (bufferKey3digit[1] == 1 || bufferKey3digit[1] == 3 || bufferKey3digit[1] == 2) // joy is up
+        {
           keyCode = 55; // arrow up
         }
-        else if (bufferKey3digit[1] == 128 || bufferKey3digit[2] == 0x10)
-        {               // joy is up
-          keyCode = 38; //
-          //  command_=8;
-        }
-        else if (bufferKey3digit[1] == 64 || bufferKey3digit[2] == 8)
+        else if (bufferKey3digit[1] == 128 || bufferKey3digit[2] == 0x10) // joy is up
         {
-          keyCode = 13; // enter
+          keyCode = 38;
+        }
+        else if (bufferKey3digit[1] == 64 || bufferKey3digit[2] == 8) // enter
+        {
+          keyCode = 13;
         }
         else if (bufferKey3digit[1] == 32 || bufferKey3digit[2] == 4)
         {
           keyCode = 8; // backspace
-          ///command_ = 99;
         }
         else if (bufferKey3digit[1] == 4)
         {
           keyCode = 38; // left
-          //  command_ = 97;
-          //command_ = 95; //before delete
         }
         else if (bufferKey3digit[1] == 8)
         {
           keyCode = 40; // right
-          // command_ = 98;
         }
-        if (bufferKey3digit[0] == 0x9f)
+
+        if (bufferKey3digit[0] == 0x9f) // คือไร ลืม
         {
           printf("new Folder\r\n");
         }
@@ -4177,16 +4382,16 @@ void caseMenu(int count_menu)
   switch (count_menu)
   {
   case 1:
-    printDot(st_notepad, sizeof(st_notepad));
+    printDot(st_notepad, sizeof(st_notepad)); // notepad
     break;
   case 2:
-    printDot(st_read, sizeof(st_read));
+    printDot(st_read, sizeof(st_read)); // read
     break;
   case 3:
-    printDot(st_bluetooth, sizeof(st_bluetooth));
+    printDot(st_bluetooth, sizeof(st_bluetooth)); // bluetooth
     break;
   case 4:
-    stringToUnicodeAndSendToDisplay("Tools");
+    stringToUnicodeAndSendToDisplay("Tools"); // tools
     break;
   }
 }
@@ -4339,7 +4544,8 @@ void keyboardMode()
 void BluetoothMode()
 {
   if (USART_GetITStatus(UART4, USART_IT_RXNE))
-  { //if serial available
+  {
+    //if serial available
     hexbuffer = USART_ReceiveData(UART4);
     printf("%c", hexbuffer);
     if (hexbuffer == 0xff && SeeHead == 0)
@@ -4355,9 +4561,11 @@ void BluetoothMode()
     BLEConBuffer[count] = hexbuffer;
     count++;
     if (count > 1 && BLEConn == 0)
-    { //
+    {
+      //
       if (BLEConBuffer[0] == 0xff && BLEConBuffer[1] == 0xff && BLEConBuffer[2] == 0xa1 && BLEConn == 0)
-      { //connect
+      {
+        //connect
         ConnectBLE();
         countConn++;
         if (countConn == 2)
@@ -4393,10 +4601,12 @@ void BluetoothMode()
           break;
         }
         else
-        { //------------------ send to braille display ----------------------
+        {
+          //------------------ send to braille display ----------------------
           hexPrep = BLEConBuffer[j];
           if (hexPrep != 0xff && hexPrep != 0xa3 && hexPrep != 0x14)
-          { //ff ff 3a
+          {
+            //ff ff 3a
             cell_sentdata(~hexPrep);
           }
         }
@@ -4569,15 +4779,15 @@ void UART4_Configuration(void)
   USART_InitTypeDef USART_InitStructure;
 
   /* RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3,ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,DISABLE);
-    //RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4,ENABLE);*/
+      RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,DISABLE);
+      //RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4,ENABLE);*/
 
   //RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART4, ENABLE);
   /*
-     USART1_TX -> PA9 , USART1_RX ->  PA10
-  */
+       USART1_TX -> PA9 , USART1_RX ->  PA10
+    */
   /* tx */ //gpiot
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -4618,8 +4828,8 @@ void USART1_Configuration(void)
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_USART1, ENABLE);
   /*
-     USART1_TX -> PA9 , USART1_RX ->  PA10
-  */
+       USART1_TX -> PA9 , USART1_RX ->  PA10
+    */
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -4656,8 +4866,8 @@ void USART3_Configuration(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
   /*
-     USART1_TX -> PA9 , USART1_RX ->  PA10
-  */
+       USART1_TX -> PA9 , USART1_RX ->  PA10
+    */
   GPIO_InitStructure31.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStructure31.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure31.GPIO_Speed = GPIO_Speed_50MHz;
@@ -4694,8 +4904,8 @@ void USART3_Configuration2(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
   /*
-     USART1_TX -> PA9 , USART1_RX ->  PA10
-  */
+       USART1_TX -> PA9 , USART1_RX ->  PA10
+    */
   GPIO_InitStructure31.GPIO_Pin = GPIO_Pin_10;
   GPIO_InitStructure31.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure31.GPIO_Speed = GPIO_Speed_50MHz;
@@ -4731,8 +4941,8 @@ void USART2_Configuration(void)
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
   /*
-     USART1_TX -> PA9 , USART1_RX ->  PA10
-  */
+       USART1_TX -> PA9 , USART1_RX ->  PA10
+    */
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -4812,7 +5022,7 @@ PUTCHAR_PROTOTYPE
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+       ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
   /* Infinite loop */
   while (1)

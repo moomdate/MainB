@@ -36,25 +36,25 @@ compiling main.c...
     notepad_append(SST25_buffer, shiftChar, 0);
 ..\USER\main.c(549): warning:  #1295-D: Deprecated declaration mainLoop - give arg types
   void mainLoop();
-..\USER\main.c(1021): warning:  #68-D: integer conversion resulted in a change of sign
+..\USER\main.c(1024): warning:  #68-D: integer conversion resulted in a change of sign
           Line = -1;
-..\USER\main.c(1094): warning:  #68-D: integer conversion resulted in a change of sign
+..\USER\main.c(1097): warning:  #68-D: integer conversion resulted in a change of sign
     if (Line == -1)
-..\USER\main.c(1300): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1303): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     length__ = strlen(SST25_buffer);
-..\USER\main.c(1535): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(1539): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
       read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer);
-..\USER\main.c(1955): warning:  #186-D: pointless comparison of unsigned integer with zero
+..\USER\main.c(1959): warning:  #186-D: pointless comparison of unsigned integer with zero
             while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0)
-..\USER\main.c(3398): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-    writeFile4096(fname, SST25_buffer);
-..\USER\main.c(3410): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      strcat(SST25_buffer, buffer_afterRemove);
-..\USER\main.c(3411): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      strcat(SST25_buffer, "\r\n");
+..\USER\main.c(3410): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+      writeFile4096(fname, SST25_buffer);
+..\USER\main.c(3422): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+        strcat(SST25_buffer, buffer_afterRemove);
+..\USER\main.c(3423): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+        strcat(SST25_buffer, "\r\n");
 ..\USER\main.c: 12 warnings, 0 errors
 linking...
-Program Size: Code=23952 RO-data=548 RW-data=700 ZI-data=19996  
+Program Size: Code=24164 RO-data=548 RW-data=708 ZI-data=19996  
 FromELF: creating hex file...
 ".\Obj\Project.axf" - 0 Error(s), 12 Warning(s).
 Build Time Elapsed:  00:00:01

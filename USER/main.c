@@ -328,9 +328,9 @@ int sendStatus = 1;
 int str_cut(char *str, int begin, int len);
 
 uint8_t unicodeTable[] =
-    {
-        0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+{
+  0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
         // !"#$%&'()*+,-./
         0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x0c, //checked 8/6/2018
         /*0-9*/
@@ -346,46 +346,46 @@ uint8_t unicodeTable[] =
         0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
 
         0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/ //checked 8/6/2018
-};
+      };
 
 /** notepad  ยังไม่เสร็จ**/
 #define readmode_maxsizeInLine 41
 #define readmode_MaxLineBuffer 102
-int read_mode_currentIndex_after = 0;
-int read_mode_contTextReaded = 0;
-int ccMain = 0;
-char readmode_bufferStr[readmode_MaxLineBuffer][readmode_maxsizeInLine];
-char str_ready[40];
-char str_be[10][11];
-void PrepareText(void);
+      int read_mode_currentIndex_after = 0;
+      int read_mode_contTextReaded = 0;
+      int ccMain = 0;
+      char readmode_bufferStr[readmode_MaxLineBuffer][readmode_maxsizeInLine];
+      char str_ready[40];
+      char str_be[10][11];
+      void PrepareText(void);
 //char str_test[4000];
 
 //-----------------------------------------------------------------------------
 //sliding to display v 2
-void convert_text2_buffer(char *str);
-void slidText2Displayv2(void);
+      void convert_text2_buffer(char *str);
+      void slidText2Displayv2(void);
 
 ///////////////////////////////////////////////////////////////////////////////
-void readSecter(int sector_);
+      void readSecter(int sector_);
 
 //// add new ///
 //----mode 4----
-void mode4(void);
-void mainMenuDisplayMode4(int);
+      void mode4(void);
+      void mainMenuDisplayMode4(int);
 #define maxMenu4 3
-uint8_t countMenuInMode4 = 0;
-bool selectMode4 = false;
+      uint8_t countMenuInMode4 = 0;
+      bool selectMode4 = false;
 //----mode 4----e
 
 //-- read miode new ---
-void queryLine(int line);
-char bufferQueryLine[50];
+      void queryLine(int line);
+      char bufferQueryLine[50];
 
 //-------------------------
-char buffer_afterRemove[42];
+      char buffer_afterRemove[42];
 
-void MemSize()
-{
+      void MemSize()
+      {
   /*
     ===============================
     int  : 4 Byte
@@ -393,16 +393,16 @@ void MemSize()
     uint8_t
     ===============================
     */
-  printf("int      size :%d Byte\r\n", sizeof(int));
-  printf("char     size :%d Byte\r\n", sizeof(char));
+        printf("int      size :%d Byte\r\n", sizeof(int));
+        printf("char     size :%d Byte\r\n", sizeof(char));
   //printf("uint4_t size :%d Byte\r\n",sizeof(uint4_t));
-  printf("uint8_t  size :%d Byte\r\n", sizeof(uint8_t));
-  printf("uint16_t size :%d Byte\r\n", sizeof(uint16_t));
-  printf("uint32_t size :%d Byte\r\n", sizeof(uint32_t));
-  printf("long     size :%d Byte\r\n", sizeof(long));
-}
-char bluetoothNambuffer[20];
-void displayPrepare(void);
+        printf("uint8_t  size :%d Byte\r\n", sizeof(uint8_t));
+        printf("uint16_t size :%d Byte\r\n", sizeof(uint16_t));
+        printf("uint32_t size :%d Byte\r\n", sizeof(uint32_t));
+        printf("long     size :%d Byte\r\n", sizeof(long));
+      }
+      char bluetoothNambuffer[20];
+      void displayPrepare(void);
 void testCell(void);  //test cell in mode
 void StoreLine(void); //store line in  struct [lineInsector]
 
@@ -547,6 +547,7 @@ void appendToSECTOR()
   // printf("on use:%d", findTotalSectorUSED());
 }
 void mainLoop();
+int doing = 0;
 int main(void)
 {
 
@@ -579,7 +580,7 @@ int main(void)
   printf("press enter\r\n");
   // appendToSECTOR();
   //if(DeleteFile("D.TBT")) //ใช้ได้
-   mainLoop();
+  mainLoop();
 }
 void mainLoop()
 {
@@ -589,6 +590,8 @@ void mainLoop()
     //menu_s();
     while (mode == 1)
     {
+      doing = 1;
+      printf("--------------------------reg-------------\r\n");
       notepad_main();
     }
     while (mode == 2)
@@ -911,13 +914,13 @@ int DeleteFile(char *name)
       i1 = USART_ReceiveData(USART3);
       switch (i1)
       {
-      case 0x41:
+        case 0x41:
         printf("\r\n ERR_OPEN_DIR \r\n");
         break;
-      case 0x82:
+        case 0x82:
         printf("\r\n ERR_DISK_DISCON  \r\n");
         break;
-      case 0xa8:
+        case 0xa8:
         printf("\r\n CMD_CHECK_EXIST \r\n");
         break;
       }
@@ -990,12 +993,12 @@ unsigned int gotoLine_EnterLine(int maxLine)
   int state = 1;
   int curline = 0;
   int i = 0;
-  char line[3];
-  char mainText[30];
-  char numbuffer[4];
-  strcpy(mainText, "Go to Line:");
+  char line[5];
+  char mainText[45];
+  char numbuffer[5];
+  strcpy(mainText, "Go to Line:"); //เก็บข้อความ 
   strcpy(line, " ");
-  // memset(line, 0, 3);
+   memset(line, 0, 5);
   // strcpy(mainText, "Go to Line:");
   strcat(mainText, line);
   strcat(mainText, "/"); //cursor+12
@@ -1030,7 +1033,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
           stringToUnicodeAndSendToDisplay("Over Max line !!");
           delay_ms(1000);
           state = 1;
-          memset(line, 0, 3);
+          memset(line, 0, 5); //set default value
           curline = 0;
         }
         else
@@ -1049,12 +1052,12 @@ unsigned int gotoLine_EnterLine(int maxLine)
       if (i >= 48 && i <= 57)                   //ถ้าเป็นเลข
       {
         // check num 0 - 9
-        if (curline < 3)
+        if (curline < 5)
         {
           line[curline] = i;
           // if (curline = 2)
           curline++;
-          if (curline >= 3)
+          if (curline >= 5)
             line[curline] = 0x00;
         }
         else
@@ -1147,21 +1150,21 @@ void mode4()
           countMenuInMode4++;
         break;
       case 38: //up
-        if (countMenuInMode4 > 0)
-          countMenuInMode4--;
-        break;
+      if (countMenuInMode4 > 0)
+        countMenuInMode4--;
+      break;
       case 39: //enter
-        selectMode4 = true;
-        printf("Enter mode (%d)\r\n", countMenuInMode4);
-        break;
+      selectMode4 = true;
+      printf("Enter mode (%d)\r\n", countMenuInMode4);
+      break;
       case 37: //exit
-        printf("exit to mode (4)\r\n");
-        stringToUnicodeAndSendToDisplay("Tools");
-        mode = 0;
-        selectMode4 = false;
-        break;
-      }
+      printf("exit to mode (4)\r\n");
+      stringToUnicodeAndSendToDisplay("Tools");
+      mode = 0;
+      selectMode4 = false;
+      break;
     }
+  }
     if (selectMode4) //1
     {
       if (keyCode == 37)
@@ -1170,7 +1173,7 @@ void mode4()
       }
       switch (countMenuInMode4)
       {
-      case 0:
+        case 0:
         memset(stringBu, 0, sizeof(stringBu));
         memset(buff22__, 0, sizeof(buff22__));
         strcpy(stringBu, "Battery ");
@@ -1179,7 +1182,7 @@ void mode4()
         strcat(stringBu, "%");
         stringToUnicodeAndSendToDisplay(stringBu);
         break;
-      case 1:
+        case 1:
         memset(stringBu, 0, sizeof(stringBu));
         strcpy(stringBu, "Sound:");
 
@@ -1218,7 +1221,7 @@ void mode4()
         stringToUnicodeAndSendToDisplay(stringBu);
         //printf("status:%d\r\n", status____);
         break;
-      case 2:
+        case 2:
         testCell();
         selectMode4 = 0;
         break;
@@ -1233,16 +1236,16 @@ void mainMenuDisplayMode4(int numb)
 {
   switch (numb)
   {
-  case 0:
+    case 0:
     stringToUnicodeAndSendToDisplay("Battery level");
     break;
-  case 1:
+    case 1:
     stringToUnicodeAndSendToDisplay("Sound Setting");
     break;
-  case 2:
+    case 2:
     stringToUnicodeAndSendToDisplay("Test cell");
     break;
-  default:
+    default:
     stringToUnicodeAndSendToDisplay("Battery level");
     break;
   }
@@ -1384,6 +1387,7 @@ void slidText2Displayv2()
   if (keyCode == 660) // function go to line
   {
     //bool loopT = true;
+    printf("go to line 98 99 \r\n");
     gt_Line = gotoLine_EnterLine(read.totalLine); //รับค่าบรรทัดที่จะไป
     printf("return line is %d\r\n", gt_Line);
     if (gt_Line != -1)
@@ -1801,25 +1805,25 @@ int getMuteStatus()
 */
 void notepad_main()
 {
-  int doing = 1; //status for do something n notepad mode
+   //status for do something n notepad mode
 
   while (doing) // do in notepad
   {
+
     notepad_readKey();       // key recieve
     if (countKey >= maxData) // do events
     {
       //Recieve & checking key
       seeHead = 0;
       // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-      if (checkKeyError == 0xff) //clear error key
+      if (checkKeyError == 0xff) // ดักจับเออเร่อ
       {
         countKey = 0;
         SeeHead = 0;
       }
-      keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-      if ((bufferKey3digit[1] > 3 || bufferKey3digit[2] != 0) && seeCur != 1) // key control
+      keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]); // รับค่า key
+      if ((bufferKey3digit[1] > 3 || bufferKey3digit[2] != 0) && seeCur != 1) // key control ไม่ใช่  cursor
       {
-
         //--- เลื่อนบรรทัด ----
         notepad_checkMaxLine();
         if (keyCode == 40)
@@ -1873,8 +1877,8 @@ void notepad_main()
           if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) > 20)
             Notepad.displayFirst = true;
         }
-      }
-      else if (keyCode == 659) // save key (space + s) //save file
+      } // จบส่วนของ key control
+      else if (keyCode == 659) // save key (space + s) // save file
       {
         // save
         // บันทึกไฟล์ หลังจากทำการพิมพ์ในโหมด Notepad
@@ -1884,7 +1888,7 @@ void notepad_main()
           printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
-      else if (keyCode == 661)
+      else if (keyCode == 661) // exit (space + e)
       {
         // ออกจากโหมด notepad โดยจะยังไม่เคลียค่าที่พิมพ์
         printf("exit \r\n");
@@ -2055,6 +2059,8 @@ void notepad_main()
         toggleCur = 1;
       else
         toggleCur = 0;
+
+      // cursor กระพริบ
       if (!toggleCur)
       {
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, 99);
@@ -2067,6 +2073,7 @@ void notepad_main()
     }                            //end blink cursor
     if (doing == 0 && mode == 0) //after exit form notepad mode display 'notepad'
     {
+      //หลังจากออกจากโหมด notepad โดยการกด key+e ให้แสดงข้อความ notepad 
       stringToUnicodeAndSendToDisplay("notepad");
     }
   }
@@ -2522,7 +2529,9 @@ void keyRead()
 
     // key mapping //
     keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-    printf("keycode:%d\r\n", keyCode);
+    printf("Keycode: %d\r\n", keyCode);
+    printf("Mode: %d\r\n",mode);
+    printf("Var doing :%d",doing);
     // end keymapping //
 
     /*
@@ -2746,6 +2755,9 @@ void keyRead()
     if (mode == 4)
     {
       stringToUnicodeAndSendToDisplay("Battery level");
+    }
+    if(mode == 1){
+      printf("gggggggggggggggggggggggggg\r\n");
     }
     //-----------------------------------end mode (5)-------------------------------
 
@@ -3296,135 +3308,135 @@ void ex_exitOncePath()
         break;
       longL--;
     }
-}
+  }
 //-------------------------------open dir with path --------------------------
 // ex. path = "abc/def"
 // ex_cdWithPath(path);
 //////////////////////////////////////////////////////////////////////////////
-void ex_cdWithPath(char *path)
-{
-  //used
-  int L = 0;
-  char buffer[15] = "";
-  int bbuf = 0;
-  int root = 1;
-  char rootD[15] = "/";
-  //printf("********************************************\r\n");
-  ex_openDir("..");
-  while (L < strlen(path))
+  void ex_cdWithPath(char *path)
   {
-    if (L > 0)
+  //used
+    int L = 0;
+    char buffer[15] = "";
+    int bbuf = 0;
+    int root = 1;
+    char rootD[15] = "/";
+  //printf("********************************************\r\n");
+    ex_openDir("..");
+    while (L < strlen(path))
     {
-      if (path[L] == '/')
+      if (L > 0)
       {
-        if (root == 1)
+        if (path[L] == '/')
         {
-          root = 0;
-          strcat(rootD, buffer);
+          if (root == 1)
+          {
+            root = 0;
+            strcat(rootD, buffer);
           //printf("\r\nbuffer1: %s\r\n", rootD);
-          ex_openDir(rootD);
-        }
-        else
-        {
+            ex_openDir(rootD);
+          }
+          else
+          {
           //printf("\r\nbuffer2: %s\r\n", buffer);
-          ex_openDir(buffer);
+            ex_openDir(buffer);
+          }
+          memset(buffer, 0, 15);
+          bbuf = 0, L++;
         }
-        memset(buffer, 0, 15);
-        bbuf = 0, L++;
+        buffer[bbuf] = path[L];
+        bbuf++;
       }
-      buffer[bbuf] = path[L];
-      bbuf++;
+      L++;
+      if (L >= 15)
+        break;
     }
-    L++;
-    if (L >= 15)
-      break;
-  }
-  ex_openDir(buffer);
+    ex_openDir(buffer);
   //printf("\r\nbuffer3: %s\r\n", buffer);
-}
+  }
 //---------------------- count path ------------------------------------------
 //
 //Output: number of path
 //////////////////////////////////////////////////////////////////////////////
-int ex_countPath(char *pathSource)
-{
-  //used
-  int ex_countPath = 0;
-  while (*pathSource)
+  int ex_countPath(char *pathSource)
   {
-    if (*pathSource == '/')
-    {
-      ex_countPath++;
-    }
-    pathSource++;
-  }
-  return ex_countPath;
-}
-int ex_checkSlash(char *pathName)
-{
   //used
-  int seeS = 0;
-  while (*pathName)
-  {
-    if (*pathName == '/')
+    int ex_countPath = 0;
+    while (*pathSource)
     {
-      seeS = 1;
+      if (*pathSource == '/')
+      {
+        ex_countPath++;
+      }
+      pathSource++;
     }
-    pathName++;
+    return ex_countPath;
   }
-  return seeS;
-}
+  int ex_checkSlash(char *pathName)
+  {
+  //used
+    int seeS = 0;
+    while (*pathName)
+    {
+      if (*pathName == '/')
+      {
+        seeS = 1;
+      }
+      pathName++;
+    }
+    return seeS;
+  }
 //--------------------------- Create and write file()------------------------
 //
 //
 // test function --
 //////////////////////////////////////////////////////////////////////////////
-void createFileAndWrite(char *fname)
-{
-  //use
-  command_ = 0;
-  command_++;
-  while (1)
+  void createFileAndWrite(char *fname)
   {
-    if (createFile(fname) == 1)
-      break;
-  }
-  SendCH370(ResetAll, sizeof(ResetAll));
-  delay_ms(100);
-  command_ = 1;
-  PrepareText();
+  //use
+    command_ = 0;
+    command_++;
+    while (1)
+    {
+      if (createFile(fname) == 1)
+        break;
+    }
+    SendCH370(ResetAll, sizeof(ResetAll));
+    delay_ms(100);
+    command_ = 1;
+    PrepareText();
   //printf("all text :%s\r\n====================================================== ", str_test);
   //fileWrite(0,fname,"test head \r\n my name is surasak");
-  writeFile4096(fname, SST25_buffer);
-}
-void PrepareText()
-{
-  int c;
-  memset(SST25_buffer, 0, 4096);
-  for (c = 0; c <= maxLineN; c++)
-  {
-    // delay_ms(200);
-    printf("=====================removed======================\r\n");
-    substringRemoveEnter2(Notepad.buffer_string[c]);
-    printf("%s\r\n", buffer_afterRemove);
-    strcat(SST25_buffer, buffer_afterRemove);
-    strcat(SST25_buffer, "\r\n");
-    delay_ms(200);
+    writeFile4096(fname, SST25_buffer);
   }
+  void PrepareText()
+  {
+    int c;
+    memset(SST25_buffer, 0, 4096);
+    for (c = 0; c <= maxLineN; c++)
+    {
+    // delay_ms(200);
+      printf("=====================removed======================\r\n");
+      substringRemoveEnter2(Notepad.buffer_string[c]);
+      printf("%s\r\n", buffer_afterRemove);
+      strcat(SST25_buffer, buffer_afterRemove);
+      strcat(SST25_buffer, "\r\n");
+      delay_ms(200);
+    }
   //
   //
-}
+  }
 //-----------------------write file less than 4096 or equal------------------
 //
 //////////////////////////////////////////////////////////////////////////////
-void writeFile4096(char *fname, char *strSource)
-{
+  void writeFile4096(char *fname, char *strSource)
+  {
   //use
-  int maxSize = 0, sizeWrite = 128;
-  int loop255 = 0;
-  int Sloop255 = 0;
-  int iL = 0, pp = 0;
-  char buffForWrite[128], buffForWrite2[128];
+    int maxSize = 0, sizeWrite = 128;
+    int loop255 = 0;
+    int Sloop255 = 0;
+    int iL = 0, pp = 0;
+    char buffForWrite[128], buffForWrite2[128];
   int WF = 0; //write before
   memset(buffForWrite2, 0, 256);
   maxSize = strlen(strSource);
@@ -4381,16 +4393,16 @@ void caseMenu(int count_menu)
 {
   switch (count_menu)
   {
-  case 1:
+    case 1:
     printDot(st_notepad, sizeof(st_notepad)); // notepad
     break;
-  case 2:
+    case 2:
     printDot(st_read, sizeof(st_read)); // read
     break;
-  case 3:
+    case 3:
     printDot(st_bluetooth, sizeof(st_bluetooth)); // bluetooth
     break;
-  case 4:
+    case 4:
     stringToUnicodeAndSendToDisplay("Tools"); // tools
     break;
   }
@@ -4723,19 +4735,19 @@ void sendUart(uint8_t data)
   sendUart4 = 0;
   switch (data)
   {
-  case 1:
+    case 1:
     sendUart1 = true;
     break;
-  case 2:
+    case 2:
     sendUart2 = true;
     break;
-  case 3:
+    case 3:
     sendUart3 = true;
     break;
-  case 4:
+    case 4:
     sendUart4 = true;
     break;
-  default:
+    default:
     sendUart1 = false;
     sendUart2 = false;
     sendUart3 = false;

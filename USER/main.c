@@ -249,6 +249,9 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 
 SPI_InitTypeDef SPI_InitStructure; //global config.
 void beepError(void);
+void beep3(void);
+void beep2(void);
+void beep4(void);
 void errorBreak(void);
 uint8_t getBatterry(void);
 int getMuteStatus(void);
@@ -419,6 +422,7 @@ void clearReadlineInsector(void); //clear  struct [lineInsector]
 typedef struct lineSlider
 {
   int currentLine;
+  int MainCurrentLine;
   //int currentSector;
   int TotalSector; // จำนวน secter
   int sesString;
@@ -428,6 +432,7 @@ typedef struct lineSlider
   char strTemp[42];
   char strTemp2[42];
   bool DisplayLine;
+
 } lineSlider;
 typedef struct readROM
 {
@@ -451,6 +456,8 @@ typedef struct pages
 {
   uint16_t index;
   uint16_t page[150]; // 2*150 300 bytes
+  uint16_t totalPage;
+  int currentPage;
 
 } page;
 
@@ -490,14 +497,13 @@ int confirm(void);
   printf("found Line in Sector (%d)\r\n", Sector);
   printf("In line %d\r\n", gotoLine_getLine(Line, Sector));
 */
-int sumLine(int index)
+int sumLineInSector(int index)
 {
   int sumV = 0;
-  for(j = 0 ; j< index;j++){
+  /*for(j = 0 ; j< index;j++){
     printf("================================\r\n");
     printf("at index = %d line in sec = %d\r\n",j ,read.lineInsector[j]);
-  }
-  //read.lineInsector[index];
+  }*/
   i = 0;
   while (i < index)
   {
@@ -525,7 +531,7 @@ int readmode_countLineInOneSector(char *str, int index)
     }
     else if (str[count] == 0x0c) //ถ้าเจอหน้า
     {
-      pages.page[pages.index] = index > 0 ? sumLine(index) + sum : sum;
+      pages.page[pages.index] = index > 0 ? sumLineInSector(index) + sum : sum;
       pages.index++;
     }
     count++;
@@ -602,6 +608,9 @@ void appendToSECTOR()
 void mainLoop();
 int doing = 0;
 
+uint16_t page_findNextPage();
+uint16_t page_getCurrentPage();
+int sumLineInPreviousSec();
 int main(void)
 {
 
@@ -609,7 +618,10 @@ int main(void)
   Notepad.currentLine = 0;
   Notepad.displayFirst = false;
   pages.index = 0;
+  pages.currentPage = 0;
+  pages.totalPage = 0;
   read.totalLine = 0;
+  read.MainCurrentLine = 0;
   ROMR.endReadFile = false;
   ROMR.countdata_Temp512 = 0;
   ROMR.lastAscii = 0;
@@ -795,6 +807,51 @@ int confirm()
     }
   }
   return status;
+}
+uint16_t page_getCurrentPage() // bug
+{
+
+  //pages.page
+  int page_Sum = sumLineInPreviousSec();
+  k = 0;
+  for (k = 0; k < pages.totalPage; k++)
+  {
+    if (pages.page[k] >= page_Sum + read.currentLine)
+    {
+      break;
+    }
+  }
+  //  printf("---------current line %d  k is %d\r\n", read.currentLine, k);
+  return k; //pages.page[i];
+}
+uint16_t page_findNextPage()
+{
+  int page_Sum = sumLineInPreviousSec();
+  printf("sumPrevoiusPage %d current line %d sum all %d \r\n", page_Sum, read.currentLine, page_Sum + read.currentLine);
+  k = 0;
+  for (k = 0; k < pages.totalPage; k++)
+  {
+    if (pages.page[k] > page_Sum + read.currentLine + 1)
+    {
+      break;
+    }
+  }
+  // printf("page at %d\r\n");
+  // return [page number]
+  return pages.page[k];
+}
+int sumLineInPreviousSec()
+{
+  int cc = 0;
+  k = 0;
+  // printf("---------current secter  %d  line in sector %d\r\n", read.currentSector, read.lineInsector[read.currentSector]);
+  for (k = 0; k < read.currentSector; k++)
+  {
+    cc += read.lineInsector[k];
+    cc++;
+  }
+  // return บรรทัดทั้งหมดของ sector ก่อนหน้า
+  return cc;
 }
 void upperASCII(char *str)
 {
@@ -1447,7 +1504,8 @@ void slidText2Displayv2()
     // printf("return line is %d\r\n", gt_Line);
     if (gt_Line > 0) //  != -1
     {
-      gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Sector = gotoLine_getSectorInline(gt_Line); // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      //read.MainCurrentLine = gt_Line;
       gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
 
       read.currentSector = gt_Sector;          // ทำการเปลี่ยน Sector ที่จะอ่าน
@@ -1457,6 +1515,26 @@ void slidText2Displayv2()
     }
     //printf("found Line in Sector (%d)\r\n", gt_Sector);
     //printf("In line %d\r\n", gt_Line);
+  }
+  else if (keyCode == 701) // next page
+  {
+    gt_Line = page_findNextPage();
+    printf("-------------------------------\r\n");
+    printf("current page is (%d) next page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
+    if (gt_Line == 0)
+    {
+      beep4();
+    }
+    if (gt_Line > 0) //  != -1
+    {
+      gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+
+      read.currentSector = gt_Sector;          // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;              // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector); // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);             // ทำการอ่านไฟล์ในบรรทัดนั้น
+    }
   }
   else if (keyCode == 661) //Exit read Mode
   {
@@ -1479,11 +1557,12 @@ void slidText2Displayv2()
 
     //mode = 0;
   }
-  if (strlen(bufferQueryLine) <= 20)
+
+  if (strlen(bufferQueryLine) <= 20) // ถ้้า text น้อยกว่า 20 char
     read.DisplayLine = 0;
+
   if (keyCode == 2) // printf right
   {
-
     if (strlen(bufferQueryLine) <= 20 || read.DisplayLine == 1)
     {
       keyCode = 40;         //if current digit at last go to next line
@@ -1513,7 +1592,7 @@ void slidText2Displayv2()
   }
   //======================================================================
 
-  if (keyCode == 38)
+  if (keyCode == 38) //
   {
     if (read.currentLine > 0)
     {
@@ -1536,7 +1615,7 @@ void slidText2Displayv2()
       printf("=========================================\r\n");
     }
   }
-  else if (keyCode == 40)
+  else if (keyCode == 40) // next
   {
     if (read.currentLine < read.lineInsector[read.currentSector])
     {
@@ -1557,6 +1636,7 @@ void slidText2Displayv2()
       strcpy(read.strTemp, bufferQueryLine);
       read.currentSector++;
       readSecter(read.currentSector * sector);
+      read.MainCurrentLine += read.currentLine;
       read.currentLine = 0;
       queryLine(read.currentLine);
       strcat(read.strTemp, bufferQueryLine);
@@ -1835,6 +1915,26 @@ void sendCommandtoAtmega(int data)
   while (USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET)
   {
   }
+}
+void beep()
+{
+  USART_SendData(USART2, 154);
+  delay_ms(45);
+}
+void beep2()
+{
+  USART_SendData(USART2, 155);
+  delay_ms(45);
+}
+void beep3()
+{
+  USART_SendData(USART2, 156);
+  delay_ms(45);
+}
+void beep4()
+{
+  USART_SendData(USART2, 157);
+  delay_ms(45);
 }
 void errorBreak()
 {
@@ -2462,6 +2562,13 @@ void clearKeyValue()
 int keyMapping(int a, int b, int c)
 {
   int keyCode__ = 0;
+  //---------------------------------------------------------------
+  // a
+  // b
+  // c
+  //---------------------------------------------------------------
+  //---------------------------------------------------------------
+
   //-----------------------joyRight--------------------------------
   if (a == 0x00 && b == 0x00 && c == 0x04)
   {
@@ -2537,6 +2644,12 @@ int keyMapping(int a, int b, int c)
   {
     //space + s
     keyCode__ = 659;
+  }
+
+  //next page in read mode
+  else if ((a == 0x00 && b == 0x41 && c == 0x00))
+  {
+    keyCode__ = 701;
   }
 
   return keyCode__;
@@ -3047,13 +3160,24 @@ void initSlidingMode()
   read.currentSector = 0;
   clearReadlineInsector();
   StoreLine();
+  pages.totalPage = pages.index; //เก็บ จำนวนหน้า
+
+  printf("======================================================\r\n");
+  printf("======================================================\r\n");
+  printf("pages:(%d)\r\n", pages.totalPage);
   printf("======================================================\r\n");
   printf("======================================================\r\n");
   printf("paage index is %d \r\n", pages.index);
   for (i = 0; i < pages.index; i++)
   {
-    printf("page (%d) at line(%d) \r\n",i, pages.page[i]);
+    printf("page (%d) at line(%d) \r\n", i, pages.page[i]);
   }
+  printf("total sector (%d)", read.TotalSector);
+  for (i = 0; i < read.TotalSector; i++)
+  {
+    printf("line in sectore (%d) at line(%d) \r\n", i, read.lineInsector[i]);
+  }
+  pages.index = 0;
   printf("======================================================\r\n");
   printf("======================================================\r\n");
 }

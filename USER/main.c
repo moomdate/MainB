@@ -816,18 +816,19 @@ uint16_t page_getCurrentPage() // bug
   k = 0;
   for (k = 0; k < pages.totalPage; k++)
   {
-    if (pages.page[k] >= page_Sum + read.currentLine)
+    if (pages.page[k] > page_Sum + read.currentLine)
     {
       break;
     }
   }
   //  printf("---------current line %d  k is %d\r\n", read.currentLine, k);
-  return k; //pages.page[i];
+  return k;
+  //pages.page[i];
 }
 uint16_t page_findNextPage()
 {
   int page_Sum = sumLineInPreviousSec();
-  printf("sumPrevoiusPage %d current line %d sum all %d \r\n", page_Sum, read.currentLine, page_Sum + read.currentLine);
+ // printf("sumPrevoiusPage %d current line %d sum all %d \r\n", page_Sum, read.currentLine, page_Sum + read.currentLine);
   k = 0;
   for (k = 0; k < pages.totalPage; k++)
   {
@@ -1519,23 +1520,63 @@ void slidText2Displayv2()
   else if (keyCode == 701) // next page
   {
     gt_Line = page_findNextPage();
-    printf("-------------------------------\r\n");
-    printf("current page is (%d) next page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
+    // printf("-------------------------------\r\n");
+
     if (gt_Line == 0)
     {
-      beep4();
+      beep2();
     }
     if (gt_Line > 0) //  != -1
     {
+      beep4();
       gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
       gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
-
-      read.currentSector = gt_Sector;          // ทำการเปลี่ยน Sector ที่จะอ่าน
-      read.currentLine = gt_Line;              // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
-      readSecter(read.currentSector * sector); // ทำการอ่าน Sector นั้น
-      queryLine(read.currentLine);             // ทำการอ่านไฟล์ในบรรทัดนั้น
+      read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
+      //printf("current page is (%d) next page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
     }
   }
+  else if (keyCode == 702)
+  {
+    j = page_getCurrentPage() - 1;
+    gt_Line = pages.page[j - 1];
+    // printf("- current page is (%d) \r\n", page_getCurrentPage());
+    //printf("-------------------------------------------------------go to line %d \r\n ", gt_Line);
+    k = pages.page[page_getCurrentPage() - 1];
+    if (!k)
+    {
+      beep2();
+    }
+    if (gt_Line >= 0 && k) //  != -1
+    {
+      beep4();
+      gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+      read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
+      //printf("current page is (%d) previous page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
+    }
+  }
+  /*else if (keyCode == 703)
+  {
+    j = page_getCurrentPage() - 1;
+    printf("==============================\r\n");
+    printf("==============================\r\n");
+    printf("current page =  %d\r\n", pages.page[j - 1]);
+
+    printf("==============================\r\n");
+    for (k = j; k >= 0; k--)
+    {
+      printf("page %d\r\n", pages.page[k]);
+    }
+    printf("==============================\r\n");
+    printf("==============================\r\n");
+    printf("==============================\r\n");
+  }*/
   else if (keyCode == 661) //Exit read Mode
   {
     printf("Exit\r\n");
@@ -2651,6 +2692,15 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 701;
   }
+  //previous page
+  else if ((a == 0x00 && b == 0x21 && c == 0x00))
+  {
+    keyCode__ = 702;
+  }
+  else if ((a == 0x00 && b == 0x22 && c == 0x00)) // view
+  {
+    keyCode__ = 703;
+  }
 
   return keyCode__;
 }
@@ -2704,9 +2754,9 @@ void keyRead()
 
     // key mapping //
     keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-    printf("Keycode: %d\r\n", keyCode);
+    //printf("Keycode: %d\r\n", keyCode);
     printf("Mode: %d\r\n", mode);
-    printf("Var doing :%d", doing);
+    //printf("Var doing :%d", doing);
     // end keymapping //
 
     /*

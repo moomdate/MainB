@@ -825,10 +825,37 @@ uint16_t page_getCurrentPage() // bug
   return k;
   //pages.page[i];
 }
+void printReadDetail()
+{
+  printf("------------------------------------------------------\r\n");
+  printf("------------------------------------------------------\r\n");
+  printf("\r\n");
+  printf("Current Sector :%d\r\n", read.currentSector);
+  printf("Current Line  :%d (with out line in sec)\r\n", read.currentLine);
+
+  printf("\r\n");
+  printf("------------------------------------------------------\r\n");
+  printf("------------------------------------------------------\r\n");
+}
+uint16_t get_CurrentLine()
+{
+  int jCC = 0;
+  int CUR_SEC = read.currentSector;
+  int CUR_LINE = read.currentLine;
+  int SumLine = 0;
+  // จำนวนบรรทัดใน sector ก่อนหน้า + currentLine = บรรทัดจริงๆ
+  for (jCC = 0; jCC < CUR_SEC; jCC++)
+  {
+
+    SumLine += read.lineInsector[jCC];
+  }
+
+  return SumLine + CUR_LINE;
+}
 uint16_t page_findNextPage()
 {
   int page_Sum = sumLineInPreviousSec();
- // printf("sumPrevoiusPage %d current line %d sum all %d \r\n", page_Sum, read.currentLine, page_Sum + read.currentLine);
+  // printf("sumPrevoiusPage %d current line %d sum all %d \r\n", page_Sum, read.currentLine, page_Sum + read.currentLine);
   k = 0;
   for (k = 0; k < pages.totalPage; k++)
   {
@@ -851,8 +878,51 @@ int sumLineInPreviousSec()
     cc += read.lineInsector[k];
     cc++;
   }
+
   // return บรรทัดทั้งหมดของ sector ก่อนหน้า
   return cc;
+}
+int findPreviousPage()
+{
+  int currentLine_ = get_CurrentLine();
+  int compareInLine = findCurrentPageInArr();
+  int start99 = pages.totalPage - 1;
+  int ccg = 0;
+  //printf("----currentline -*-*-* %d \r\n", currentLine_);
+  while (start99 > 0)
+  {
+    if (pages.page[start99] < currentLine_)
+    {
+      //printf("pages.page[start99] = %d start99 = %d\r\n", pages.page[start99], start99);
+      break;
+    }
+    start99--;
+  }
+  if (pages.page[start99] == compareInLine)
+  {
+    start99--;
+  }
+  // printf("ggg currentPage -- %d -- \r\n", findCurrentPageInArr());
+  // return เลข
+  return start99;
+}
+int findCurrentPageInArr()
+{
+  int currentLine_ = get_CurrentLine();
+  int start99 = pages.totalPage - 1;
+  int cnc = 0;
+  //printf("################################################################\r\n");
+  while (start99 > 0)
+  {
+    if (currentLine_ >= pages.page[start99])
+    {
+      // printf("int fff pages.page[start99] = %d start99 = %d\r\n", pages.page[start99], start99);
+      break;
+    }
+    start99--;
+  }
+  //printf("################################################################\r\n");
+  return pages.page[start99];
 }
 void upperASCII(char *str)
 {
@@ -1077,6 +1147,7 @@ int gotoLine_getSectorInline(int line) //หาว่าบรรทัดนั
     gg++;
   }
   return sector___;
+  //--- return หมายเลข sector
 }
 int gotoLine_getLine(int Line, int Sector) //หาใน Sector นั้นว่าบรรทัดที่เท้่าไหร่
 {
@@ -1505,6 +1576,7 @@ void slidText2Displayv2()
     // printf("return line is %d\r\n", gt_Line);
     if (gt_Line > 0) //  != -1
     {
+      beep4();
       gt_Sector = gotoLine_getSectorInline(gt_Line); // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
       //read.MainCurrentLine = gt_Line;
       gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
@@ -1520,7 +1592,7 @@ void slidText2Displayv2()
   else if (keyCode == 701) // next page
   {
     gt_Line = page_findNextPage();
-    // printf("-------------------------------\r\n");
+    printf("------------gt_Line :%d-------------------\r\n", gt_Line);
 
     if (gt_Line == 0)
     {
@@ -1538,17 +1610,22 @@ void slidText2Displayv2()
       //printf("current page is (%d) next page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
     }
   }
-  else if (keyCode == 702)
+  else if (keyCode == 702) //previous page
   {
-    j = page_getCurrentPage() - 1;
-    gt_Line = pages.page[j - 1];
+
+    // k = page_getCurrentPage();
+
+    //printf("-------------------------k:%d----------------------- %d \r\n ", k);
+
+    //j = k - 1;
+    gt_Line = pages.page[findPreviousPage()];
     // printf("- current page is (%d) \r\n", page_getCurrentPage());
-    //printf("-------------------------------------------------------go to line %d \r\n ", gt_Line);
-    k = pages.page[page_getCurrentPage() - 1];
-    if (!k)
+    // printf("--------------------befor-%d-------------------------------go to line %d \r\n ", pages.page[gt_Line], gt_Line);
+    // k = pages.page[page_getCurrentPage() - 1]; //105 k = true
+    /*if (!k)
     {
       beep2();
-    }
+    }*/
     if (gt_Line >= 0 && k) //  != -1
     {
       beep4();
@@ -1561,22 +1638,26 @@ void slidText2Displayv2()
       //printf("current page is (%d) previous page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
     }
   }
-  /*else if (keyCode == 703)
+  else if (keyCode == 703)
   {
-    j = page_getCurrentPage() - 1;
-    printf("==============================\r\n");
-    printf("==============================\r\n");
-    printf("current page =  %d\r\n", pages.page[j - 1]);
 
+    i = get_CurrentLine();
+
+    printf("-------------------------getCurrent Line:%d----------------------- \r\n ", i);
+    printf("-------------------------get find previous page:%d---------------- \r\n ", pages.page[findPreviousPage()]);
     printf("==============================\r\n");
+    printf("==============================\r\n");
+    // printf("current page =  %d ,line in page %d\r\n", j, pages.page[j - 1]);
+
+    /* printf("==============================\r\n");
     for (k = j; k >= 0; k--)
     {
       printf("page %d\r\n", pages.page[k]);
-    }
+    }*/
     printf("==============================\r\n");
     printf("==============================\r\n");
     printf("==============================\r\n");
-  }*/
+  }
   else if (keyCode == 661) //Exit read Mode
   {
     printf("Exit\r\n");
@@ -2688,20 +2769,20 @@ int keyMapping(int a, int b, int c)
   }
 
   //next page in read mode
-  else if ((a == 0x00 && b == 0x41 && c == 0x00))
+  else if ((a == 0x00 && b == 0x41 && c == 0x00) || (a == 0x00 && b == 0x42 && c == 0x00) || (a == 0x00 && b == 0x43 && c == 0x00))
   {
     keyCode__ = 701;
   }
   //previous page
-  else if ((a == 0x00 && b == 0x21 && c == 0x00))
+  else if ((a == 0x00 && b == 0x21 && c == 0x00) || (a == 0x00 && b == 0x22 && c == 0x00) || (a == 0x00 && b == 0x23 && c == 0x00))
   {
     keyCode__ = 702;
   }
-  else if ((a == 0x00 && b == 0x22 && c == 0x00)) // view
+  // debug shortcut key next and prevoious pages
+  else if ((a == 0x00 && b == 0x11 && c == 0x00))
   {
     keyCode__ = 703;
   }
-
   return keyCode__;
 }
 //โหลๆ
@@ -3223,12 +3304,13 @@ void initSlidingMode()
     printf("page (%d) at line(%d) \r\n", i, pages.page[i]);
   }
   printf("total sector (%d)", read.TotalSector);
-  for (i = 0; i < read.TotalSector; i++)
+  for (i = 0; i <= read.TotalSector; i++)
   {
     printf("line in sectore (%d) at line(%d) \r\n", i, read.lineInsector[i]);
   }
   pages.index = 0;
   printf("======================================================\r\n");
+  //printf("line in last sectore (%d) \r\n", read.lineInsector[read.TotalSector]);
   printf("======================================================\r\n");
 }
 void clearReadlineInsector()

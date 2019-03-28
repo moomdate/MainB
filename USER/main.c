@@ -122,7 +122,7 @@ int previousMode = 0;
 uint8_t connectData[] = {0xff, 0xff, 0xa2, 0x0b, 0x16, 0x14, 0x10, 0x53, 0x4c, 0x52, 0x49, 0x20, 0x56, 0x31, 0x2e, 0x30};
 
 int countSector512 = 0;
-int readstatus = 0;
+
 int becon = 0;
 
 int ex_openDirStatus = 0;
@@ -142,7 +142,8 @@ int toggleCur = 0;
 //------------------------------------------ ch370t data ------------------------------------//'
 char filelist[10][15];
 int seaching = 1; //for seaching file
-
+int readStatus = 1;
+int ABCCCCC = 1; // ใช้แทน readStatus
 /* Private function prototypes -----------------------------------------------*/
 
 ///------------------------------------spi---------------------------------//
@@ -425,7 +426,7 @@ typedef struct lineSlider
   int MainCurrentLine;
   //int currentSector;
   int TotalSector; // จำนวน secter
-  int sesString;
+  //int sesString;
   uint16_t currentSector;
   uint16_t lineInsector[lineInSectorBufferSize];
   uint16_t totalLine;
@@ -653,7 +654,7 @@ void mainLoop()
 {
   while (1)
   {
-    keyRead();
+    keyRead(); // mode = 0; เลื่อนเมนู enter, exit
     //menu_s();
     while (mode == 1)
     {
@@ -663,8 +664,8 @@ void mainLoop()
     }
     while (mode == 2)
     {
-      keyRead();
-      searchFile2();
+      //printf("999999999999999999999999999999999999\r\n");
+      searchFile2(); //   keyRead();
     }
     if (mode == 3)
     {
@@ -1612,21 +1613,21 @@ void slidText2Displayv2()
   }
   else if (keyCode == 702) //previous page
   {
-
     // k = page_getCurrentPage();
-
-    //printf("-------------------------k:%d----------------------- %d \r\n ", k);
-
+    //printf("-------------------------k:%d----------------------- %d \r\n ", k);FFF
     //j = k - 1;
     gt_Line = pages.page[findPreviousPage()];
+    i = get_CurrentLine();
+
     // printf("- current page is (%d) \r\n", page_getCurrentPage());
-    // printf("--------------------befor-%d-------------------------------go to line %d \r\n ", pages.page[gt_Line], gt_Line);
+    printf("--------------------befor--------------------------------go to line %d \r\n ", gt_Line);
     // k = pages.page[page_getCurrentPage() - 1]; //105 k = true
-    /*if (!k)
+    if (!i)
     {
       beep2();
-    }*/
-    if (gt_Line >= 0 && k) //  != -1
+    }
+    //printf("-------go to %d -----------\r\n", gt_Line);
+    if (gt_Line >= 0 && i) //  != -1
     {
       beep4();
       gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
@@ -1640,9 +1641,7 @@ void slidText2Displayv2()
   }
   else if (keyCode == 703)
   {
-
     i = get_CurrentLine();
-
     printf("-------------------------getCurrent Line:%d----------------------- \r\n ", i);
     printf("-------------------------get find previous page:%d---------------- \r\n ", pages.page[findPreviousPage()]);
     printf("==============================\r\n");
@@ -1675,6 +1674,7 @@ void slidText2Displayv2()
     //prepareSD_Card();
     printf("reset all \r\n");
     mode = 0;
+    beep4();
     stringToUnicodeAndSendToDisplay("read");
 
     //mode = 0;
@@ -1794,9 +1794,10 @@ void StoreLine()
 {
   for (i = 0; i <= read.TotalSector; i++)
   {
-    readSecter(i * sector);
+    readSecter(i * sector);// *4096
     read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
     //StorePage(i);
+    printf("Line (%d) : %d\r\n",i,read.lineInsector[i]);
     read.totalLine += read.lineInsector[i]; // เก็บทรรทัดทั้งหมด
   }
 }
@@ -2790,7 +2791,7 @@ int keyMapping(int a, int b, int c)
 //
 //
 //
-///////////////////////////////////////////////////
+// ฟั่งก์ชั่นจัดการ key ReadKey
 void keyRead()
 {
   //used
@@ -2837,24 +2838,9 @@ void keyRead()
     keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
     //printf("Keycode: %d\r\n", keyCode);
     printf("Mode: %d\r\n", mode);
-    //printf("Var doing :%d", doing);
-    // end keymapping //
-
-    /*
-          mode:0
-          on menu
-        */
-    /*
-        ------------------------------------------------------------------------------------------------
-        ──────▄▀▄─────▄▀▄
-        ─────▄█░░▀▀▀▀▀░░█▄
-        ─▄▄──█░░░░░░░░░░░█──▄▄
-        █▄▄█─█░░▀░░┬░░▀░░█─█▄▄█
-        mode(0):default
-        ------------------------------------------------------------------------------------------------
-        */
     if (mode == 0)
     {
+      //printf("999999999999999999999999999999999999\r\n");
       //key in mode 0
       if (count_menu >= 1 && count_menu <= maxMenu && mode == 0)
       {
@@ -2895,13 +2881,17 @@ void keyRead()
           //
           previousMode = mode;
           mode = count_menu;
-          printf("mode:%d", mode);
+          printf("enter to mode:%d", mode);
+          if (mode == 2) //reset
+          {
+            ABCCCCC = 1;
+          }
         }
       }
       caseMenu(count_menu);
     }
     //-----------------------------------end mode (10)-------------------------------
-    if (ROMR.endReadFile == true && mode == 2) //mode 2
+    if (mode == 2 && ROMR.endReadFile == true) //mode 2
     {
       // mode 2 และทำการเปิดอ่านไฟล์แล้ว จะแยกกันกับฟังก์ชั่น path
       // on mode read
@@ -2909,8 +2899,9 @@ void keyRead()
       slidText2Displayv2();
       //slidingFileFromRomToDisplay();
     }
-    if (mode == 2 && ROMR.endReadFile == false)
+    if (mode == 2 && ROMR.endReadFile == false) // ถ้ายังไม่เปิดไฟล์
     {
+
       // mode 2 แต่ยังไม่ได้ทำการเปิดอ่านไฟล์
       // key in mode 2
       if (keyCode == 38) //เลือกไฟล์
@@ -3004,7 +2995,7 @@ void keyRead()
         else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
         {
           //printf("is tbt ");
-          readFileFromCH376sToFlashRom(fileLists[fileSelect]);
+          readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์
         }
         //command_ = 16;
       }
@@ -3026,6 +3017,8 @@ void keyRead()
           //prepareSD_Card();
           printf("reset all \r\n");
           mode = 0;
+          ABCCCCC = 0;
+
           stringToUnicodeAndSendToDisplay("read");
         }
         else
@@ -3085,7 +3078,10 @@ int readFileFromCH376sToFlashRom(char *fileName___)
   ROMR.countdata_Temp512 = 0;
   ROMR.lastAscii = 0;
   ROMR.addressWriteFlashTemp = 0;
+  addressSector = 0;
   countSector512 = 0;
+  countSector4096 = 0;
+  countSector = 0;
   //stringToUnicodeAndSendToDisplay("Reading....");
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   //printf("reading............ all\r\n");
@@ -3096,9 +3092,9 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     if (command_ == 4)
     {
 
-      setFilename(fileName___);                 // ใช้คำสั่ง set ชื่อไฟล์
-      printf("opening file (%s)", fileName___); // กำลังเปิดไฟล์ ชื่อไฟล์
-      command_++;                               // 5
+      setFilename(fileName___);                     // ใช้คำสั่ง set ชื่อไฟล์
+      printf("opening file (%s)\r\n", fileName___); // กำลังเปิดไฟล์ ชื่อไฟล์
+      command_++;                                   // 5
       stringToUnicodeAndSendToDisplay("Reading....");
       delay_ms(45);
     }
@@ -3176,11 +3172,13 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           // ข้อมูลที่่อ่านครบ 128*4 = 512
           // ทำการเพิ่มคัวแปร countSector512
           ///////////////////////////////////////////////////////////////////
+
           countSector512++;
           ROMR.dataTemp512[ROMR.countdata_Temp512] = i1;
           ROMR.countdata_Temp512++;
           if (countSector512 >= 4)
           {
+            //printf("store \r\n");
             //---------------------------512 byte-----------------------------
             //  เอาข้อมูล 512 เก็บลง buffer ยาว [4096] จนครบ
             //
@@ -3188,9 +3186,12 @@ int readFileFromCH376sToFlashRom(char *fileName___)
             command_ = 95;
             for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
             {
+
               SST25_buffer[i - (sector * countSector)] = ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp];
               ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp] = '\0'; //clear buffer
+              // printf("92 2\r\n");
             }
+            // printf("store 2\r\n");
             //  ทำการเพิ่มจำนวนตัวแปรที่นับ sector:countSector4096
             countSector4096++;
             //writeFlash(ROMR.addressWriteFlashTemp);
@@ -3273,6 +3274,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
             // query string-
             // menu_s();
             keyRead();
+            //printf("9999999999999999srwetre\r\n");
             //readFileStatus___
           }
 
@@ -3286,9 +3288,10 @@ int readFileFromCH376sToFlashRom(char *fileName___)
 void initSlidingMode()
 {
   read.TotalSector = AmountSector;
-  read.sesString = AmountSectorT;
+  //read.sesString = AmountSectorT;
   read.currentLine = 0;
   read.currentSector = 0;
+  read.totalLine = 0;
   clearReadlineInsector();
   StoreLine();
   pages.totalPage = pages.index; //เก็บ จำนวนหน้า
@@ -3378,12 +3381,12 @@ void mountStatus()
 ///////////////////////////////////////////////////////////////////////////////////
 void searchFile2()
 {
-  int readStatus = 1;
+
   int time_check = 0;
-  printf("Seaching............................\r\n");
+  printf("Seaching.............19...............\r\n");
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   //maxFile = 0;
-  while (readStatus)
+  while (ABCCCCC == 1)
   {
     if (command_ == 1)
     {
@@ -3455,15 +3458,16 @@ void searchFile2()
         nextAgain = 1;
         DataForWrite[0] = 42;
       }
-      else if (i1 == 0x42 && countFileLegth == 0)
+      else if (i1 == 0x42 && countFileLegth == 0) // จบการค้นหาไฟล์
       {
-        readStatus = 0;
+        //ABCCCCC = 0; //fix bug
         stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
+        // printf("file--00 %s\r\n",fileLists[fileSelect]);
         // printf("--------------------end -------------------------\r\n");
       }
       if (command_ == 2 && i1 == 0x82)
       {
-        readStatus = 0;
+        ABCCCCC = 0;
         // break;
         errorBreak();
         printf("Not found SD-Card\r\n");

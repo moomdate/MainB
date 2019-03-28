@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Mar 27 13:34:46 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Mar 28 14:38:56 2019
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -725,8 +725,9 @@ Global Symbols
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 </UL>
 
-<P><STRONG><a name="[87]"></a>StoreLine</STRONG> (Thumb, 94 bytes, Stack size 0 bytes, main.o(i.StoreLine))
-<BR><BR>[Calls]<UL><LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readmode_countLineInOneSector
+<P><STRONG><a name="[87]"></a>StoreLine</STRONG> (Thumb, 114 bytes, Stack size 0 bytes, main.o(i.StoreLine))
+<BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
+<LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readmode_countLineInOneSector
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initSlidingMode
@@ -930,6 +931,7 @@ Global Symbols
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 <LI><a href="#[a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFile
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;confirm
+<LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PrepareText
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MemSize
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DeleteFolder
@@ -1268,7 +1270,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
-<P><STRONG><a name="[cb]"></a>initSlidingMode</STRONG> (Thumb, 220 bytes, Stack size 0 bytes, main.o(i.initSlidingMode))
+<P><STRONG><a name="[cb]"></a>initSlidingMode</STRONG> (Thumb, 218 bytes, Stack size 0 bytes, main.o(i.initSlidingMode))
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[cc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearReadlineInsector
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
@@ -1282,7 +1284,7 @@ Global Symbols
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
-<P><STRONG><a name="[cd]"></a>keyRead</STRONG> (Thumb, 1416 bytes, Stack size 0 bytes, main.o(i.keyRead))
+<P><STRONG><a name="[cd]"></a>keyRead</STRONG> (Thumb, 1452 bytes, Stack size 0 bytes, main.o(i.keyRead))
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
@@ -1341,7 +1343,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[d4]"></a>mainLoop</STRONG> (Thumb, 156 bytes, Stack size 0 bytes, main.o(i.mainLoop))
+<P><STRONG><a name="[d4]"></a>mainLoop</STRONG> (Thumb, 152 bytes, Stack size 0 bytes, main.o(i.mainLoop))
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
@@ -1563,7 +1565,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wip
 </UL>
 
-<P><STRONG><a name="[d1]"></a>readFileFromCH376sToFlashRom</STRONG> (Thumb, 830 bytes, Stack size 0 bytes, main.o(i.readFileFromCH376sToFlashRom))
+<P><STRONG><a name="[d1]"></a>readFileFromCH376sToFlashRom</STRONG> (Thumb, 842 bytes, Stack size 0 bytes, main.o(i.readFileFromCH376sToFlashRom))
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
@@ -1632,7 +1634,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[d6]"></a>searchFile2</STRONG> (Thumb, 596 bytes, Stack size 0 bytes, main.o(i.searchFile2))
+<P><STRONG><a name="[d6]"></a>searchFile2</STRONG> (Thumb, 600 bytes, Stack size 0 bytes, main.o(i.searchFile2))
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
@@ -1714,7 +1716,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DeleteFolder
 </UL>
 
-<P><STRONG><a name="[cf]"></a>slidText2Displayv2</STRONG> (Thumb, 1326 bytes, Stack size 0 bytes, main.o(i.slidText2Displayv2))
+<P><STRONG><a name="[cf]"></a>slidText2Displayv2</STRONG> (Thumb, 1376 bytes, Stack size 0 bytes, main.o(i.slidText2Displayv2))
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen

@@ -250,9 +250,10 @@ extern void SST25_R_BLOCK(uint32_t addr, u8 *readbuff, uint16_t BlockSize);
 
 SPI_InitTypeDef SPI_InitStructure; //global config.
 void beepError(void);
-void beep3(void);
 void beep2(void);
+void beep3(void);
 void beep4(void);
+void beep5(void);
 void errorBreak(void);
 uint8_t getBatterry(void);
 int getMuteStatus(void);
@@ -481,6 +482,8 @@ notepad Notepad; //notepad mode
 unsigned int gotoLine_EnterLine(int maxLine);
 int gotoLine_getLine(int Line, int Sector);
 int gotoLine_getSectorInline(int line);
+int gotoLine_get_int_len(int value);
+
 uint16_t gt_Sector = 0;
 int16_t gt_Line = 0;
 
@@ -669,8 +672,8 @@ void mainLoop()
     }
     if (mode == 3)
     {
-      GPIO_SetBits(GPIOC, GPIO_Pin_0);
-      delay_ms(800); //wait bluetooth boot
+      GPIO_SetBits(GPIOC, GPIO_Pin_0); // on Bluetooth
+      delay_ms(800);                   //wait bluetooth boot
       strcpy(bluetoothNambuffer, getBluetoothName());
       if (strlen(bluetoothNambuffer) > 0)
         stringToUnicodeAndSendToDisplay(bluetoothNambuffer);
@@ -1172,6 +1175,16 @@ int gotoLine_getLine(int Line, int Sector) //หาใน Sector นั้นว
   }
   return line;
 }
+int gotoLine_get_int_len(int value)
+{
+  int l = 1;
+  while (value > 9)
+  {
+    l++;
+    value /= 10;
+  }
+  return l;
+}
 unsigned int gotoLine_EnterLine(int maxLine)
 {
   unsigned int Line = 0;
@@ -1181,6 +1194,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
   char line[5];
   char mainText[45];
   char numbuffer[5];
+  int NumLength;
   strcpy(mainText, "Go to Line:"); //เก็บข้อความ
   strcpy(line, " ");
   memset(line, 0, 5);
@@ -1189,6 +1203,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
   strcat(mainText, "/"); //cursor+12
   sprintf(numbuffer, "%d", maxLine);
   strcat(mainText, numbuffer); //num to text
+  NumLength = gotoLine_get_int_len(maxLine);
   while (state)
   {
     notepad_readKey();       // key recieve
@@ -1213,9 +1228,11 @@ unsigned int gotoLine_EnterLine(int maxLine)
       {
         // check key enter
         Line = atoi(line);
+        // printf("line:%d, NumLength:%d\r\n", Line, NumLength);
         if (Line > maxLine)
         {
           stringToUnicodeAndSendToDisplay("Over Max line !!");
+          beep5(); //error
           delay_ms(1000);
           state = 1;
           memset(line, 0, 5); //set default value
@@ -1237,7 +1254,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
       if (i >= 48 && i <= 57)                   //ถ้าเป็นเลข
       {
         // check num 0 - 9
-        if (curline < 5)
+        if (curline < NumLength)
         {
           line[curline] = i;
           // if (curline = 2)
@@ -1261,6 +1278,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
       else
         stringToUnicodeAndSendToDisplayC(mainText, curline + 11);
       printf("\r\n gotoLine_EnterLine : %s/%d\r\n", line, maxLine);
+      //rintf("------------max line %d----------\r\n", );
 
       clearKeyValue();
     }
@@ -1794,10 +1812,10 @@ void StoreLine()
 {
   for (i = 0; i <= read.TotalSector; i++)
   {
-    readSecter(i * sector);// *4096
+    readSecter(i * sector);                                                // *4096
     read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
     //StorePage(i);
-    printf("Line (%d) : %d\r\n",i,read.lineInsector[i]);
+    // printf("Line (%d) : %d\r\n",i,read.lineInsector[i]);
     read.totalLine += read.lineInsector[i]; // เก็บทรรทัดทั้งหมด
   }
 }
@@ -2057,6 +2075,11 @@ void beep3()
 void beep4()
 {
   USART_SendData(USART2, 157);
+  delay_ms(45);
+}
+void beep5()
+{
+  USART_SendData(USART2, 158);
   delay_ms(45);
 }
 void errorBreak()
@@ -3045,7 +3068,7 @@ void keyRead()
       if (keyCode == 37)
       {
         mode = 0;
-        GPIO_ResetBits(GPIOC, GPIO_Pin_0);
+        GPIO_ResetBits(GPIOC, GPIO_Pin_0); // Off Bluetooth
         stringToUnicodeAndSendToDisplay("Bluetooth");
         //printf("exit from mode 3 \r\n");
       }
@@ -3055,10 +3078,7 @@ void keyRead()
     {
       stringToUnicodeAndSendToDisplay("Battery level");
     }
-    if (mode == 1)
-    {
-      printf("gggggggggggggggggggggggggg\r\n");
-    }
+
     //-----------------------------------end mode (5)-------------------------------
 
     countKey = 0;
@@ -4877,10 +4897,10 @@ void keyboardMode()
     SendCommandToBLE(keyCodeRecieve, sizeof(keyCodeRecieve));
     seeHead = 0;
     //int navLeft[] = {0xff, 0xff, 0xa6, 0x03, 0x00, 0x04, 0x00};
-    for (j = 0; j < 7; j++)
+    /*for (j = 0; j < 7; j++)
     {
       printf("%c", keyCodeRecieve[j]);
-    }
+    }*/
     countKey = 0;
   }
 }

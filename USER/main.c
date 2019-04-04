@@ -99,7 +99,7 @@ uint8_t setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
 uint8_t changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
 uint8_t FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
 uint8_t FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
-
+uint8_t FileSize[] = {0x57, 0xab, 0x0c, 0x68};
 // 0x00, 0x57, 0xab, 0x35
 uint8_t Folder_DELETE[] = {0x00, 0x57, 0xab, 0x35};
 
@@ -945,7 +945,49 @@ void upperASCII(char *str)
     str++;
   }
 }
+void getFileSize(char *filename)
+{
+  int timeOut = 1;
+  int sum = 0;
+  command_ = 1;
+  printf("file size ");
+  while (timeOut)
+  {
+    //timeOut++;
+    if (command_ == 1)
+    {
+      setFilename(filename);
+      delay_ms(45);
+      command_++;
+     // timeOut = 1;
+    }
+    else if (command_ == 2)
+    {
+      SendCH370(FileOpen, sizeof(FileOpen));
+      delay_ms(45);
+      command_++;
+      //timeOut = 1;
+    }
+    else if (command_ == 3)
+    {
+      SendCH370(FileSize, sizeof(FileSize));
+      command_++;
+      //timeOut = 1;
+      delay_ms(100);
+    }
 
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(USART3);
+    ///  sum += i1;
+  
+      printf("%d,", i1);
+     // timeOut = 1;
+    }
+   // timeOut++;
+    ///timeOut >= 3000 ? timeOut = 0 : timeOut;
+  }
+}
 void setFoldername(char *filename)
 {
   //setFilenameForFunction //0x00 0x57 0xab 0x2f
@@ -1222,7 +1264,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
       {
         state = 0;
         Line = -1;
-        printf("Exit ---------------------------\r\n");
+        // printf("Exit ---------------------------\r\n");
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x00) //enter
       {
@@ -1266,7 +1308,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
         {
           line[curline] = 0x00;
         }
-        printf("this is line : %s\r\n", line);
+        //printf("this is line : %s\r\n", line);
       }
       //sprintf(str, "%d", someInt);
       strcpy(mainText, "Go to Line:");
@@ -1692,6 +1734,7 @@ void slidText2Displayv2()
     //prepareSD_Card();
     printf("reset all \r\n");
     mode = 0;
+     ABCCCCC = 0;
     beep4();
     stringToUnicodeAndSendToDisplay("read");
 
@@ -2807,6 +2850,10 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 703;
   }
+  else if ((a == 0x07 && b == 0x00 && c == 0x00))
+  {
+    keyCode__ = 787;
+  }
   return keyCode__;
 }
 //โหลๆ
@@ -3021,6 +3068,10 @@ void keyRead()
           readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์
         }
         //command_ = 16;
+      }
+      if (keyCode == 787)
+      {
+        getFileSize(fileLists[fileSelect]);
       }
       if (keyCode == 37)
       {

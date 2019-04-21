@@ -18,10 +18,11 @@ typedef uint8_t bool;
 #define SPI_DISPLAY_CS_PIN GPIO_Pin_4
 
 //-------------------------------------define mode-------------------------------
-#define mode_on_meno 0
-#define mode_notepad 1
-#define mode_read 2
-#define mode_bluetooth 3
+#define MODE_ON_MENU 0
+#define MODE_NOTEPAD 1
+#define MODE_READ 2
+#define MODE_BLUETOOTH 3
+#define MODE_TOOLS 3
 //-----------------------------------------------------------------------------
 #define delayCur 250000 // delay time for cursor blink
 #define sector 4096     //amount char in one sector
@@ -78,6 +79,7 @@ int bufferKey3digit[3] = {0};
 int hexbuffer = 0;
 int hexPrep = 0;
 int SeeHead = 0;
+int marker99 = 88;
 //----------------------ch376 command-------------------------------
 uint8_t data0[] = {0x57, 0xab, 0x27};
 uint8_t enumgo[] = {0x57, 0xab, 0x33};
@@ -462,7 +464,7 @@ typedef struct pages
   int currentPage;
 
 } page;
-
+// typedef
 page pages;
 readROM ROMR;    //[prepare]read file to rom
 lineSlider read; // read rom to display
@@ -609,12 +611,23 @@ void appendToSECTOR()
   readSecter(4096);
   // printf("on use:%d", findTotalSectorUSED());
 }
-void mainLoop();
+void MainPrograme();
 int doing = 0;
 
 uint16_t page_findNextPage();
 uint16_t page_getCurrentPage();
 int sumLineInPreviousSec();
+typedef struct marker{
+	char * strMark;
+  struct marker *node;
+} marker;
+void getMarker(char * fileName){
+	readSecter(16777216); //sector for  config
+  printf("%s",SST25_buffer);
+}
+void readConfigFileFormSD(){
+  printf("readfile\r\n");
+}
 int main(void)
 {
 
@@ -630,6 +643,7 @@ int main(void)
   ROMR.countdata_Temp512 = 0;
   ROMR.lastAscii = 0;
   ROMR.addressWriteFlashTemp = 0;
+
   buffAs[0] = (char)enterSign; //เครื่องหมาย Enter ใช้ใน notepad_main();
 
   /* Configure the GPIO ports */
@@ -651,26 +665,27 @@ int main(void)
   printf("press enter\r\n");
   // appendToSECTOR();
   //if(DeleteFile("D.TBT")) //ใช้ได้
-  mainLoop();
+  //getMarker("a");
+  MainPrograme();
 }
-void mainLoop()
+void MainPrograme()
 {
   while (1)
   {
     keyRead(); // mode = 0; เลื่อนเมนู enter, exit
     //menu_s();
-    while (mode == 1)
+    while (mode == MODE_NOTEPAD)
     {
       doing = 1;
       printf("--------------------------reg-------------\r\n");
       notepad_main();
     }
-    while (mode == 2)
+    while (mode == MODE_READ)
     {
       //printf("999999999999999999999999999999999999\r\n");
       searchFile2(); //   keyRead();
     }
-    if (mode == 3)
+    if (mode == MODE_BLUETOOTH)
     {
       GPIO_SetBits(GPIOC, GPIO_Pin_0); // on Bluetooth
       delay_ms(800);                   //wait bluetooth boot
@@ -694,12 +709,14 @@ void mainLoop()
         }
       }
     }
-    while (mode == 4)
+    while (mode == MODE_TOOLS)
     {
       mode4();
     }
   }
 }
+//----
+// REMOVE DATA IN FILE TEMP
 int removeDataInFileTemp(char *fileRe)
 {
   int intdexPo = 0;
@@ -1704,6 +1721,18 @@ void slidText2Displayv2()
     i = get_CurrentLine();
     printf("-------------------------getCurrent Line:%d----------------------- \r\n ", i);
     printf("-------------------------get find previous page:%d---------------- \r\n ", pages.page[findPreviousPage()]);
+    gt_Line = marker99;
+    if (gt_Line >= 0 ) //  != -1
+    {
+      beep4();
+      gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+      read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
+      //printf("current page is (%d) previous page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
+    }
     printf("==============================\r\n");
     printf("==============================\r\n");
     // printf("current page =  %d ,line in page %d\r\n", j, pages.page[j - 1]);
@@ -1871,13 +1900,13 @@ void StoreLineClear()
   }
 }
 
-// อ่านค่าจาก Sector โดยการใส่ตำแหน่ง sector
+// อ่านค่าจาก Sector โดยการใส่ตำแหน่ง sector *4096
 // จะเก็บค่าไว้ที่ตัวแปร SST25_buffer
 void readSecter(int sector_)
 {
   configFlash();
   SPI_FLASH_CS_LOW();
-  SST25_R_BLOCK(sector_, SST25_buffer, sector);
+  SST25_R_BLOCK(sector_, SST25_buffer, sector); // secter = 4096
   SPI_FLASH_CS_HIGH();
   Delay(0xffff);
 }
@@ -2160,11 +2189,10 @@ void notepad_main()
 
   while (doing) // do in notepad
   {
-
     notepad_readKey();       // key recieve
     if (countKey >= maxData) // do events
     {
-      //Recieve & checking key
+      // Recieve & checking key
       seeHead = 0;
       // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
       if (checkKeyError == 0xff) // ดักจับเออเร่อ
@@ -2213,7 +2241,7 @@ void notepad_main()
         //----------------------------------------------------------------------------------------
         if (keyCode == 1)
         {
-          //left
+          // left
           Notepad.displayFirst = false;
           k = 20;                         // ไม่นับถึง enter
           if (Notepad.cursorPosition > k) //กดได้ไม่เกิน enter
@@ -2224,7 +2252,7 @@ void notepad_main()
         }
         else if (keyCode == 2)
         {
-          //right
+          // right
           if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) > 20)
             Notepad.displayFirst = true;
         }
@@ -2246,7 +2274,7 @@ void notepad_main()
         doing = 0;
         mode = 0;
       }
-      else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) //enter
+      else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) // enter
       {
         //enter key                                                                                                       // printf("New line \r\n");
         if (Notepad.cursorPosition + Notepad.multiplyCursor < notepad_MaxinLine)
@@ -2271,7 +2299,7 @@ void notepad_main()
               }
             }
           }
-          //Notepad.currentLine++;
+          // Notepad.currentLine++;
         }
       }
       else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1)
@@ -2421,15 +2449,14 @@ void notepad_main()
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
       }
       d_Time = 0;
-    }                            //end blink cursor
-    if (doing == 0 && mode == 0) //after exit form notepad mode display 'notepad'
+    }                            // end blink cursor
+    if (doing == 0 && mode == 0) // after exit form notepad mode display 'notepad'
     {
-      //หลังจากออกจากโหมด notepad โดยการกด key+e ให้แสดงข้อความ notepad
+      // หลังจากออกจากโหมด notepad โดยการกด key+e ให้แสดงข้อความ notepad
       stringToUnicodeAndSendToDisplay("notepad");
     }
   }
 }
-///
 //-------------------------check maxline--------------------
 //
 //
@@ -4446,8 +4473,8 @@ void copy_string(char *target, char *source)
   *target = '\0';
 }
 //----------------------write string to flash rom-------------------
-//
-//
+//max address ‭0x1000000‬ ~16mbit || 16777216
+//last sector at 0xffbf6a because	 minus with sector (4096 byte)
 ////////////////////////////////////////////////////////////////////
 void writeFlash(int address)
 {

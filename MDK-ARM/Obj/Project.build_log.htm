@@ -27,50 +27,7 @@ Project File Date:  03/14/2019
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Multi Media Development Board V1.0'
-compiling main.c...
-..\USER\main.c(582): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
-      if (strlen(SST25_buffer) != 4096)
-..\USER\main.c(600): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-    notepad_append(SST25_buffer, "a", 35);
-..\USER\main.c(605): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-    notepad_append(SST25_buffer, shiftChar, 0);
-..\USER\main.c(612): warning:  #1295-D: Deprecated declaration mainLoop - give arg types
-  void mainLoop();
-..\USER\main.c(615): warning:  #1295-D: Deprecated declaration page_findNextPage - give arg types
-  uint16_t page_findNextPage();
-..\USER\main.c(616): warning:  #1295-D: Deprecated declaration page_getCurrentPage - give arg types
-  uint16_t page_getCurrentPage();
-..\USER\main.c(617): warning:  #1295-D: Deprecated declaration sumLineInPreviousSec - give arg types
-  int sumLineInPreviousSec();
-..\USER\main.c(892): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
-    int compareInLine = findCurrentPageInArr();
-..\USER\main.c(894): warning:  #177-D: variable "ccg"  was declared but never referenced
-    int ccg = 0;
-..\USER\main.c(917): warning:  #177-D: variable "cnc"  was declared but never referenced
-    int cnc = 0;
-..\USER\main.c(951): warning:  #177-D: variable "sum"  was declared but never referenced
-    int sum = 0;
-..\USER\main.c(1266): warning:  #68-D: integer conversion resulted in a change of sign
-          Line = -1;
-..\USER\main.c(1342): warning:  #68-D: integer conversion resulted in a change of sign
-    if (Line == -1)
-..\USER\main.c(1548): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
-    length__ = strlen(SST25_buffer);
-..\USER\main.c(1859): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-      read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
-..\USER\main.c(2310): warning:  #186-D: pointless comparison of unsigned integer with zero
-            while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0)
-..\USER\main.c(3816): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-    writeFile4096(fname, SST25_buffer);
-..\USER\main.c(3828): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      strcat(SST25_buffer, buffer_afterRemove);
-..\USER\main.c(3829): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-      strcat(SST25_buffer, "\r\n");
-..\USER\main.c: 19 warnings, 0 errors
-linking...
-Program Size: Code=25692 RO-data=768 RW-data=716 ZI-data=20308  
-FromELF: creating hex file...
-".\Obj\Project.axf" - 0 Error(s), 19 Warning(s).
+".\Obj\Project.axf" - 0 Error(s), 0 Warning(s).
 Build Time Elapsed:  00:00:01
 </pre>
 </body>

@@ -3,7 +3,7 @@
 <pre>
 <h1>�Vision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: �Vision V5.25.2.0
+IDE-Version: ?Vision V5.25.2.0
 Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
 License Information: - -, -, LIC=----
  
@@ -22,13 +22,78 @@ Dialog DLL:      TARMSTM.DLL V1.66.0.0
  
 <h2>Project:</h2>
 D:\backup desktop2\HY-smart stm32\HY-Smart 2012.2.25\ADC+USART\ADC+DMA\MDK-ARM\Project.uvproj
-Project File Date:  03/14/2019
+Project File Date:  05/07/2019
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Multi Media Development Board V1.0'
-".\Obj\Project.axf" - 0 Error(s), 0 Warning(s).
-Build Time Elapsed:  00:00:01
+compiling main.c...
+..\MDK-ARM\keyCode.h(6): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\USER\main.c(593): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+      if (strlen(SST25_buffer) != 4096)
+..\USER\main.c(611): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+    notepad_append(SST25_buffer, "a", 35);
+..\USER\main.c(616): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+    notepad_append(SST25_buffer, shiftChar, 0);
+..\USER\main.c(623): warning:  #1295-D: Deprecated declaration MainPrograme - give arg types
+  void MainPrograme();
+..\USER\main.c(626): warning:  #1295-D: Deprecated declaration page_findNextPage - give arg types
+  uint16_t page_findNextPage();
+..\USER\main.c(627): warning:  #1295-D: Deprecated declaration page_getCurrentPage - give arg types
+  uint16_t page_getCurrentPage();
+..\USER\main.c(628): warning:  #1295-D: Deprecated declaration sumLineInPreviousSec - give arg types
+  int sumLineInPreviousSec();
+..\USER\main.c(683): warning:  #177-D: variable "fileName_"  was declared but never referenced
+    char *fileName_ = "data.dat";
+..\USER\main.c(746): warning:  #1295-D: Deprecated declaration CH376Init - give arg types
+  uint8_t CH376Init();
+..\USER\main.c(747): warning:  #1295-D: Deprecated declaration CH376_SetReadForm_SD - give arg types
+  uint8_t CH376_SetReadForm_SD();
+..\USER\main.c(748): warning:  #1295-D: Deprecated declaration CH376_Disk_Connect - give arg types
+  uint8_t CH376_Disk_Connect();
+..\USER\main.c(749): warning:  #1295-D: Deprecated declaration CH376_UsbDiskMount - give arg types
+  uint8_t CH376_UsbDiskMount();
+..\USER\main.c(750): warning:  #1295-D: Deprecated declaration CH376_FileOpen - give arg types
+  uint8_t CH376_FileOpen();
+..\USER\main.c(751): warning:  #1295-D: Deprecated declaration CH376_FileClose - give arg types
+  uint8_t CH376_FileClose();
+..\USER\main.c(756): warning:  #1295-D: Deprecated declaration CH376_GetFileSize - give arg types
+  int CH376_GetFileSize();
+..\USER\main.c(762): warning:  #1295-D: Deprecated declaration testGetFileSize - give arg types
+  void testGetFileSize();
+..\USER\main.c(1273): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
+    int compareInLine = findCurrentPageInArr();
+..\USER\main.c(1275): warning:  #177-D: variable "ccg"  was declared but never referenced
+    int ccg = 0;
+..\USER\main.c(1298): warning:  #177-D: variable "cnc"  was declared but never referenced
+    int cnc = 0;
+..\USER\main.c(1633): warning:  #68-D: integer conversion resulted in a change of sign
+          Line = -1;
+..\USER\main.c(1709): warning:  #68-D: integer conversion resulted in a change of sign
+    if (Line == -1)
+..\USER\main.c(1918): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+    length__ = strlen(SST25_buffer);
+..\USER\main.c(2245): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+      read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
+..\USER\main.c(2697): warning:  #186-D: pointless comparison of unsigned integer with zero
+            while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0)
+..\USER\main.c(4163): warning:  #9-D: nested comment is not allowed
+  //////////////////////////////////////////////////////////////////////////////*/
+..\USER\main.c(4258): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+    writeFile4096(fname, SST25_buffer);
+..\USER\main.c(4270): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+      strcat(SST25_buffer, buffer_afterRemove);
+..\USER\main.c(4271): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+      strcat(SST25_buffer, "\r\n");
+..\USER\main.c(5007): warning:  #9-D: nested comment is not allowed
+  //////////////////////////////////////////////////////////////////////////////////*/
+..\USER\main.c: 30 warnings, 0 errors
+linking...
+Program Size: Code=25928 RO-data=768 RW-data=796 ZI-data=20380  
+FromELF: creating hex file...
+".\Obj\Project.axf" - 0 Error(s), 30 Warning(s).
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

@@ -1,6 +1,9 @@
 {
     "files.associations": {
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "CH376HFT.C": "cpp",
+        "FILE_SYS.C": "cpp",
+        "PARA_HW.C": "cpp"
     },
     "editor.fontFamily": "SOV_monomon, 'Courier New', monospace"
 }

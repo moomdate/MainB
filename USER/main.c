@@ -6,6 +6,8 @@
 #include <stdlib.h> //strtol
 
 #include "stm32f10x_spi.h"
+#include "CH376_Comm.h"
+#include "keyCode.h"
 //------------------------ typedef boolean------------------------
 //================================================================
 typedef uint8_t bool;
@@ -22,7 +24,7 @@ typedef uint8_t bool;
 #define MODE_NOTEPAD 1
 #define MODE_READ 2
 #define MODE_BLUETOOTH 3
-#define MODE_TOOLS 3
+#define MODE_TOOLS 4
 //-----------------------------------------------------------------------------
 #define delayCur 250000 // delay time for cursor blink
 #define sector 4096     //amount char in one sector
@@ -83,31 +85,35 @@ int marker99 = 88;
 //----------------------ch376 command-------------------------------
 uint8_t data0[] = {0x57, 0xab, 0x27};
 uint8_t enumgo[] = {0x57, 0xab, 0x33};
-uint8_t FileOpen[] = {0x00, 0x57, 0xab, 0x32};
-uint8_t ResetAll[] = {0x00, 0x57, 0xab, 0x05};
-uint8_t ReadData[] = {0x00, 0x57, 0xAB, 0x27};
-uint8_t FileCreate[] = {0x00, 0x57, 0xab, 0x34};
-uint8_t FileUpdate[] = {0x00, 0x57, 0xab, 0x3d};
-uint8_t USBDiskMount[] = {0x00, 0x57, 0xab, 0x31};
-uint8_t continueRead[] = {0x00, 0x57, 0xab, 0x3b};
-uint8_t FileClose[] = {0x00, 0x57, 0xab, 0x36, 0x01};
-uint8_t FileClose0[] = {0x00, 0x57, 0xab, 0x36, 0x00};
-uint8_t setSDCard[] = {0x00, 0x57, 0xab, 0x15, 0x03}; //+
-uint8_t setFileName[15] = {0x00, 0x57, 0xab, 0x2f, 0x2f};
-uint8_t checkConnection[] = {0x00, 0x57, 0xab, 0x06, 0x57};
-uint8_t SetByteRead[] = {0x00, 0x57, 0xab, 0x3a, 0x80, 0x00};      //15 = 21 character
-uint8_t setFilenameForFunction[] = {0x00, 0x57, 0xab, 0x2f};       // use vie function set file name
-uint8_t setAllName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
-uint8_t changeBaudRateByte[] = {0x00, 0x57, 0xab, 0x02, 0x03, 0x98};
-uint8_t FilePointer[] = {0x00, 0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
-uint8_t FilePointerend[] = {0x00, 0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
+uint8_t FileOpen[] = {0x57, 0xab, 0x32};
+uint8_t ResetAll[] = {0x57, 0xab, 0x05};
+uint8_t ReadData[] = {0x57, 0xAB, 0x27};
+uint8_t FileCreate[] = {0x57, 0xab, 0x34};
+uint8_t FileUpdate[] = {0x57, 0xab, 0x3d};
+uint8_t USBDiskMount[] = {0x57, 0xab, 0x31};
+uint8_t continueRead[] = {0x57, 0xab, 0x3b};
+uint8_t FileClose[] = {0x57, 0xab, 0x36, 0x01};
+uint8_t FileClose0[] = {0x57, 0xab, 0x36, 0x00};
+uint8_t setSDCard[] = {0x57, 0xab, 0x15, 0x03}; //+
+uint8_t setFileName[15] = {0x57, 0xab, 0x2f, 0x2f};
+uint8_t checkConnection[] = {0x57, 0xab, 0x06, 0x57};
+uint8_t SetByteRead[] = {0x57, 0xab, 0x3a, 0x80, 0x00};      //15 = 21 character
+uint8_t setFilenameForFunction[] = {0x57, 0xab, 0x2f};       // use vie function set file name
+uint8_t setAllName[] = {0x57, 0xab, 0x2f, 0x2f, 0x2a, 0x00}; //*
+uint8_t changeBaudRateByte[] = {0x57, 0xab, 0x02, 0x03, 0x98};
+uint8_t FilePointer[] = {0x57, 0xab, 0x39, 0x00, 0x00, 0x00, 0x00};
+uint8_t FilePointerend[] = {0x57, 0xab, 0x39, 0xff, 0xff, 0xff, 0xff};
 uint8_t FileSize[] = {0x57, 0xab, 0x0c, 0x68};
+uint8_t DiskConnect[] = {0x57, 0xab, 0x30};
+
+uint8_t setname1[] = {0x57, 0xab, 0x2f, 0x2f, 0x31, 0x31, 0x31, 0x31, 0x31, 0x31, 0x7e, 0x31, 0x2e, 0x54, 0x58, 0x54, 0x00};
+uint8_t setname2[] = {0x57, 0xab, 0x2f, 0x2f, 0x32, 0x32, 0x32, 0x32, 0x32, 0x32, 0x7e, 0x31, 0x2e, 0x54, 0x58, 0x54, 0x00};
 // 0x00, 0x57, 0xab, 0x35
-uint8_t Folder_DELETE[] = {0x00, 0x57, 0xab, 0x35};
+uint8_t Folder_DELETE[] = {0x57, 0xab, 0x35};
 
 char buffascii[10];
-uint8_t FileWrite[] = {0x00, 0x57, 0xab, 0x2d};
-uint8_t DirName[] = {0x00, 0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
+uint8_t FileWrite[] = {0x57, 0xab, 0x2d};
+uint8_t DirName[] = {0x57, 0xab, 0x2f, 0x2f, 0x54, 0x45, 0x53, 0x54, 0x00};
 /////////////////////////////////////////////////////////////////////
 //---------------------- menu variable ------------------------------
 uint8_t count_menu = 1;
@@ -196,10 +202,10 @@ void setFilename(char *name);
 void searchFile2(void);
 void NextFile(void);
 void keyRead(void);
-//--------------------------------explorrer file---------------------------------
-// ฟังก์ชั่นสำหรับจัดการพาร์ทของ Directory
-// มีการจัดการกำการเข้าถึงโฟลเดอร์ และใช้คำสั่งกับ CH376 เพื่อเข้าโฟลเดอร์ หรืออ่านไฟล์ต่างๆ
-// ex. /testfile/text.tbt
+/*--------------------------------explorrer file---------------------------------
+ ฟังก์ชั่นสำหรับจัดการพาร์ทของ Directory
+ มีการจัดการกำการเข้าถึงโฟลเดอร์ และใช้คำสั่งกับ CH376 เพื่อเข้าโฟลเดอร์ หรืออ่านไฟล์ต่างๆ
+ ex. /testfile/text.tbt*/
 void ex_exitOncePath(void);
 void ex_cdWithPath(char *path);
 int ex_checkFileType(char *file);
@@ -495,7 +501,7 @@ int DeleteFile(char *str);
 void setFoldername(char *filename);
 
 void upperASCII(char *str);
-int confirm(void);
+int confirm_delete(void);
 
 /*
   Sector = gotoLine_getSectorInline(Line); //เนเธ”เน Sector
@@ -535,7 +541,7 @@ int readmode_countLineInOneSector(char *str, int index)
         }
       }
     }
-    else if (str[count] == 0x0c) //ถ้าเจอหน้า
+    else if (str[count] == 0x0c) // ถ้าเจอหน้า
     {
       pages.page[pages.index] = index > 0 ? sumLineInSector(index) + sum : sum;
       pages.index++;
@@ -544,7 +550,9 @@ int readmode_countLineInOneSector(char *str, int index)
   }
   return sum;
 }
+/*
 // นับจำนวนหน้าจาก ROM
+*/
 int readmode_countPageInOneSector(char *str)
 {
   int count = 0;
@@ -563,8 +571,9 @@ int readmode_countPageInOneSector(char *str)
   }
   return sum;
 }
-
-//-------------------------------------------------------------------------------
+/*******************************
+  ทดสอบเก็บข้อมูลลงรอม และอ่าน
+********************************/
 void StoreDataTOSector()
 {
   printf("PROCESSING..\r\n");
@@ -617,17 +626,145 @@ int doing = 0;
 uint16_t page_findNextPage();
 uint16_t page_getCurrentPage();
 int sumLineInPreviousSec();
-typedef struct marker{
-	char * strMark;
-  struct marker *node;
+typedef struct marker
+{
+  char strMark;       // FILE NAME
+  int pageinFile[20]; // SIZE OF INT X 20 = 80 BYTES
 } marker;
-void getMarker(char * fileName){
-	readSecter(16777216); //sector for  config
-  printf("%s",SST25_buffer);
+int marker_findLastPosition()
+{
+  int pp = 0;
+  while (SST25_buffer[pp] != '\0')
+  { //find last postion
+    pp++;
+  }
+  return pp;
 }
-void readConfigFileFormSD(){
+void markger_set(char *filename_1)
+{
+  int lastPo = marker_findLastPosition();
+  int cc = 0;
+  //printf("last po %d", lastPo);
+  // cc = lastPo;
+  while (cc < strlen(filename_1))
+  {
+    SST25_buffer[lastPo + cc] = filename_1[cc];
+
+    //printf("%c", filename_1[cc]);
+    cc++;
+  }
+  SST25_buffer[lastPo + cc] = '\0';
+}
+void getMarker(char *fileName)
+{
+  /* memset(SST25_buffer, 0x0, 4096);
+  SST25_buffer[0] = 'A';
+  SST25_buffer[1] = 'B';
+  writeFlash(16777216);
+
+  readSecter(16777216); //sector for  config
+  markger_set("test");
+  markger_set("9899100");
+  printf("%s", SST25_buffer);*/
+}
+void SearchMarkerWithFileNameInSector()
+{
+}
+void marker_get()
+{
+}
+// return ; position at last character
+
+void setConfigStr()
+{
+}
+void readConfigFileFormSD()
+{
+  char *fileName_ = "data.dat";
   printf("readfile\r\n");
+  command_ = 1;
+  getMarker("test");
+  /*while (1)
+  {
+    if (command_ == 1)
+    {   
+      setFilename(fileName_);                     // ใช้คำสั่ง set ชื่อไฟล์
+      printf("opening file (%s)\r\n", fileName_); // กำลังเปิดไฟล์ ชื่อไฟล์
+      command_++;                                   // 5
+      stringToUnicodeAndSendToDisplay("Reading....");
+      delay_ms(45);
+    }
+    else if (command_ == 2)
+    {
+      SendCH370(FileOpen, sizeof(FileOpen));
+      command_++; //6
+      printf("open  \r\n");
+      delay_ms(45);
+    }
+    else if (command_ == 3)
+    {
+      SendCH370(SetByteRead, sizeof(SetByteRead));
+      printf("reading 3\r\n");
+      //result 1D can read
+      //ID สามารถอ่านไฟล์ได้
+      command_ = 99;
+      delay_ms(30);
+    }
+    else if (command_ == 95)
+    {
+      //left (prevois line)
+      printf("reading 4\r\n");
+      SendCH370(continueRead, sizeof(continueRead)); // 0x3b // enum go
+      command_++; //96
+    }
+    else if (command_ == 98)
+    {
+      printf("reading 5\r\n");
+      //right (next line)
+      command_ = 6;
+    }
+    else if (command_ == 99)
+    {
+       printf("reading 6\r\n");
+      SendCH370(ReadData, sizeof(ReadData)); // 0x27
+      command_++;
+    }
+    //menu_s();
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      // printf("a");
+      i1 = USART_ReceiveData(USART3);
+      printf("0x%x\r\n", i1);
+      if (command_ == 96 && i1 == 0x14)
+      {
+
+        
+      }
+    }
+  }*/
 }
+uint8_t CH376Init();
+uint8_t CH376_SetReadForm_SD();
+uint8_t CH376_Disk_Connect();
+uint8_t CH376_UsbDiskMount();
+uint8_t CH376_FileOpen();
+uint8_t CH376_FileClose();
+bool isSpaceKey(int);
+char tempp__[20];
+int filesize__[4];
+int getSizeState = 1;
+int CH376_GetFileSize();
+void getFileSize(char *);
+int waitRespon(int);
+int timeOut_resp = 1000;
+int ch376_status;
+int preStatus = 1;
+void testGetFileSize();
+
+uint8_t loovar = 0;
+uint8_t tempLL[14];
+
+char rootBuffer[20];
 int main(void)
 {
 
@@ -648,32 +785,115 @@ int main(void)
 
   /* Configure the GPIO ports */
   GPIO_Configuration();   //if config this can't use printf
-  UART4_Configuration();  //9600
-  USART2_Configuration(); //115200
-  USART1_Configuration(); //115200
-  USART3_Configuration(); //115200
+  UART4_Configuration();  //9600 ,ble
+  USART2_Configuration(); //115200 ,keyboard
+  USART1_Configuration(); //115200 ,ft232
+  USART3_Configuration(); //115200 ,ch376
 
   Init_SPI();
   delay_init();
   sendUart(1);
   configDisplay();
 
-  //printStringLR("abcd11111111111111111111111",0);
   displayPrepare();
-  prepareSD_Card();
+  //prepareSD_Card();
   MemSize();
+
   printf("press enter\r\n");
   // appendToSECTOR();
   //if(DeleteFile("D.TBT")) //ใช้ได้
+
   //getMarker("a");
+
+  ch376_status = CH376Init();
+  if (ch376_status != USB_INT_SUCCESS)
+    printf("ch376 init error0");
+  //testGetFileSize();
   MainPrograme();
+
+  //getFileSize("/AAAAAA~1.TXT");
+  //printf("get file size \r\n");
+  //ch376_status = CH376_GetFileSize();
+  //printf("file size %d byte\r\n", ch376_status);
+  //getLongName("/avccc~1.txt", "test");
+  //readConfigFileFormSD();
+}
+void testGetFileSize()
+{
+  command_ = 1;
+  while (1)
+  {
+    if (command_ == 1)
+    {
+      printf("set file name \r\n");
+      SendCH370(setname1, sizeof(setname1));
+      //setFilename("222222~1.TXT");
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 2)
+    {
+      printf(" file open ");
+      SendCH370(FileOpen, sizeof(FileOpen));
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 3)
+    {
+      printf(" get file size  ");
+      SendCH370(FileSize, sizeof(FileSize));
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 4)
+    {
+      printf("  file close  ");
+      SendCH370(FileClose0, sizeof(FileClose0));
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 5)
+    {
+      printf("set file name \r\n");
+      SendCH370(setname2, sizeof(setname2));
+      // setFilename("111111~1.TXT");
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 6)
+    {
+      printf(" file open ");
+      SendCH370(FileOpen, sizeof(FileOpen));
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 7)
+    {
+      printf(" get file size  ");
+      SendCH370(FileSize, sizeof(FileSize));
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 8)
+    {
+      printf("  file close  ");
+      SendCH370(FileClose0, sizeof(FileClose0));
+      delay_ms(45);
+      command_++;
+    }
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(USART3);
+
+      printf("0x%x \r\n", i1);
+    }
+  }
 }
 void MainPrograme()
 {
   while (1)
   {
     keyRead(); // mode = 0; เลื่อนเมนู enter, exit
-    //menu_s();
     while (mode == MODE_NOTEPAD)
     {
       doing = 1;
@@ -682,7 +902,6 @@ void MainPrograme()
     }
     while (mode == MODE_READ)
     {
-      //printf("999999999999999999999999999999999999\r\n");
       searchFile2(); //   keyRead();
     }
     if (mode == MODE_BLUETOOTH)
@@ -692,12 +911,11 @@ void MainPrograme()
       strcpy(bluetoothNambuffer, getBluetoothName());
       if (strlen(bluetoothNambuffer) > 0)
         stringToUnicodeAndSendToDisplay(bluetoothNambuffer);
-      else
+      else // Error
         stringToUnicodeAndSendToDisplay("Please check Module");
       while (mode == 3)
       {
         BluetoothMode();
-        // keyboardMode();
         if (becon == 0) // ถ้ายังไม่มีการเชื่อมต่อ
         {
           keyRead();
@@ -715,7 +933,146 @@ void MainPrograme()
     }
   }
 }
-//----
+
+uint8_t CH376Init()
+{
+  uint8_t status;
+  status = CH376_SetReadForm_SD();
+  if (status != CMD_RET_SUCCESS)
+    return status;
+  status = CH376_Disk_Connect();
+  if (status == 0)
+    return status;
+  status = CH376_UsbDiskMount();
+  if (status != 0x14)
+    return status;
+  return status;
+}
+int CH376_GetFileSize()
+{
+  filesize__[0] = 0;
+  filesize__[1] = 0;
+  filesize__[2] = 0;
+  filesize__[3] = 0;
+  SendCH370(FileSize, sizeof(FileSize));
+  // delay_ms(45);
+
+  filesize__[0] = waitRespon(100000);
+  filesize__[1] = waitRespon(1000);
+  filesize__[2] = waitRespon(1000);
+  filesize__[3] = waitRespon(1000);
+  /* while(1){
+
+  }*/
+  printf("%d %d %d %d\r\n", filesize__[0], filesize__[1], filesize__[2], filesize__[3]);
+  return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256));
+}
+// function
+uint8_t CH376_FileClose()
+{
+  int cc;
+  SendCH370(FileClose0, sizeof(FileClose0));
+  while (1)
+  {
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      cc = USART_ReceiveData(USART3);
+      break;
+      // printf("0x%x", i1);
+    }
+  }
+  return cc; //waitRespon(100000);
+}
+
+uint8_t CH376_FileOpen()
+{
+  SendCH370(FileOpen, sizeof(FileOpen));
+  return waitRespon(10000);
+}
+uint8_t CH376_Disk_Connect()
+{
+  SendCH370(DiskConnect, sizeof(DiskConnect));
+  return waitRespon(10000);
+}
+uint8_t CH376_UsbDiskMount()
+{
+  SendCH370(USBDiskMount, sizeof(USBDiskMount)); // has delay response
+  delay_ms(45);
+  return waitRespon(10000);
+}
+uint8_t CH376_SetReadForm_SD()
+{
+  SendCH370(setSDCard, sizeof(setSDCard));
+  return waitRespon(10000);
+}
+
+int getLongName(char *origiName, char *bufferLong)
+{
+  //ex. origin name "avccc~1.txt"
+  int timeOut = 3000;
+
+  int tt = 0;
+  command_ = 0;
+  while (timeOut)
+  {
+    if (command_ == 0)
+    {
+      setFilename(origiName);
+      delay_ms(45);
+      command_++;
+    }
+    else if (command_ == 1)
+    {
+      SendCH370(FileOpen, sizeof(FileOpen));
+      delay_ms(45);
+      command_++;
+      tt = waitRespon(0);
+      printf("res:%x \r\n", tt);
+    }
+    else if (command_ == 2)
+    {
+      SendCH370(FileSize, sizeof(FileSize));
+      delay_ms(45);
+      command_++;
+      // tt = waitRespon();
+      //printf("0x%x,", tt);
+    }
+    /* else if (command_ == 3)
+    {
+      SendCH370(ResetAll, sizeof(ResetAll));
+      
+      command_++;
+      tt = waitRespon();
+      printf("res:%x", tt);
+      delay_ms(500);
+    }*/
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(USART3);
+
+      printf("0x%x", i1);
+    }
+    // timeOut--;
+  }
+  return 0;
+}
+int waitRespon(int time)
+{
+  int retur_;
+  timeOut_resp = time; //timeout
+  while (timeOut_resp--)
+  {
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      retur_ = USART_ReceiveData(USART3);
+      break;
+    }
+  }
+  if (timeOut_resp <= 0) // time out
+    return 0;
+  else
+    return retur_;
+}
 // REMOVE DATA IN FILE TEMP
 int removeDataInFileTemp(char *fileRe)
 {
@@ -766,7 +1123,14 @@ int removeDataInFileTemp(char *fileRe)
   }
   return 1;
 }
-int confirm()
+/*******************************************************************************
+* Function Name  : confirm_delete function
+* Description    : 
+* Input          : None
+* Output         : None
+* Return         : 1 or 0 
+*******************************************************************************/
+int confirm_delete()
 {
   int status = 2;
   int tmod = 1;
@@ -962,48 +1326,65 @@ void upperASCII(char *str)
     str++;
   }
 }
+
+void intsertRoottoName(char *source)
+{
+  int strlen_ = 0;
+  char buff[2];
+  char buff2[2];
+  int a = 0;
+  strlen_ = strlen(source) + 1;
+
+  printf("strln: %d\r\n", strlen_);
+  while (a < strlen_)
+  {
+    buff[0] = source[a];
+    if (a == 0)
+    {
+      source[0] = '/';
+      buff2[0] = buff[0];
+    }
+    else
+    {
+      source[a] = buff2[0];
+      buff2[0] = buff[0];
+    }
+    printf("a %d strln %d char (%c)\r\n", a, strlen_, source[a]);
+    a++;
+  }
+}
+
 void getFileSize(char *filename)
 {
-  int timeOut = 1;
-  int sum = 0;
-  command_ = 1;
-  printf("file size ");
-  while (timeOut)
-  {
-    //timeOut++;
-    if (command_ == 1)
-    {
-      setFilename(filename);
-      delay_ms(45);
-      command_++;
-     // timeOut = 1;
-    }
-    else if (command_ == 2)
-    {
-      SendCH370(FileOpen, sizeof(FileOpen));
-      delay_ms(45);
-      command_++;
-      //timeOut = 1;
-    }
-    else if (command_ == 3)
-    {
-      SendCH370(FileSize, sizeof(FileSize));
-      command_++;
-      //timeOut = 1;
-      delay_ms(100);
-    }
+  // check root path
 
+  if (ex_countPath(Dirpath) == 1)
+  {
+    //intsertRoottoName(filename);
+    memset(rootBuffer, 0, sizeof(rootBuffer));
+    rootBuffer[0] = '/';
+    strcat(rootBuffer, filename); // name in root / + filename
+    setFilename(rootBuffer);
+  }
+  else
+  {
+    setFilename(filename);
+  }
+  //printf("set file name %s size\r\n", filename);
+  delay_ms(45);
+  SendCH370(FileOpen, sizeof(FileOpen));
+  delay_ms(45);
+  //ch376_status = CH376_FileOpen();
+  while (1)
+  {
     if (USART_GetITStatus(USART3, USART_IT_RXNE))
     {
       i1 = USART_ReceiveData(USART3);
-    ///  sum += i1;
-  
-      printf("%d,", i1);
-     // timeOut = 1;
+      printf("open status:%x\r\n", i1);
+      break;
     }
-   // timeOut++;
-    ///timeOut >= 3000 ? timeOut = 0 : timeOut;
   }
+  //printf("open status:%d", ch376_status);
 }
 void setFoldername(char *filename)
 {
@@ -1023,37 +1404,26 @@ int DeleteFolder(char *name)
 {
   int timeOut = 0;
   int status_delete = 0;
-  command_ = 1;
+  command_ = 4;
   printf("delete folder");
   while (1)
   {
-    timeOut++;
-    if (command_ == 1)
-    {
-      SendCH370(checkConnection, sizeof(checkConnection));
-      command_++; //2
-      delay_ms(50);
-    }
-    else if (command_ == 2)
-    {
-      SendCH370(setSDCard, sizeof(setSDCard));
-      command_++; //4
-      delay_ms(50);
-    }
-    else if (command_ == 3)
-    {
-      SendCH370(USBDiskMount, sizeof(USBDiskMount));
-      command_++; //6
-      delay_ms(50);
-    }
-    else if (command_ == 4)
+
+    if (command_ == 4)
     {
       // setFoldername
       // convert uppercase to name
       upperASCII(name);
       setFoldername(buffascii);
+      printf(" file temp %s\r\n", buffascii);
       command_++; //8
       delay_ms(50);
+    }
+    else if (command_ == 5)
+    {
+      SendCH370(FileOpen, sizeof(FileOpen));
+      delay_ms(80);
+      command_++; //10
     }
     else if (command_ == 5)
     {
@@ -1063,8 +1433,7 @@ int DeleteFolder(char *name)
     }
     else if (command_ == 6)
     {
-      SendCH370(Folder_DELETE, sizeof(Folder_DELETE));
-      delay_ms(80);
+
       command_++; //10
     }
 
@@ -1104,37 +1473,19 @@ int DeleteFolder(char *name)
   }
   return status_delete;
 }
+/****************************************************
+ฟังก์ชั่น ลบไฟล์
+*****************************************************/
 int DeleteFile(char *name)
 {
   int timeOut = 0;
   int status_delete = 0;
-  command_ = 1;
+  command_ = 4;
   printf("delete file");
   while (1)
   {
     timeOut++;
-    if (command_ == 1)
-    {
-      // เช็คการเชื่อมต่อ
-      SendCH370(checkConnection, sizeof(checkConnection));
-      command_++; //2
-      delay_ms(50);
-    }
-    else if (command_ == 2)
-    {
-      // ตั้งค่า SD card
-      SendCH370(setSDCard, sizeof(setSDCard));
-      command_++; //4
-      delay_ms(50);
-    }
-    else if (command_ == 3)
-    {
-      // mount USB
-      SendCH370(USBDiskMount, sizeof(USBDiskMount));
-      command_++; //6
-      delay_ms(50);
-    }
-    else if (command_ == 4)
+    if (command_ == 4)
     {
       // ตั้งคือไฟล์สำหรับใช้งานคำสั่งต่อไป
       printf("removing file %s\r\n", name);
@@ -1144,7 +1495,7 @@ int DeleteFile(char *name)
     }
     else if (command_ == 5)
     {
-      //SendCH370(FileOpen, sizeof(FileOpen));
+      SendCH370(FileOpen, sizeof(FileOpen));
       delay_ms(80);
       command_++; //10
     }
@@ -1186,7 +1537,6 @@ int DeleteFile(char *name)
     }
     if (command_ == 7 && i1 != 14)
     {
-
       command_ = 1;
     }
   }
@@ -1194,7 +1544,7 @@ int DeleteFile(char *name)
 }
 //======================================================
 //--------------fn go to line-------------------------*
-int gotoLine_getSectorInline(int line) //หาว่าบรรทัดนั้นอยู่ใน Sector ไหน
+int gotoLine_getSectorInline(int line) //หาว่าบรรทัดนั้นอยู่ใน Sector ไหนใน ROM
 {
   int gg = 0;
   int ccLine = 0;
@@ -1512,6 +1862,9 @@ void mainMenuDisplayMode4(int numb)
     break;
   }
 }
+//
+//--- อ่านชื่อบูลทูธ ส่งกลับไปยังสตริง inCC
+//
 char *getBluetoothName()
 {
   char *pp;
@@ -1640,7 +1993,7 @@ void QueryLineWithCommand(int line)
     }*/
 }
 /*------------------------------------------------------------------------
-ฟังก์ชั่นสำหรับแสดงผลไฟล์ที่อ่านลงรอม โดยฟังก์ชั่นนี้ทำหน้าที่อ่านข้อมูลจาก Rom มาแสดงที่ Display
+ฟังก์ชั่นสำหรับแสดงผลไฟล์ที่อ่านลงรอม โดยฟังก์ชั่นนี้ทำหน้าที่อ่านข้อมูลจาก Rom มาแสดงที่ Display ทีละ sector
 --------------------------------------------------------------------------*/
 void slidText2Displayv2()
 {
@@ -1722,7 +2075,7 @@ void slidText2Displayv2()
     printf("-------------------------getCurrent Line:%d----------------------- \r\n ", i);
     printf("-------------------------get find previous page:%d---------------- \r\n ", pages.page[findPreviousPage()]);
     gt_Line = marker99;
-    if (gt_Line >= 0 ) //  != -1
+    if (gt_Line >= 0) //  != -1
     {
       beep4();
       gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
@@ -1763,7 +2116,7 @@ void slidText2Displayv2()
     //prepareSD_Card();
     printf("reset all \r\n");
     mode = 0;
-     ABCCCCC = 0;
+    ABCCCCC = 0;
     beep4();
     stringToUnicodeAndSendToDisplay("read");
 
@@ -1804,7 +2157,7 @@ void slidText2Displayv2()
   }
   //======================================================================
 
-  if (keyCode == 38) //
+  if (keyCode == 38) //ยพ
   {
     if (read.currentLine > 0)
     {
@@ -1857,6 +2210,10 @@ void slidText2Displayv2()
       printf("=========================================\r\n");
     }
   }
+  else if (keyCode == 620)
+  {
+    printf("keycode testing marker line (%d)\r\n", read.currentLine);
+  }
   //printf("keycode %d\r\n",keyCode);
 
   if (strlen(read.strTemp) != 0)
@@ -1878,8 +2235,8 @@ void slidText2Displayv2()
   }
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
 }
-// เก็บค่า 0x0c เป็นตัวแบ่งหน้าในไฟล์ต่างๆ โดยจะชี้ไปที่บรรทัดนั้นๆ
 
+// เก็บค่า 0x0c เป็นตัวแบ่งหน้าในไฟล์ต่างๆ โดยจะชี้ไปที่บรรทัดนั้นๆ
 void StoreLine()
 {
   for (i = 0; i <= read.TotalSector; i++)
@@ -2056,24 +2413,25 @@ void configDisplay(void)
 }
 void prepareSD_Card()
 {
-  int preStatus = 1;
-  command_++;
+  preStatus = 1;
+  command_ = 1;
   while (preStatus)
   {
+
     if (command_ == 1)
-    {
-      SendCH370(checkConnection, sizeof(checkConnection));
-      if (debug)
-        printf("Check connecttion \r\n");
-      command_++; //2
-      delay_ms(45);
-    }
-    else if (command_ == 2)
     {
       SendCH370(setSDCard, sizeof(setSDCard));
       if (debug)
         printf("Set sd card\r\n");
       command_++; //4
+      delay_ms(45);
+    }
+    else if (command_ == 2)
+    {
+      SendCH370(DiskConnect, sizeof(DiskConnect));
+      if (debug)
+        printf("Check connecttion \r\n");
+      command_++; //2
       delay_ms(45);
     }
     else if (command_ == 3)
@@ -2083,8 +2441,10 @@ void prepareSD_Card()
         printf("Usb disk mount \r\n");
       command_++; //6
       delay_ms(45);
+      preStatus = 0;
     }
-    else if (command_ == 4)
+
+    /* else if (command_ == 4)
     {
       SendCH370(setAllName, sizeof(setAllName));
       if (debug)
@@ -2102,12 +2462,12 @@ void prepareSD_Card()
     }
     else if (command_ == 6)
     {
-      //SendCH370(FileClose, sizeof(FileClose));
+      SendCH370(FileClose0, sizeof(FileClose0));
       //printf(" File Close \r\n");
       command_++; //10
       delay_ms(45);
       preStatus = 0;
-    }
+    }*/
     if (USART_GetITStatus(USART3, USART_IT_RXNE))
     {
       i1 = USART_ReceiveData(USART3);
@@ -2169,7 +2529,6 @@ uint8_t getBatterry()
   }
   return uart2Buffer;
 }
-
 int getMuteStatus()
 {
   USART_SendData(USART2, 147);
@@ -2881,7 +3240,36 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 787;
   }
+  else if ((a == 0x07 && b == 0x01 && c == 0x00))
+  {
+    keyCode__ = 789;
+  }
+  // on read Mx0dmode set mark
+  else if (a == 0x0d && isSpaceKey(b) == true && c == 0x00)
+  { // set mark 1-3-4 + spaces
+    keyCode__ = 620;
+  }
+  else if (a == 0x1a && isSpaceKey(b) == true && c == 0x00)
+  { //jump
+    keyCode__ = 621;
+  }
+  else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
+  { // jump
+    keyCode__ = 622;
+  }
+  else if (a == 0x11 && isSpaceKey(b) == true && c == 0x00)
+  { // close
+    keyCode__ = 622;
+  }
+
   return keyCode__;
+}
+bool isSpaceKey(int a)
+{
+  if (a == 1 || a == 2 || a == 3)
+    return true;
+  else
+    return false;
 }
 //โหลๆ
 //----------------manage key ----------------------
@@ -3031,7 +3419,7 @@ void keyRead()
       if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] != 0 && bufferKey3digit[2] == 0)
       {
         stringToUnicodeAndSendToDisplay("Delete this Folder");
-        if (confirm()) // confirm delete
+        if (confirm_delete()) // confirm_delete delete
         {
           // ยืนยันทำการลบ
           if (ex_checkFileType(fileLists[fileSelect])) // ถ้าประเภทไฟล์ไม่เป็น 0
@@ -3051,7 +3439,6 @@ void keyRead()
         }
         else
         {
-
           stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
         }
       }
@@ -3096,9 +3483,36 @@ void keyRead()
         }
         //command_ = 16;
       }
-      if (keyCode == 787)
+      if (keyCode == 787) // ยังไม่เสร็จ
       {
-        getFileSize(fileLists[fileSelect]);
+        /*strcpy(tempp__, "/");
+        strcat(tempp__, fileLists[fileSelect]);
+        printf("str1 / %s\r\n", tempp__);
+        getFileSize(tempp__);
+        printf("str2 / %s\r\n", tempp__);
+        memset(tempp__, 0, sizeof(tempp__));*/
+
+        getFileSize(fileLists[fileSelect]); // เปิดไฟล์
+        ch376_status = CH376_GetFileSize(); // อ่านขนาดไฟล์
+        printf("file size %d byte\r\n", ch376_status); // แสดง
+        SendCH370(FileClose0, sizeof(FileClose0)); // ปิดไฟล์
+        
+        ex_cdWithPath(Dirpath); // เข้าพาทใหม่
+        //========================
+
+        //delay_ms(100);
+
+        // delay_ms(500);
+        //ch376_status = CH376_FileClose();
+        //printf("file close status %d \r\n", ch376_status);
+
+        //SendCH370(FileClose0,sizeof(FileClose0));
+      }
+      else if (keyCode == 789)
+      {
+        ch376_status = CH376_GetFileSize();
+        printf("file size %d byte\r\n", ch376_status);
+        //SendCH370(FileClose0, sizeof(FileClose0));
       }
       if (keyCode == 37)
       {
@@ -3118,9 +3532,9 @@ void keyRead()
           //prepareSD_Card();
           printf("reset all \r\n");
           mode = 0;
-          ABCCCCC = 0;
+          ABCCCCC = 0; //reset แต่ก่อนบัค เพราะประกาศเป็น private int ABCCCCC = 0 เลยประกาศเป็น global variable
 
-          stringToUnicodeAndSendToDisplay("read");
+          stringToUnicodeAndSendToDisplay("read"); // display standy  show "raed".
         }
         else
         {
@@ -3156,19 +3570,16 @@ void keyRead()
     {
       stringToUnicodeAndSendToDisplay("Battery level");
     }
-
     //-----------------------------------end mode (5)-------------------------------
-
     countKey = 0;
     keyCode = 0;
     seeCur = 0;
   }
 }
-
-//-----------------------------------------------------------------------------
-//---------------------------------readFileFromCH376sToFlashRom-----------------
-// อ่านข้อมูลจาก SD Card โดยใช้ chip CH376 ลง Flash rom
-////////////////////////////////////////////////////////////////////////////////
+/*==========================================================================
+-------------readFileFromCH376sToFlashRom--------------
+ อ่านข้อมูลจาก SD Card โดยใช้ chip CH376 ลง Flash rom
+=============================================================================*/
 int readFileFromCH376sToFlashRom(char *fileName___)
 {
   readFileStatus___ = 1;    //ค่าเริ่มต้นการอ่าน เพื่อให้ติดหลูปการอ่านไฟล์
@@ -3189,7 +3600,6 @@ int readFileFromCH376sToFlashRom(char *fileName___)
   {
     if (command_ == 4)
     {
-
       setFilename(fileName___);                     // ใช้คำสั่ง set ชื่อไฟล์
       printf("opening file (%s)\r\n", fileName___); // กำลังเปิดไฟล์ ชื่อไฟล์
       command_++;                                   // 5
@@ -3200,12 +3610,11 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     {
       SendCH370(FileOpen, sizeof(FileOpen));
       command_++; //6
-      //printf("reading 2 \r\n");
+      printf("openfile %s status  \r\n", fileName___);
       delay_ms(45);
     }
     else if (command_ == 6)
     {
-
       SendCH370(SetByteRead, sizeof(SetByteRead));
       //printf("reading 3\r\n");
       //result 1D can read
@@ -3238,7 +3647,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     {
       // printf("a");
       i1 = USART_ReceiveData(USART3);
-      //printf("%c", i1);
+      // printf("command = %d ,%x", i1,command_);
       if (command_ == 96 && i1 == 0x14)
       {
         command_ = 6;
@@ -3334,7 +3743,8 @@ int readFileFromCH376sToFlashRom(char *fileName___)
         //กำหนดระยะเวลา หากไม่มีข้อมูลแล้ว จะเข้าในเงื่อนไขนี้
         if (ROMR.waitEnd == 100 * 100) // end of file check time out
         {
-          SendCH370(FileClose, sizeof(FileClose));
+          SendCH370(FileClose0, sizeof(FileClose0));
+
           beepError();
           for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
           {
@@ -3479,15 +3889,16 @@ void mountStatus()
 ///////////////////////////////////////////////////////////////////////////////////
 void searchFile2()
 {
-
   int time_check = 0;
   printf("Seaching.............19...............\r\n");
   //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
   //maxFile = 0;
   while (ABCCCCC == 1)
   {
+
     if (command_ == 1)
     {
+      // SendCH370(setSDCard, sizeof(setSDCard));
       SendCH370(checkConnection, sizeof(checkConnection));
       //printf("Check Connection str %s\r\n", FileName_buffer);
       command_++; //2
@@ -3495,6 +3906,7 @@ void searchFile2()
     }
     else if (command_ == 2)
     {
+      // SendCH370(DiskConnect, sizeof(DiskConnect));
       SendCH370(setSDCard, sizeof(setSDCard));
       //printf("Set SD Card Mode\r\n");
       command_++; //4
@@ -3559,6 +3971,8 @@ void searchFile2()
       else if (i1 == 0x42 && countFileLegth == 0) // จบการค้นหาไฟล์
       {
         //ABCCCCC = 0; //fix bug
+        SendCH370(FileClose0, sizeof(FileClose0));
+        delay_ms(45);
         stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
         // printf("file--00 %s\r\n",fileLists[fileSelect]);
         // printf("--------------------end -------------------------\r\n");
@@ -3638,13 +4052,13 @@ int ex_openDir(char *dirPath__)
   {
     if (command_ == 1)
     {
-      if (ex_checkSlash(Dirpath) == 0)
+      if (ex_checkSlash(Dirpath) == 0) // current path is root
       {
         strcat(buff2, dirPath__);
         setFilename(buff2); // open in root
-        // printf("print file name:%s\r\n",buff2);
+        printf("print file name:%s\r\n", buff2);
       }
-      else if (strlen(buff) > 1)
+      else if (strlen(buff) > 1) //not root
       {
         setFilename(buff);
       }
@@ -3705,7 +4119,7 @@ int ex_openDir(char *dirPath__)
 //----------------------------------Save path Dir ---------------------------
 // save directory path for remember path or view currect path
 // store path in global variable name:Dirpath
-//
+// บันทึกพาทไปที่ Dirpath
 //////////////////////////////////////////////////////////////////////////////
 int ex_savePath(char *pathName)
 {
@@ -3742,10 +4156,11 @@ void ex_exitOncePath()
       longL--;
     }
 }
-//-------------------------------open dir with path --------------------------
-// ex. path = "abc/def"
-// ex_cdWithPath(path);
-//////////////////////////////////////////////////////////////////////////////
+/*------------------------------open dir with path --------------------------
+ ex. path = "abc/def"
+ ex_cdWithPath(path);
+ เปิดพาท ตัวอย่าว a/b/c เป็นสตริง
+//////////////////////////////////////////////////////////////////////////////*/
 void ex_cdWithPath(char *path)
 {
   //used
@@ -4560,28 +4975,36 @@ void ex_OpenDir()
     }
   }
 }
-// ---------------------------------------------------------------------------
+/*---------------------------------------------------------------------------
 // ฟังก์ชั่น set ชื่อไฟล์สำหรับ CH376
-//
-//----------------------------------------------------------------------------
+// ตั้งชื่อไฟล์ หรือโฟลเดอร์ที่จะเปิด อ้างอิงถึงคำสั่ง 0x57 0xab 0x2f .... ใสเอกสาร ch376
+----------------------------------------------------------------------------*/
 void setFilename(char *filename)
 {
   //setFilenameForFunction //0x00 0x57 0xab 0x2f
-  uint8_t loovar = 0;
-  uint8_t tempLL[14];
+  loovar = 0;
+
   SendCH370(setFilenameForFunction, sizeof(setFilenameForFunction));
+
+  printf("file buffer :");
   while (filename[loovar] != '\0') // วนค่าส่งสำหรับเอา character จากตัวแปร filename เก็บทีละตัวอักษรฝากไว้กับตัวแปร temlLL
   {
     tempLL[loovar] = filename[loovar];
+    printf("%c", tempLL[loovar]);
     loovar++;
   }
+  /* printf("setfile 0buffer ");
+  for (i = 0; i < sizeof(tempLL); i++)
+  {
+    printf("%c", tempLL[i]);
+  }*/
   tempLL[loovar] = '\0';
   SendCH370(tempLL, sizeof(tempLL)); // ส่งไปยัง CH376s
 }
-//-------------------------------create file in sd card --------------------------
+/*-------------------------------create file in sd card --------------------------
 //return status:1
 //
-//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////*/
 int createFile(char *name)
 {
   int status_create = 0;

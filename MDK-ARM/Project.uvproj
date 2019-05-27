@@ -673,46 +673,19 @@
         </Group>
         <Group>
           <GroupName>Doc</GroupName>
-          <Files>
-            <File>
-              <FileName>readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\readme.txt</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
-          <GroupName>BrailleConfig</GroupName>
+          <GroupName>Braille</GroupName>
           <Files>
             <File>
-              <FileName>notepad_Struct.h</FileName>
+              <FileName>CH376_Comm.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\BrailleConfig\notepad_Struct.h</FilePath>
+              <FilePath>.\CH376_Comm.h</FilePath>
             </File>
             <File>
-              <FileName>Config.h</FileName>
+              <FileName>KeyCode.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\USER\BrailleConfig\Config.h</FilePath>
-            </File>
-            <File>
-              <FileName>CH376_Command.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\BrailleConfig\CH376_Command.h</FilePath>
-            </File>
-            <File>
-              <FileName>BrailleFunction.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\USER\BrailleConfig\BrailleFunction.h</FilePath>
-            </File>
-            <File>
-              <FileName>BrailleFunction.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\BrailleConfig\BrailleFunction.c</FilePath>
-            </File>
-            <File>
-              <FileName>Config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\USER\BrailleConfig\Config.c</FilePath>
+              <FilePath>.\KeyCode.h</FilePath>
             </File>
           </Files>
         </Group>

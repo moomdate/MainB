@@ -821,9 +821,9 @@ int main(void)
  * 0-15 store name 
  * 
  * 
- * /
+ * */
 void setMark(){ 
-  0xffbf6a
+ // 0xffbf6a;
 }
 void testGetFileSize()
 {

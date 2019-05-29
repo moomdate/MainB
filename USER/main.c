@@ -189,7 +189,7 @@ void writeFile4096(char *fname, char *strSource);
 
 const char *fileName(void);
 char DataForWrite[32] = "";
-char DataForWrite_aftersort[32] = "";
+
 //--- sd card---//
 int createFile(char *name);
 int CreateFile__ = 1;
@@ -316,8 +316,6 @@ void configFlash(void);
 void configDisplay(void);
 void sendCommandtoAtmega(int data);
 //-------------------------------------------------------
-
-char numToASCII(int num);
 //char Notepad.buffer_string[notepad_Line][notepad_MaxinLine]; //97*40 charactor
 char *subStringLanR(char *str, int p, int cur_);
 char *substring(char *string, int position, int length);
@@ -361,13 +359,13 @@ uint8_t unicodeTable[] =
 
         0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/ //checked 8/6/2018
 };
-
 /** notepad  ยังไม่เสร็จ**/
 #define readmode_maxsizeInLine 41
-#define readmode_MaxLineBuffer 102
+#define readmode_MaxLineBuffer 202 //102
 int read_mode_currentIndex_after = 0;
 int read_mode_contTextReaded = 0;
 int ccMain = 0;
+
 char readmode_bufferStr[readmode_MaxLineBuffer][readmode_maxsizeInLine];
 char str_ready[40];
 char str_be[10][11];
@@ -572,7 +570,7 @@ int readmode_countPageInOneSector(char *str)
   return sum;
 }
 /*******************************
-  ทดสอบเก็บข้อมูลลงรอม และอ่าน
+*  ทดสอบเก็บข้อมูลลงรอม และอ่าน
 ********************************/
 void StoreDataTOSector()
 {
@@ -765,6 +763,7 @@ uint8_t loovar = 0;
 uint8_t tempLL[14];
 
 char rootBuffer[20];
+char fileByte[20];
 int main(void)
 {
 
@@ -817,6 +816,14 @@ int main(void)
   //printf("file size %d byte\r\n", ch376_status);
   //getLongName("/avccc~1.txt", "test");
   //readConfigFileFormSD();
+}
+/******************************************
+ * 0-15 store name 
+ * 
+ * 
+ * /
+void setMark(){ 
+  0xffbf6a
 }
 void testGetFileSize()
 {
@@ -2048,7 +2055,6 @@ void slidText2Displayv2()
     //j = k - 1;
     gt_Line = pages.page[findPreviousPage()];
     i = get_CurrentLine();
-
     // printf("- current page is (%d) \r\n", page_getCurrentPage());
     printf("--------------------befor--------------------------------go to line %d \r\n ", gt_Line);
     // k = pages.page[page_getCurrentPage() - 1]; //105 k = true
@@ -2069,7 +2075,7 @@ void slidText2Displayv2()
       //printf("current page is (%d) previous page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
     }
   }
-  else if (keyCode == 703)
+  else if (keyCode == 703) // test
   {
     i = get_CurrentLine();
     printf("-------------------------getCurrent Line:%d----------------------- \r\n ", i);
@@ -2099,7 +2105,7 @@ void slidText2Displayv2()
     printf("==============================\r\n");
     printf("==============================\r\n");
   }
-  else if (keyCode == 661) //Exit read Mode
+  else if (keyCode == 623) //Exit read Mode
   {
     printf("Exit\r\n");
     ROMR.endReadFile = false;
@@ -2213,6 +2219,7 @@ void slidText2Displayv2()
   else if (keyCode == 620)
   {
     printf("keycode testing marker line (%d)\r\n", read.currentLine);
+    printf("file name:%s\r\n",fileLists[fileSelect]);
   }
   //printf("keycode %d\r\n",keyCode);
 
@@ -2546,7 +2553,7 @@ void notepad_main()
 {
   //status for do something n notepad mode
 
-  while (doing) // do in notepad
+  while (doing) // do in notepad notepad0
   {
     notepad_readKey();       // key recieve
     if (countKey >= maxData) // do events
@@ -2626,7 +2633,7 @@ void notepad_main()
           printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
-      else if (keyCode == 661) // exit (space + e)
+      else if (keyCode == 623) // exit (space + e)
       {
         // ออกจากโหมด notepad โดยจะยังไม่เคลียค่าที่พิมพ์
         printf("exit \r\n");
@@ -2801,6 +2808,7 @@ void notepad_main()
       // cursor กระพริบ
       if (!toggleCur)
       {
+        // left
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, 99);
       }
       else
@@ -2899,6 +2907,7 @@ void notepad_checkenterAndpush(char *str) //-------------------x
     notepad_append(str, keybuff, las);
   }
 }
+//test return ""
 char *subStringLanR(char *str, int p, int cur__)
 {
   char buff[20];
@@ -2955,7 +2964,6 @@ void printStringLR(char *str, int s)
       begin = 0;
       end = 20;
       printf("printf left\r\n");
-      ;
     }
     else
     {
@@ -3037,7 +3045,12 @@ int notepad_checkEnterSignInLine(char *str)
   }
   return st;
 }
-//--count line don't count enter sign--
+/**
+ * -count line don't count enter sign--
+ * 
+ * 
+ * 
+*/
 int notepad_countLinewithOutLNsign(char *str)
 {
   int cc = 0;
@@ -3048,10 +3061,6 @@ int notepad_countLinewithOutLNsign(char *str)
     cc++;
   }
   return cc;
-}
-char numToASCII(int num)
-{
-  return (char)num;
 }
 void notepad_append(char subject[], const char insert[], int pos)
 {
@@ -3183,7 +3192,7 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 13; // enter
   }
-  else if (a == 0x00 && (b == 0x01 || b == 0x02 || b == 0x03) && c == 0x00) //space bar
+  else if (a == 0x00 && isSpaceKey(b) && c == 0x00) //space bar
   {
     keyCode__ = 32; // space
   }
@@ -3204,23 +3213,41 @@ int keyMapping(int a, int b, int c)
     // right button (readMode)
     keyCode__ = 2;
   }
-  else if (a == 0x11 && b != 0x0)
+  /*else if (a == 0x11 && b != 0x0)
   {
     //space + e
     keyCode__ = 661;
-  }
-
-  else if (a == 0x1b && (b == 0x01 || b == 0x02 || b == 0x03) && c == 0x00)
+  }*/
+  else if (a == 0x1b && isSpaceKey(b) && c == 0x00)
   {
     //space + g
     keyCode__ = 660;
   }
-  else if ((a == 0x0e && b == 0x1 && c == 0x00) || (a == 0x0e && b == 0x2 && c == 0x00) || (a == 0x0e && b == 0x3 && c == 0x00))
+  else if (a == 0x0e && isSpaceKey(b) && c == 0x00) 
   {
     //space + s
     keyCode__ = 659;
   }
-
+  // on read Mx0dmode set mark
+  else if (a == 0x0d && isSpaceKey(b) == true && c == 0x00)
+  { // set mark 1-3-4 + spaces
+  // space + m
+    keyCode__ = 620;
+  }
+  else if (a == 0x1a && isSpaceKey(b) == true && c == 0x00)
+  { // jump
+    // space + j
+    keyCode__ = 621;
+  }
+  else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
+  { // jump
+    // space + enter + d
+    keyCode__ = 622;
+  }
+  else if (a == 0x11 && isSpaceKey(b) == true && c == 0x00)
+  { // close space + e
+    keyCode__ = 623;
+  }
   //next page in read mode
   else if ((a == 0x00 && b == 0x41 && c == 0x00) || (a == 0x00 && b == 0x42 && c == 0x00) || (a == 0x00 && b == 0x43 && c == 0x00))
   {
@@ -3232,35 +3259,19 @@ int keyMapping(int a, int b, int c)
     keyCode__ = 702;
   }
   // debug shortcut key next and prevoious pages
-  else if ((a == 0x00 && b == 0x11 && c == 0x00))
+  else if ((a == 0x00 && b == 0x11 && c == 0x00)) //test
   {
     keyCode__ = 703;
   }
-  else if ((a == 0x07 && b == 0x00 && c == 0x00))
+  else if ((a == 0x07 && b == 0x00 && c == 0x00)) //test 
   {
     keyCode__ = 787;
   }
-  else if ((a == 0x07 && b == 0x01 && c == 0x00))
+  else if ((a == 0x07 && b == 0x01 && c == 0x00)) //test 
   {
     keyCode__ = 789;
   }
-  // on read Mx0dmode set mark
-  else if (a == 0x0d && isSpaceKey(b) == true && c == 0x00)
-  { // set mark 1-3-4 + spaces
-    keyCode__ = 620;
-  }
-  else if (a == 0x1a && isSpaceKey(b) == true && c == 0x00)
-  { //jump
-    keyCode__ = 621;
-  }
-  else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
-  { // jump
-    keyCode__ = 622;
-  }
-  else if (a == 0x11 && isSpaceKey(b) == true && c == 0x00)
-  { // close
-    keyCode__ = 622;
-  }
+  
 
   return keyCode__;
 }
@@ -3271,12 +3282,14 @@ bool isSpaceKey(int a)
   else
     return false;
 }
-//โหลๆ
-//----------------manage key ----------------------
+
+/*======================manage key =====================
 //
 //
 //
-// ฟั่งก์ชั่นจัดการ key ReadKey
+==================ฟั่งก์ชั่นจัดการ key ReadKey===============
+=======================================================
+*/
 void keyRead()
 {
   //used
@@ -3321,7 +3334,7 @@ void keyRead()
 
     // key mapping //
     keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-    //printf("Keycode: %d\r\n", keyCode);
+    printf("Keycode: %d\r\n", keyCode);
     printf("Mode: %d\r\n", mode);
     if (mode == 0)
     {
@@ -3375,16 +3388,23 @@ void keyRead()
       }
       caseMenu(count_menu);
     }
+    /*
+    *============================================================
+    *โหมด 2 หลังจากอ่านไฟล์ 
+    * mode 2 และทำการเปิดอ่านไฟล์แล้ว จะแยกกันกับฟังก์ชั่น path
+    *============================================================
+    */
     //-----------------------------------end mode (10)-------------------------------
-    if (mode == 2 && ROMR.endReadFile == true) //mode 2
+    if (mode == MODE_READ && ROMR.endReadFile == true) 
     {
-      // mode 2 และทำการเปิดอ่านไฟล์แล้ว จะแยกกันกับฟังก์ชั่น path
-      // on mode read
-      //printf("testttttttttttttttttttttttttt");
       slidText2Displayv2();
-      //slidingFileFromRomToDisplay();
     }
-    if (mode == 2 && ROMR.endReadFile == false) // ถ้ายังไม่เปิดไฟล์
+    /*
+    ============================================================
+    โหมด 2 ก่อนอ่านไฟล์
+    ============================================================
+    */
+    if (mode == MODE_READ && ROMR.endReadFile == false) // ถ้ายังไม่เปิดไฟล์
     {
 
       // mode 2 แต่ยังไม่ได้ทำการเปิดอ่านไฟล์
@@ -3442,14 +3462,21 @@ void keyRead()
           stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
         }
       }
+      /*==============================================================
+       * ------------------------โยกจอยทางขวา เข้าอ่านอไฟล์ หรือเปิดโฟลเดอร์
+       *==============================================================
+       */
       if (keyCode == 39)
       {
         // enter // right joy
         // command_ = 16;
         printf("Opening %s\r\n", fileLists[fileSelect]);
         printf("type:%d\r\n", ex_checkFileType(fileLists[fileSelect]));
-        // ถ้าเป็นโฟลเดอร์
-        if (ex_checkFileType(fileLists[fileSelect]) == 0) // folder type 0
+        /* =============================================
+         * ------------------ถ้าเป็นโฟลเดอร์
+         * =============================================
+         */
+        if (ex_checkFileType(fileLists[fileSelect]) == 0) //  type 0 is folder
         {
           // is folder
           maxFile = 0;
@@ -3475,65 +3502,65 @@ void keyRead()
             command_ = 4;
           }
         } //readFileFromCH376sToFlashRom
-        // ถ้าเป็นไฟล์ tbt brf หรือ txt
+
+        /* ====================================================================
+         * -----------ถ้าเป็นไฟล์ tbt brf หรือ txt---------------------------------
+         * ====================================================================
+         * */
         else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
         {
-          //printf("is tbt ");
-          readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์
+          readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์ open file 
         }
-        //command_ = 16;
       }
-      if (keyCode == 787) // ยังไม่เสร็จ
+      if (keyCode == 2) // ยังไม่เสร็จ 787 display file size
       {
-        /*strcpy(tempp__, "/");
-        strcat(tempp__, fileLists[fileSelect]);
-        printf("str1 / %s\r\n", tempp__);
-        getFileSize(tempp__);
-        printf("str2 / %s\r\n", tempp__);
-        memset(tempp__, 0, sizeof(tempp__));*/
-
-        getFileSize(fileLists[fileSelect]); // เปิดไฟล์
-        ch376_status = CH376_GetFileSize(); // อ่านขนาดไฟล์
-        printf("file size %d byte\r\n", ch376_status); // แสดง
+        getFileSize(fileLists[fileSelect]);        // เปิดไฟล์
+        ch376_status = CH376_GetFileSize();        // อ่านขนาดไฟล์
         SendCH370(FileClose0, sizeof(FileClose0)); // ปิดไฟล์
-        
+        if (ch376_status >= 1000)
+        {
+          sprintf(fileByte, "%d", ch376_status / 1000);
+          strcat(fileByte, " Kbytes");
+        }
+        else
+        {
+          sprintf(fileByte, "%d", ch376_status);
+          strcat(fileByte, " bytes");
+        }       
+        printf("file size %s byte\r\n", fileByte); // แสดง
+        stringToUnicodeAndSendToDisplay(fileByte); // ex. 1000 bytes
         ex_cdWithPath(Dirpath); // เข้าพาทใหม่
         //========================
-
-        //delay_ms(100);
-
-        // delay_ms(500);
         //ch376_status = CH376_FileClose();
         //printf("file close status %d \r\n", ch376_status);
-
         //SendCH370(FileClose0,sizeof(FileClose0));
       }
-      else if (keyCode == 789)
+      else if (keyCode == 1) // display name
       {
-        ch376_status = CH376_GetFileSize();
-        printf("file size %d byte\r\n", ch376_status);
-        //SendCH370(FileClose0, sizeof(FileClose0));
+        stringToUnicodeAndSendToDisplay(fileLists[fileSelect]);
+        // display file name
       }
-      if (keyCode == 37)
+      /*
+        ====================================================
+        ------------โยกจอยทางซ้าย ย้อนกลับออกจาก directory-----
+        ====================================================
+      */
+      if (keyCode == 37) // left joy <-
       {
-        // โยกจอยทางซ้าย ย้อนกลับออกจาก directory
-        // left joy
         printf("exit\r\n");
         maxFile = 0;
         printf("pathD: %d\r\n", ex_countPath(Dirpath));
         printf("dir past :%s \r\n", Dirpath);
-        if (ex_countPath(Dirpath) == 1)
+        if (ex_countPath(Dirpath) == 1) // ถ้าเป็น root 
         {
           maxFile = 0;
-          for (i = 0; i < maxfileListBuffer; i++)
+          for (i = 0; i < maxfileListBuffer; i++) // reset value in fileLists
             memset(fileLists[i], 0, sizeof(filelist[i]));
+
           memset(Dirpath, 0, sizeof(Dirpath)); //clear path
-          // delay_ms(5000);
-          //prepareSD_Card();
           printf("reset all \r\n");
           mode = 0;
-          ABCCCCC = 0; //reset แต่ก่อนบัค เพราะประกาศเป็น private int ABCCCCC = 0 เลยประกาศเป็น global variable
-
+          ABCCCCC = 0;                             // reset แต่ก่อนบัค เพราะประกาศเป็น private int ABCCCCC = 0 เลยประกาศเป็น global variable
           stringToUnicodeAndSendToDisplay("read"); // display standy  show "raed".
         }
         else
@@ -3543,41 +3570,42 @@ void keyRead()
           command_ = 4;
         }
       }
-      /*if (keyCode == 27)
-            {
-              mode = 0;
-              printf("exittttttttttttttttttttttttttt\r\n");
-            }*/
     }
-    //-----------------------------------end mode (2)-------------------------------
-    /*
-        --------------------------------------------------------------------------------
-         mode (3) :bluetooth
-         -------------------------------------------------------------------------------
-        */
-    if (mode == 3)
+   /*
+    ============================================================
+    โหมด 3 (หลังจากออกจากโหมด 3)
+    ============================================================
+    */
+    if (mode == MODE_BLUETOOTH) 
     {
       if (keyCode == 37)
       {
         mode = 0;
-        GPIO_ResetBits(GPIOC, GPIO_Pin_0); // Off Bluetooth
+        GPIO_ResetBits(GPIOC, GPIO_Pin_0); // turn Off Bluetooth module
         stringToUnicodeAndSendToDisplay("Bluetooth");
         //printf("exit from mode 3 \r\n");
       }
     }
     //-----------------------------------end mode (4)-------------------------------
-    if (mode == 4)
+    /*
+    ============================================================
+    โหมด 4  หลังจากออกจากโหมด 4
+    ============================================================
+    */
+    if (mode == MODE_TOOLS)
     {
       stringToUnicodeAndSendToDisplay("Battery level");
     }
-    //-----------------------------------end mode (5)-------------------------------
+    /*
+      reset value
+    */
     countKey = 0;
     keyCode = 0;
     seeCur = 0;
   }
 }
 /*==========================================================================
--------------readFileFromCH376sToFlashRom--------------
+-------------readFileFromCH376sToFlashRom-----------------------------------
  อ่านข้อมูลจาก SD Card โดยใช้ chip CH376 ลง Flash rom
 =============================================================================*/
 int readFileFromCH376sToFlashRom(char *fileName___)
@@ -3618,7 +3646,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
       SendCH370(SetByteRead, sizeof(SetByteRead));
       //printf("reading 3\r\n");
       //result 1D can read
-      //ID สามารถอ่านไฟล์ได้
+      //0x1d สามารถอ่านไฟล์ได้
       command_ = 99;
       delay_ms(30);
     }
@@ -3883,19 +3911,17 @@ void mountStatus()
     }
   }
 }
-///----------- [search file] first version. current version not use..----------------
-//
-//
-///////////////////////////////////////////////////////////////////////////////////
+/* ==================================================================================
+ * ----------- [search file] first version. current version not use..----------------
+ * ฟังก์ชั่นค้นหาไฟล์ใน sd card ด้วย ch376 chip
+ * ==================================================================================
+ * */
 void searchFile2()
 {
   int time_check = 0;
   printf("Seaching.............19...............\r\n");
-  //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
-  //maxFile = 0;
   while (ABCCCCC == 1)
   {
-
     if (command_ == 1)
     {
       // SendCH370(setSDCard, sizeof(setSDCard));
@@ -4033,7 +4059,7 @@ void searchFile2()
 }
 //----------------------------- open directory ------------------------------
 // [ex_openDir] use for open directory with ch376 module
-//
+// เปิดโฟลเดอร์ โดยจะเช็ค root ด้วย
 //////////////////////////////////////////////////////////////////////////////
 int ex_openDir(char *dirPath__)
 {
@@ -4119,7 +4145,7 @@ int ex_openDir(char *dirPath__)
 //----------------------------------Save path Dir ---------------------------
 // save directory path for remember path or view currect path
 // store path in global variable name:Dirpath
-// บันทึกพาทไปที่ Dirpath
+// บันทึกพาทไปที่ ตัวแปร Dirpath เป็นตัวแปรแบบ global 
 //////////////////////////////////////////////////////////////////////////////
 int ex_savePath(char *pathName)
 {
@@ -4203,7 +4229,7 @@ void ex_cdWithPath(char *path)
   //printf("\r\nbuffer3: %s\r\n", buffer);
 }
 //---------------------- count path ------------------------------------------
-//
+//นับจำนวน path ของตัวแปร DirPath
 //Output: number of path
 //////////////////////////////////////////////////////////////////////////////
 int ex_countPath(char *pathSource)
@@ -4220,6 +4246,9 @@ int ex_countPath(char *pathSource)
   }
   return ex_countPath;
 }
+/**====================================
+ * เช็คเครื่องหมาย / ใน path
+ * */
 int ex_checkSlash(char *pathName)
 {
   //used
@@ -4234,11 +4263,11 @@ int ex_checkSlash(char *pathName)
   }
   return seeS;
 }
-//--------------------------- Create and write file()------------------------
-//
+/*-------------------------- Create and write file()------------------------
+// สร้างไฟล์ และเขียนไฟล์
 //
 // test function --
-//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////*/
 void createFileAndWrite(char *fname)
 {
   //use
@@ -4257,10 +4286,13 @@ void createFileAndWrite(char *fname)
   //fileWrite(0,fname,"test head \r\n my name is surasak");
   writeFile4096(fname, SST25_buffer);
 }
+/*====================================================
+ * ลบเครื่องหมาย enter sign
+ * */
 void PrepareText()
 {
   int c;
-  memset(SST25_buffer, 0, 4096);
+  memset(SST25_buffer, 0, 4096);  //clear
   for (c = 0; c <= maxLineN; c++)
   {
     // delay_ms(200);
@@ -4268,8 +4300,11 @@ void PrepareText()
     substringRemoveEnter2(Notepad.buffer_string[c]);
     printf("%s\r\n", buffer_afterRemove);
     strcat(SST25_buffer, buffer_afterRemove);
-    strcat(SST25_buffer, "\r\n");
-    delay_ms(200);
+    strcat(SST25_buffer, "\r\n"); // ใส่ \r\n
+    delay_ms(40);
+    if(1){ //เกิน 4096
+
+    }
   }
   //
   //
@@ -4445,7 +4480,7 @@ void saveName()
             }
             i++;
           }
-          strcat(nameBuff, ".TBT");
+          strcat(nameBuff, ".TBT"); // tbt file 
           //printf("\r\nSaving file :%s\r\n", nameBuff);
           createFileAndWrite(nameBuff);
           stringToUnicodeAndSendToDisplay("Success......");
@@ -5064,6 +5099,7 @@ const char *fileName()
   int loop = 0;
   int count_char = 0;
   int seeT = 0, seeBr = 0, seeTx = 0;
+  char DataForWrite_aftersort[32] = "";
   /*printf("data for write \r\n");
     for (i = 0; i < 32; i++)
     {

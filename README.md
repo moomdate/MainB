@@ -1,5 +1,6 @@
 # Braille display
 
+(Log file)[https://github.com/moomdate/MainB/blob/master/log.md]
 
 ## Feature 
   - โหมด Notepad 

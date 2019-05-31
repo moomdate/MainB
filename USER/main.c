@@ -821,9 +821,9 @@ int main(void)
  * 0-15 store name 
  * 
  * 
- * */
+ * /
 void setMark(){ 
- // 0xffbf6a;
+  0xffbf6a
 }
 void testGetFileSize()
 {
@@ -971,8 +971,8 @@ int CH376_GetFileSize()
   /* while(1){
 
   }*/
-  printf("%d %d %d %d\r\n", filesize__[0], filesize__[1], filesize__[2], filesize__[3]);
-  return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256));
+printf("%d %d %d %d\r\n", filesize__[0], filesize__[1], filesize__[2], filesize__[3]);
+return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256));
 }
 // function
 uint8_t CH376_FileClose()
@@ -2219,7 +2219,7 @@ void slidText2Displayv2()
   else if (keyCode == 620)
   {
     printf("keycode testing marker line (%d)\r\n", read.currentLine);
-    printf("file name:%s\r\n",fileLists[fileSelect]);
+    printf("file name:%s\r\n", fileLists[fileSelect]);
   }
   //printf("keycode %d\r\n",keyCode);
 
@@ -3223,7 +3223,7 @@ int keyMapping(int a, int b, int c)
     //space + g
     keyCode__ = 660;
   }
-  else if (a == 0x0e && isSpaceKey(b) && c == 0x00) 
+  else if (a == 0x0e && isSpaceKey(b) && c == 0x00)
   {
     //space + s
     keyCode__ = 659;
@@ -3231,7 +3231,7 @@ int keyMapping(int a, int b, int c)
   // on read Mx0dmode set mark
   else if (a == 0x0d && isSpaceKey(b) == true && c == 0x00)
   { // set mark 1-3-4 + spaces
-  // space + m
+    // space + m
     keyCode__ = 620;
   }
   else if (a == 0x1a && isSpaceKey(b) == true && c == 0x00)
@@ -3263,15 +3263,14 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 703;
   }
-  else if ((a == 0x07 && b == 0x00 && c == 0x00)) //test 
+  else if ((a == 0x07 && b == 0x00 && c == 0x00)) //test
   {
     keyCode__ = 787;
   }
-  else if ((a == 0x07 && b == 0x01 && c == 0x00)) //test 
+  else if ((a == 0x07 && b == 0x01 && c == 0x00)) //test
   {
     keyCode__ = 789;
   }
-  
 
   return keyCode__;
 }
@@ -3395,7 +3394,7 @@ void keyRead()
     *============================================================
     */
     //-----------------------------------end mode (10)-------------------------------
-    if (mode == MODE_READ && ROMR.endReadFile == true) 
+    if (mode == MODE_READ && ROMR.endReadFile == true)
     {
       slidText2Displayv2();
     }
@@ -3509,7 +3508,7 @@ void keyRead()
          * */
         else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
         {
-          readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์ open file 
+          readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์ open file
         }
       }
       if (keyCode == 2) // ยังไม่เสร็จ 787 display file size
@@ -3526,10 +3525,10 @@ void keyRead()
         {
           sprintf(fileByte, "%d", ch376_status);
           strcat(fileByte, " bytes");
-        }       
+        }
         printf("file size %s byte\r\n", fileByte); // แสดง
         stringToUnicodeAndSendToDisplay(fileByte); // ex. 1000 bytes
-        ex_cdWithPath(Dirpath); // เข้าพาทใหม่
+        ex_cdWithPath(Dirpath);                    // เข้าพาทใหม่
         //========================
         //ch376_status = CH376_FileClose();
         //printf("file close status %d \r\n", ch376_status);
@@ -3551,7 +3550,7 @@ void keyRead()
         maxFile = 0;
         printf("pathD: %d\r\n", ex_countPath(Dirpath));
         printf("dir past :%s \r\n", Dirpath);
-        if (ex_countPath(Dirpath) == 1) // ถ้าเป็น root 
+        if (ex_countPath(Dirpath) == 1) // ถ้าเป็น root
         {
           maxFile = 0;
           for (i = 0; i < maxfileListBuffer; i++) // reset value in fileLists
@@ -3571,12 +3570,12 @@ void keyRead()
         }
       }
     }
-   /*
+    /*
     ============================================================
     โหมด 3 (หลังจากออกจากโหมด 3)
     ============================================================
     */
-    if (mode == MODE_BLUETOOTH) 
+    if (mode == MODE_BLUETOOTH)
     {
       if (keyCode == 37)
       {
@@ -4145,7 +4144,7 @@ int ex_openDir(char *dirPath__)
 //----------------------------------Save path Dir ---------------------------
 // save directory path for remember path or view currect path
 // store path in global variable name:Dirpath
-// บันทึกพาทไปที่ ตัวแปร Dirpath เป็นตัวแปรแบบ global 
+// บันทึกพาทไปที่ ตัวแปร Dirpath เป็นตัวแปรแบบ global
 //////////////////////////////////////////////////////////////////////////////
 int ex_savePath(char *pathName)
 {
@@ -4292,7 +4291,7 @@ void createFileAndWrite(char *fname)
 void PrepareText()
 {
   int c;
-  memset(SST25_buffer, 0, 4096);  //clear
+  memset(SST25_buffer, 0, 4096); //clear
   for (c = 0; c <= maxLineN; c++)
   {
     // delay_ms(200);
@@ -4302,8 +4301,8 @@ void PrepareText()
     strcat(SST25_buffer, buffer_afterRemove);
     strcat(SST25_buffer, "\r\n"); // ใส่ \r\n
     delay_ms(40);
-    if(1){ //เกิน 4096
-
+    if (1)
+    { //เกิน 4096
     }
   }
   //
@@ -4480,7 +4479,7 @@ void saveName()
             }
             i++;
           }
-          strcat(nameBuff, ".TBT"); // tbt file 
+          strcat(nameBuff, ".TBT"); // tbt file
           //printf("\r\nSaving file :%s\r\n", nameBuff);
           createFileAndWrite(nameBuff);
           stringToUnicodeAndSendToDisplay("Success......");

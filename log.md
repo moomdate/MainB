@@ -35,6 +35,7 @@ int sizeOfList();
   2. เพิ่มฟังก์ชั่น `insertLine()`  
   ```c
   char *str_replace(char *orig, char *rep, char *with);
+  void insertLine(char *,int);
   ```
 ## May 31, 2019
   1. เพิ่มฟังก์ชั่น `int CreateMarkFileConfig(char * filename)` สำหรับเพิ่มชื่อไฟล์ใหม่สำหรับเก็บตำแหน่งของ mark โดยจะไม่สร้างชื่อไฟล์ซ้ำกัน 

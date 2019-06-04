@@ -39,3 +39,5 @@ int sizeOfList();
 ## May 31, 2019
   1. เพิ่มฟังก์ชั่น `int CreateMarkFileConfig(char * filename)` สำหรับเพิ่มชื่อไฟล์ใหม่สำหรับเก็บตำแหน่งของ mark โดยจะไม่สร้างชื่อไฟล์ซ้ำกัน 
 [https://gist.github.com/moomdate/21493fa674fd59244e16adb14f5a6476](https://gist.github.com/moomdate/21493fa674fd59244e16adb14f5a6476)
+## Mat 4, 2019 
+  1. ฟังก์ชั่นจัดการMarkลงโค้ดหลัก

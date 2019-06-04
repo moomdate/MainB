@@ -501,6 +501,31 @@ void setFoldername(char *filename);
 void upperASCII(char *str);
 int confirm_delete(void);
 
+//---------------------------mark---------------------------------
+#define EndSign ':'
+#define MarkMaxBufferPage 20
+int searchName(char *fileName); // search file
+int CreateMarkFileConfig(char *filename);
+int hasFileConfig(char *filename);
+int getEndSign(int startAt);       //get position of end string
+int MarkerPage[MarkMaxBufferPage]; // buffer
+int findIndexOfArray(int target);  // find index of line
+int RemoveArrayAtIndex(int position);
+int findIndexForInsert(int value);
+int insertMark(int);
+int sizeOfList();
+
+void printfPageOfMarker(char *); // print lst
+void insertLine(char *, int);
+void filterPageToArray(int pS, int pE); // data string to num array
+char *str_replace(char *orig, char *rep, char *with);
+//test.brf5/10/15/20/:test2.brf1/4/5/12/55/:test99.brf2/254/525/1000/:gg.txt/:
+
+char data_temp[30];
+char data2[400];
+
+//----------------------------------------------------------------
+
 /*
   Sector = gotoLine_getSectorInline(Line); //เนเธ”เน Sector
   gotoLine_getLine(Line, Sector);     // เธ•เนเธญเธเนเธ”เน Line เนเธ Sector
@@ -655,15 +680,43 @@ void markger_set(char *filename_1)
 }
 void getMarker(char *fileName)
 {
-  /* memset(SST25_buffer, 0x0, 4096);
-  SST25_buffer[0] = 'A';
-  SST25_buffer[1] = 'B';
+  memset(SST25_buffer, 0x0, 4096);
+  //SST25_buffer[0] = 'A';
+  //SST25_buffer[1] = 'B';
   writeFlash(16777216);
 
   readSecter(16777216); //sector for  config
-  markger_set("test");
-  markger_set("9899100");
-  printf("%s", SST25_buffer);*/
+  //markger_set("test");
+  // markger_set("9899100");
+ /* printf("%d", hasFileConfig("test99.txt"));
+  CreateMarkFileConfig("test99.txt");
+  printf("%d", hasFileConfig("test99.txt"));
+  printf("\r\n-%s-\r\n", SST25_buffer);
+  //str_replace(SST25_buffer,"txt","brf");
+  printf("\r\n-%s-\r\n", SST25_buffer);
+*/
+  if (CreateMarkFileConfig("testt.brf"))
+  {
+    printf("create success\r\n");
+    insertLine("testt.brf", 113);
+    insertLine("testt.brf", 2);
+  }
+  else
+  {
+    printf(" can't create the file\r\n");
+  }
+ 
+  insertLine("testt.brf", 1);
+  insertLine("testt.brf", 231);
+
+  printfPageOfMarker("testt.brf");
+
+  if (CreateMarkFileConfig("testt3.brf"))
+  {
+    insertLine("testt3.brf", 2);
+  }
+  printfPageOfMarker("testt3.brf");
+	
 }
 void SearchMarkerWithFileNameInSector()
 {
@@ -804,12 +857,14 @@ int main(void)
 
   //getMarker("a");
 
+  /*
   ch376_status = CH376Init();
   if (ch376_status != USB_INT_SUCCESS)
     printf("ch376 init error0");
-  //testGetFileSize();
+  
   MainPrograme();
-
+*/
+  getMarker("test.txt");
   //getFileSize("/AAAAAA~1.TXT");
   //printf("get file size \r\n");
   //ch376_status = CH376_GetFileSize();
@@ -821,10 +876,309 @@ int main(void)
  * 0-15 store name 
  * 
  * 
- * /
-void setMark(){ 
-  0xffbf6a
+ * */
+void setMark()
+{
+  //0xffbf6a
 }
+
+/*
+===================================================================
+===================================================================
+===================================================================
+===================================================================
+*/
+int hasFileConfig(char *filename)
+{
+  int *ptr;
+  ptr = (int *)strstr(SST25_buffer, filename);
+  if (ptr == NULL)
+  {
+    return 0;
+  }
+  else
+  {
+    return 1;
+  }
+}
+int CreateMarkFileConfig(char *filename)
+{
+  int range = 0;
+  char fileTemp[15];
+  if (!hasFileConfig(filename))
+  { //not found
+    range = strlen(SST25_buffer);
+    strcpy(fileTemp, filename);
+    strcat(fileTemp, "/:");
+    if (range == 0)
+    {
+      //SST25_buffer = malloc(sizeof(fileTemp));
+      strcpy(SST25_buffer, fileTemp);
+    }
+    else
+    {
+
+      strcat(SST25_buffer, fileTemp);
+    }
+    printf("%s", SST25_buffer);
+    return 1;
+  }
+  else
+  {
+    //printf("ee"); // has
+    return 0;
+  }
+}
+
+char *str_replace(char *orig, char *rep, char *with)
+{
+  char *result;  // the return string
+  char *ins;     // the next insert point
+  char *tmp;     // varies
+  int len_rep;   // length of rep (the string to remove)
+  int len_with;  // length of with (the string to replace rep with)
+  int len_front; // distance between rep and end of last rep
+  int count;     // number of replacements
+
+  // sanity checks and initialization
+  if (!orig || !rep)
+    return NULL;
+  len_rep = strlen(rep);
+  if (len_rep == 0)
+    return NULL; // empty rep causes infinite loop during count
+  if (!with)
+    with = "";
+  len_with = strlen(with);
+
+  // count the number of replacements needed
+  ins = orig;
+  for (count = 0; tmp = strstr(ins, rep); ++count)
+  {
+    ins = tmp + len_rep;
+  }
+
+  tmp = result = malloc(strlen(orig) + (len_with - len_rep) * count + 1);
+
+  if (!result)
+    return NULL;
+
+  // first time through the loop, all the variable are set correctly
+  // from here on,
+  //    tmp points to the end of the result string
+  //    ins points to the next occurrence of rep in orig
+  //    orig points to the remainder of orig after "end of rep"
+  while (count--)
+  {
+    ins = strstr(orig, rep);
+    len_front = ins - orig;
+    tmp = strncpy(tmp, orig, len_front) + len_front;
+    tmp = strcpy(tmp, with) + len_with;
+    orig += len_front + len_rep; // move to next "end of rep"
+  }
+  strcpy(tmp, orig);
+  return result;
+}
+
+int searchName(char *fileName)
+{
+  int pos;
+  int startPos, EndPos, start2;
+  char *ptr;
+  ptr = strstr(SST25_buffer, fileName);
+  memset(data_temp, 0, sizeof(data_temp));
+  printf("file name :%s\r\n", fileName);
+  if (ptr != NULL)
+  {
+    startPos = ptr - SST25_buffer; // find start index
+    start2 = startPos;
+
+    startPos = strlen(fileName) + startPos;
+    EndPos = getEndSign(startPos); // find end index
+
+    //printf("%d\r\n",strlen(data));
+    printf("start %d end %d\r\n", startPos, EndPos);
+
+    strncpy(data_temp, SST25_buffer + start2, EndPos - start2);
+    //printf("end :%c\r\n",data[EndPos]); // index
+    //printf("file name %s\r\n",fileName);
+    //	printf("start at (%d), end at (%d)\r\n", startPos,EndPos);
+    //printf("char start (%c), end (%c)\r\n",data[startPos],data[EndPos]);
+    filterPageToArray(startPos, EndPos);
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
+}
+int getEndSign(int StartAt)
+{
+  int ccCO;
+  int DataSize;
+  DataSize = strlen(SST25_buffer);
+  //printf("data size:%d",DataSize);
+  ccCO = StartAt;
+  while (ccCO < DataSize)
+  {
+    if (SST25_buffer[ccCO] == ':')
+      break;
+    if (ccCO > DataSize)
+      break;
+    ccCO++;
+  }
+  return ccCO;
+}
+void filterPageToArray(int pStart, int pEnd)
+{
+  int countDigit = 0;
+  int numPrepare = 0;
+  int arrayIndex = 0;
+  int count = pStart;
+  char buffNumber[7];
+
+  for (countDigit = 0; countDigit < MarkMaxBufferPage; countDigit++)
+    MarkerPage[countDigit] = 0x00;
+  countDigit = 0;
+  while (count < pEnd)
+  {
+    //printf("%c",data[count]);
+    if (SST25_buffer[count] >= 48 && SST25_buffer[count] <= 57)
+    { // is number
+      //printf("%c\r\n",data[count]);
+      buffNumber[countDigit++] = SST25_buffer[count];
+    }
+    else if (SST25_buffer[count] == 47)
+    { // is slash
+      // push to array here
+      numPrepare = atoi(buffNumber);
+      memset(buffNumber, 0, sizeof(buffNumber));
+      MarkerPage[arrayIndex] = numPrepare;
+      arrayIndex++;
+      //printf("number is %d\r\n",numPrepare);
+      countDigit = 0;
+    }
+    count++;
+  }
+  arrayIndex = 0;
+  count = 0;
+  countDigit = 0;
+  //printf("start %c, end %c",data[pStart],data[pEnd]);
+}
+int RemoveArrayAtIndex(int position)
+{
+  int c;
+  int n;
+  n = sizeOfList();
+  //printf("size of list %d\r\n",n);
+  for (c = position; c < n; c++)
+    MarkerPage[c] = MarkerPage[c + 1];
+  MarkerPage[c] = 0x00; //clear
+  return 1;
+}
+int sizeOfList()
+{
+  int cc = 0;
+  while (MarkerPage[cc] != NULL)
+  {
+    cc++;
+  }
+  return cc;
+}
+int findIndexOfArray(int target)
+{
+  int cc = 0;
+  while (MarkerPage[cc] != NULL)
+  {
+    if (MarkerPage[cc] == target)
+      break;
+    cc++;
+  }
+  return cc;
+}
+int findIndexForInsert(int value)
+{
+  int cc;
+  cc = sizeOfList() - 1;
+  while (cc >= 0)
+  {
+
+    if (value > MarkerPage[cc])
+      break;
+    cc--;
+  }
+  cc++;
+  return cc;
+}
+int insertMark(int line)
+{
+  int n, index;
+  int cc = 0;
+  int position;
+  n = sizeOfList();
+  index = findIndexOfArray(line);
+  position = findIndexForInsert(line); // find
+  printf("index %d,position %d, n %d\r\n", index, position, n);
+  //printf("n = %d index %d---------\r\n",n,index);
+
+  if (index != n)
+  {
+    return 0; //error;
+  }
+  else
+  {
+    for (cc = n - 1; cc >= position - 1; cc--)
+      MarkerPage[cc + 1] = MarkerPage[cc];
+    MarkerPage[position] = line;
+    return 1;
+  }
+}
+void printfPageOfMarker(char *filename)
+{
+  int cc = 0;
+  searchName(filename);
+  while (MarkerPage[cc] != NULL)
+  {
+    printf("page:%d\r\n", MarkerPage[cc]);
+    cc++;
+  }
+}
+void insertLine(char *filename, int line)
+{
+  char temp__[30];
+  char numStr[7];
+  int cc = 0;
+  printf("insert (%d)\r\n", line);
+  if (searchName(filename))
+  { // found file
+    if (insertMark(line))
+    {
+      strcpy(temp__, filename); // store file name
+      while (MarkerPage[cc] != NULL)
+      {
+        sprintf(numStr, "%d", MarkerPage[cc]);
+        strcat(temp__, numStr);
+        strcat(temp__, "/");
+        cc++;
+      }
+      //printf("data temp -> %s\r\n",temp__);
+      strcpy(data2, str_replace(SST25_buffer, data_temp, temp__));
+      //free(SST25_buffer);
+      //SST25_buffer = malloc(sizeof(data2));
+			memset(SST25_buffer,0x00,4096);
+      strcpy(SST25_buffer, data2);
+      printf("->>>>%s\r\n", SST25_buffer);
+      //memset(data,0,sizeof(data));
+      //strcpy(data,data2);
+      //
+    }
+  }
+}
+/*
+===================================================================
+===================================================================
+===================================================================
+===================================================================
+*/
 void testGetFileSize()
 {
   command_ = 1;
@@ -971,8 +1325,8 @@ int CH376_GetFileSize()
   /* while(1){
 
   }*/
-printf("%d %d %d %d\r\n", filesize__[0], filesize__[1], filesize__[2], filesize__[3]);
-return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256));
+  printf("%d %d %d %d\r\n", filesize__[0], filesize__[1], filesize__[2], filesize__[3]);
+  return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256));
 }
 // function
 uint8_t CH376_FileClose()

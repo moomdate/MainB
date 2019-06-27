@@ -501,31 +501,31 @@ void setFoldername(char *filename);
 void upperASCII(char *str);
 int confirm_delete(void);
 
-//---------------------------mark---------------------------------
-#define EndSign ':'
-#define MarkMaxBufferPage 20
-int searchName(char *fileName); // search file
-int CreateMarkFileConfig(char *filename);
-int hasFileConfig(char *filename);
-int getEndSign(int startAt);       //get position of end string
-int MarkerPage[MarkMaxBufferPage]; // buffer
-int findIndexOfArray(int target);  // find index of line
-int RemoveArrayAtIndex(int position);
-int findIndexForInsert(int value);
-int insertMark(int);
-int sizeOfList();
+//--------------------------- for mark variable ---------------------------------
+#define mark_EndSign ':'
+#define mark_MarkMaxBufferPage 20
+int mark_searchName(char *fileName); // search file
+int mark_CreateMarkFileConfig(char *filename);
+int mark_hasFileConfig(char *filename);
+int mark_getEndSign(int startAt);            //get position of end string
+int mark_MarkerPage[mark_MarkMaxBufferPage]; // buffer
+int mark_currentPostion = 0;                 // current mark position
+int mark_maxmarkMaxMax = 0;                  // maximum page of mark
+int mark_findIndexOfArray(int target);       // find index of line
+int mark_RemoveArrayAtIndex(int position);
+int mark_findIndexForInsert(int value);
+int mark_insertMark(int);
+int mark_sizeOfList();
 
-void printfPageOfMarker(char *); // print lst
-void insertLine(char *, int);
-void filterPageToArray(int pS, int pE); // data string to num array
-char *str_replace(char *orig, char *rep, char *with);
+void mark_printfPageOfMarker(char *); // print lst
+void mark_insertLine(char *, int);
+void mark_filterPageToArray(int pS, int pE); // data string to num array
+char *mark_str_replace(char *orig, char *rep, char *with);
 //test.brf5/10/15/20/:test2.brf1/4/5/12/55/:test99.brf2/254/525/1000/:gg.txt/:
 
 char data_temp[30];
 char data2[400];
-
 //----------------------------------------------------------------
-
 /*
   Sector = gotoLine_getSectorInline(Line); //เนเธ”เน Sector
   gotoLine_getLine(Line, Sector);     // เธ•เนเธญเธเนเธ”เน Line เนเธ Sector
@@ -600,10 +600,10 @@ int readmode_countPageInOneSector(char *str)
 void StoreDataTOSector()
 {
   printf("PROCESSING..\r\n");
-  memset(SST25_buffer, '1', 4096); //เก็บค่าลงบัฟเฟอร์
-  writeFlash(0);                   //เอาบัฟเฟอร์เขียนลง ROM
-  memset(SST25_buffer, '2', 4096); //เก็บค่าลงบัฟเฟอร์
-  writeFlash(4096);                //เอาบัฟเฟอร์เขียนลง ROM
+  memset(SST25_buffer, '1', 4096); // เก็บค่าลงบัฟเฟอร์
+  writeFlash(0);                   // เอาบัฟเฟอร์เขียนลง ROM
+  memset(SST25_buffer, '2', 4096); // เก็บค่าลงบัฟเฟอร์
+  writeFlash(4096);                // เอาบัฟเฟอร์เขียนลง ROM
 }
 int findTotalSectorUSED()
 {
@@ -678,45 +678,24 @@ void markger_set(char *filename_1)
   }
   SST25_buffer[lastPo + cc] = '\0';
 }
-void getMarker(char *fileName)
+void getMarker(char *fileName_1, int line)
 {
-  memset(SST25_buffer, 0x0, 4096);
-  //SST25_buffer[0] = 'A';
-  //SST25_buffer[1] = 'B';
-  writeFlash(16777216);
 
-  readSecter(16777216); //sector for  config
-  //markger_set("test");
-  // markger_set("9899100");
- /* printf("%d", hasFileConfig("test99.txt"));
-  CreateMarkFileConfig("test99.txt");
-  printf("%d", hasFileConfig("test99.txt"));
-  printf("\r\n-%s-\r\n", SST25_buffer);
-  //str_replace(SST25_buffer,"txt","brf");
-  printf("\r\n-%s-\r\n", SST25_buffer);
-*/
-  if (CreateMarkFileConfig("testt.brf"))
-  {
-    printf("create success\r\n");
-    insertLine("testt.brf", 113);
-    insertLine("testt.brf", 2);
-  }
-  else
+  /*else
   {
     printf(" can't create the file\r\n");
   }
- 
-  insertLine("testt.brf", 1);
-  insertLine("testt.brf", 231);
 
-  printfPageOfMarker("testt.brf");
+  mark_insertLine("testt.brf", 1);
+  mark_insertLine("testt.brf", 231);
 
-  if (CreateMarkFileConfig("testt3.brf"))
+  mark_printfPageOfMarker("testt.brf");
+
+  if (mark_CreateMarkFileConfig("testt3.brf"))
   {
-    insertLine("testt3.brf", 2);
+    mark_insertLine("testt3.brf", 2);
   }
-  printfPageOfMarker("testt3.brf");
-	
+  mark_printfPageOfMarker("testt3.brf");*/
 }
 void SearchMarkerWithFileNameInSector()
 {
@@ -734,7 +713,7 @@ void readConfigFileFormSD()
   char *fileName_ = "data.dat";
   printf("readfile\r\n");
   command_ = 1;
-  getMarker("test");
+  // getMarker("test");
   /*while (1)
   {
     if (command_ == 1)
@@ -817,6 +796,7 @@ uint8_t tempLL[14];
 
 char rootBuffer[20];
 char fileByte[20];
+
 int main(void)
 {
 
@@ -854,17 +834,11 @@ int main(void)
   printf("press enter\r\n");
   // appendToSECTOR();
   //if(DeleteFile("D.TBT")) //ใช้ได้
-
-  //getMarker("a");
-
-  /*
+  //getMarker("a.txt",5);
   ch376_status = CH376Init();
   if (ch376_status != USB_INT_SUCCESS)
     printf("ch376 init error0");
-  
   MainPrograme();
-*/
-  getMarker("test.txt");
   //getFileSize("/AAAAAA~1.TXT");
   //printf("get file size \r\n");
   //ch376_status = CH376_GetFileSize();
@@ -888,7 +862,7 @@ void setMark()
 ===================================================================
 ===================================================================
 */
-int hasFileConfig(char *filename)
+int mark_hasFileConfig(char *filename)
 {
   int *ptr;
   ptr = (int *)strstr(SST25_buffer, filename);
@@ -901,11 +875,11 @@ int hasFileConfig(char *filename)
     return 1;
   }
 }
-int CreateMarkFileConfig(char *filename)
+int mark_CreateMarkFileConfig(char *filename)
 {
   int range = 0;
   char fileTemp[15];
-  if (!hasFileConfig(filename))
+  if (!mark_hasFileConfig(filename))
   { //not found
     range = strlen(SST25_buffer);
     strcpy(fileTemp, filename);
@@ -917,7 +891,6 @@ int CreateMarkFileConfig(char *filename)
     }
     else
     {
-
       strcat(SST25_buffer, fileTemp);
     }
     printf("%s", SST25_buffer);
@@ -930,7 +903,7 @@ int CreateMarkFileConfig(char *filename)
   }
 }
 
-char *str_replace(char *orig, char *rep, char *with)
+char *mark_str_replace(char *orig, char *rep, char *with)
 {
   char *result;  // the return string
   char *ins;     // the next insert point
@@ -979,7 +952,7 @@ char *str_replace(char *orig, char *rep, char *with)
   return result;
 }
 
-int searchName(char *fileName)
+int mark_searchName(char *fileName)
 {
   int pos;
   int startPos, EndPos, start2;
@@ -993,17 +966,15 @@ int searchName(char *fileName)
     start2 = startPos;
 
     startPos = strlen(fileName) + startPos;
-    EndPos = getEndSign(startPos); // find end index
-
+    EndPos = mark_getEndSign(startPos); // find end index
     //printf("%d\r\n",strlen(data));
     printf("start %d end %d\r\n", startPos, EndPos);
-
     strncpy(data_temp, SST25_buffer + start2, EndPos - start2);
     //printf("end :%c\r\n",data[EndPos]); // index
     //printf("file name %s\r\n",fileName);
     //	printf("start at (%d), end at (%d)\r\n", startPos,EndPos);
     //printf("char start (%c), end (%c)\r\n",data[startPos],data[EndPos]);
-    filterPageToArray(startPos, EndPos);
+    mark_filterPageToArray(startPos, EndPos);
     return 1;
   }
   else
@@ -1011,7 +982,7 @@ int searchName(char *fileName)
     return 0;
   }
 }
-int getEndSign(int StartAt)
+int mark_getEndSign(int StartAt)
 {
   int ccCO;
   int DataSize;
@@ -1028,7 +999,7 @@ int getEndSign(int StartAt)
   }
   return ccCO;
 }
-void filterPageToArray(int pStart, int pEnd)
+void mark_filterPageToArray(int pStart, int pEnd)
 {
   int countDigit = 0;
   int numPrepare = 0;
@@ -1036,8 +1007,8 @@ void filterPageToArray(int pStart, int pEnd)
   int count = pStart;
   char buffNumber[7];
 
-  for (countDigit = 0; countDigit < MarkMaxBufferPage; countDigit++)
-    MarkerPage[countDigit] = 0x00;
+  for (countDigit = 0; countDigit < mark_MarkMaxBufferPage; countDigit++)
+    mark_MarkerPage[countDigit] = 0x00;
   countDigit = 0;
   while (count < pEnd)
   {
@@ -1052,7 +1023,7 @@ void filterPageToArray(int pStart, int pEnd)
       // push to array here
       numPrepare = atoi(buffNumber);
       memset(buffNumber, 0, sizeof(buffNumber));
-      MarkerPage[arrayIndex] = numPrepare;
+      mark_MarkerPage[arrayIndex] = numPrepare;
       arrayIndex++;
       //printf("number is %d\r\n",numPrepare);
       countDigit = 0;
@@ -1064,59 +1035,59 @@ void filterPageToArray(int pStart, int pEnd)
   countDigit = 0;
   //printf("start %c, end %c",data[pStart],data[pEnd]);
 }
-int RemoveArrayAtIndex(int position)
+int mark_RemoveArrayAtIndex(int position)
 {
   int c;
   int n;
-  n = sizeOfList();
+  n = mark_sizeOfList();
   //printf("size of list %d\r\n",n);
   for (c = position; c < n; c++)
-    MarkerPage[c] = MarkerPage[c + 1];
-  MarkerPage[c] = 0x00; //clear
+    mark_MarkerPage[c] = mark_MarkerPage[c + 1];
+  mark_MarkerPage[c] = 0x00; //clear
   return 1;
 }
-int sizeOfList()
+int mark_sizeOfList()
 {
   int cc = 0;
-  while (MarkerPage[cc] != NULL)
+  while (mark_MarkerPage[cc] != NULL)
   {
     cc++;
   }
   return cc;
 }
-int findIndexOfArray(int target)
+int mark_findIndexOfArray(int target)
 {
   int cc = 0;
-  while (MarkerPage[cc] != NULL)
+  while (mark_MarkerPage[cc] != NULL)
   {
-    if (MarkerPage[cc] == target)
+    if (mark_MarkerPage[cc] == target)
       break;
     cc++;
   }
   return cc;
 }
-int findIndexForInsert(int value)
+int mark_findIndexForInsert(int value)
 {
   int cc;
-  cc = sizeOfList() - 1;
+  cc = mark_sizeOfList() - 1;
   while (cc >= 0)
   {
 
-    if (value > MarkerPage[cc])
+    if (value > mark_MarkerPage[cc])
       break;
     cc--;
   }
   cc++;
   return cc;
 }
-int insertMark(int line)
+int mark_insertMark(int line)
 {
   int n, index;
   int cc = 0;
   int position;
-  n = sizeOfList();
-  index = findIndexOfArray(line);
-  position = findIndexForInsert(line); // find
+  n = mark_sizeOfList();
+  index = mark_findIndexOfArray(line);
+  position = mark_findIndexForInsert(line); // find
   printf("index %d,position %d, n %d\r\n", index, position, n);
   //printf("n = %d index %d---------\r\n",n,index);
 
@@ -1127,44 +1098,44 @@ int insertMark(int line)
   else
   {
     for (cc = n - 1; cc >= position - 1; cc--)
-      MarkerPage[cc + 1] = MarkerPage[cc];
-    MarkerPage[position] = line;
+      mark_MarkerPage[cc + 1] = mark_MarkerPage[cc];
+    mark_MarkerPage[position] = line;
     return 1;
   }
 }
-void printfPageOfMarker(char *filename)
+void mark_printfPageOfMarker(char *filename)
 {
   int cc = 0;
-  searchName(filename);
-  while (MarkerPage[cc] != NULL)
+  mark_searchName(filename);
+  while (mark_MarkerPage[cc] != NULL)
   {
-    printf("page:%d\r\n", MarkerPage[cc]);
+    printf("page:%d\r\n", mark_MarkerPage[cc]);
     cc++;
   }
 }
-void insertLine(char *filename, int line)
+void mark_insertLine(char *filename, int line)
 {
   char temp__[30];
   char numStr[7];
   int cc = 0;
   printf("insert (%d)\r\n", line);
-  if (searchName(filename))
+  if (mark_searchName(filename))
   { // found file
-    if (insertMark(line))
+    if (mark_insertMark(line))
     {
       strcpy(temp__, filename); // store file name
-      while (MarkerPage[cc] != NULL)
+      while (mark_MarkerPage[cc] != NULL)
       {
-        sprintf(numStr, "%d", MarkerPage[cc]);
+        sprintf(numStr, "%d", mark_MarkerPage[cc]);
         strcat(temp__, numStr);
         strcat(temp__, "/");
         cc++;
       }
       //printf("data temp -> %s\r\n",temp__);
-      strcpy(data2, str_replace(SST25_buffer, data_temp, temp__));
+      strcpy(data2, mark_str_replace(SST25_buffer, data_temp, temp__));
       //free(SST25_buffer);
       //SST25_buffer = malloc(sizeof(data2));
-			memset(SST25_buffer,0x00,4096);
+      memset(SST25_buffer, 0x0, strlen(SST25_buffer));
       strcpy(SST25_buffer, data2);
       printf("->>>>%s\r\n", SST25_buffer);
       //memset(data,0,sizeof(data));
@@ -1245,7 +1216,6 @@ void testGetFileSize()
     if (USART_GetITStatus(USART3, USART_IT_RXNE))
     {
       i1 = USART_ReceiveData(USART3);
-
       printf("0x%x \r\n", i1);
     }
   }
@@ -2316,9 +2286,6 @@ void queryLine(int line)
 ▒▒▒▒█░░░█▄▄▄▄▄▄▄▄▄▄█░█▄▄▄▄▄▄▄▄▄█
 ▒▒▒▒█▄▄█░░█▄▄█░░░░░░█▄▄█░░█▄▄█
 */
-/*
-
-*/
 
 void QueryLineWithCommand(int line)
 {
@@ -2360,28 +2327,17 @@ void slidText2Displayv2()
 {
   //clearUnsignChar();
 
-  if (keyCode == 660) // function go to line
+  if (keyCode == SHORTCUT_KEY_GOTO_LINE) // function go to line
   {
     //bool loopT = true;
     // printf("go to line 98 99 \r\n");
     gt_Line = gotoLine_EnterLine(read.totalLine); // รับค่าบรรทัดที่จะไป
     // printf("return line is %d\r\n", gt_Line);
-    if (gt_Line > 0) //  != -1
-    {
-      beep4();
-      gt_Sector = gotoLine_getSectorInline(gt_Line); // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
-      //read.MainCurrentLine = gt_Line;
-      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
 
-      read.currentSector = gt_Sector;          // ทำการเปลี่ยน Sector ที่จะอ่าน
-      read.currentLine = gt_Line;              // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
-      readSecter(read.currentSector * sector); // ทำการอ่าน Sector นั้น
-      queryLine(read.currentLine);             // ทำการอ่านไฟล์ในบรรทัดนั้น
-    }
     //printf("found Line in Sector (%d)\r\n", gt_Sector);
     //printf("In line %d\r\n", gt_Line);
   }
-  else if (keyCode == 701) // next page
+  else if (keyCode == SHORTCUT_KEY_NEXT_PAGE) // next page
   {
     gt_Line = page_findNextPage();
     printf("------------gt_Line :%d-------------------\r\n", gt_Line);
@@ -2402,7 +2358,7 @@ void slidText2Displayv2()
       //printf("current page is (%d) next page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
     }
   }
-  else if (keyCode == 702) //previous page
+  else if (keyCode == SHORTCUT_KEY_PREVOIUS_PAGE) //previous page
   {
     // k = page_getCurrentPage();
     //printf("-------------------------k:%d----------------------- %d \r\n ", k);FFF
@@ -2459,7 +2415,7 @@ void slidText2Displayv2()
     printf("==============================\r\n");
     printf("==============================\r\n");
   }
-  else if (keyCode == 623) //Exit read Mode
+  else if (keyCode == CLOSE_FILE) //Exit read Mode
   {
     printf("Exit\r\n");
     ROMR.endReadFile = false;
@@ -2540,7 +2496,7 @@ void slidText2Displayv2()
       printf("=========================================\r\n");
     }
   }
-  else if (keyCode == 40) // next
+  else if (keyCode == 40) // next text
   {
     if (read.currentLine < read.lineInsector[read.currentSector])
     {
@@ -2570,13 +2526,85 @@ void slidText2Displayv2()
       printf("=========================================\r\n");
     }
   }
-  else if (keyCode == 620)
+  else if (keyCode == MARK_SET_MARK) // set mark 1-3-4
   {
-    printf("keycode testing marker line (%d)\r\n", read.currentLine);
+    printf("keycode testing marker line (%d)\r\n", read.currentLine + 1);
     printf("file name:%s\r\n", fileLists[fileSelect]);
+    //printf("data:%s\r\n", SST25_buffer);
+    memset(SST25_buffer, 0, strlen(SST25_buffer));
+    readSecter(4096 * 999);
+    printf("data:%s\r\n", SST25_buffer);
+    if (mark_CreateMarkFileConfig(fileLists[fileSelect])) //สร้างสำเร็จ
+    {
+      mark_insertLine(fileLists[fileSelect], read.currentLine + 1);
+    }
+    else // หรือมีไฟล์อยู่แล้ว
+    {
+      mark_insertLine(fileLists[fileSelect], read.currentLine + 1);
+    }
+    printf("data SST:%s\r\n", SST25_buffer);
+    writeFlash(4096 * 999); // ทดสอบ
+    readSecter(read.currentSector * sector);
   }
-  //printf("keycode %d\r\n",keyCode);
-
+  else if (keyCode == MARK_JUMP_TO_MARK)
+  {
+    // clear mark in rom 2-4-5
+    memset(SST25_buffer, 0, strlen(SST25_buffer));
+    printf("clear all\r\n");
+    writeFlash(4096 * 999); //16777216
+    memset(mark_MarkerPage, 0, sizeof(mark_MarkerPage));
+    /*readSecter(read.currentSector * sector);
+    read.MainCurrentLine += read.currentLine;
+    read.currentLine = 0;
+    queryLine(read.currentLine);*/
+  }
+  else if (keyCode == MARK_JUMP_NEXT) // mark next 624
+  {
+    // (1-4-5-8 + Space),
+    // mark_MarkerPage
+    //  printf("file :%s\r\n",fileLists[fileSelect]);
+    for (i = 0; mark_MarkerPage[i] != NULL; i++)
+    {
+      mark_maxmarkMaxMax++;
+      // printf("line :%d\r\n",mark_MarkerPage[i]);
+    }
+    //printf("----------------- list of marker --------------");
+    beep4();
+    if (mark_currentPostion < mark_maxmarkMaxMax)
+    {                                                 // ยังไม่เกิน
+      gt_Line = mark_MarkerPage[mark_currentPostion]; // กระโดดไปยังบรรทัดของ mark
+      mark_currentPostion++;
+    }
+    //gt_Line = mark_MarkerPage[0]; // edit hear
+    printf("next mark (%d)\r\n", gt_Line);
+    gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+    gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+    read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+    read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+    readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+    queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
+  }
+  else if (keyCode == MARK_JUMP_PREVOIUS)
+  {                                              // mark previous
+    for (i = 0; mark_MarkerPage[i] != NULL; i++) // find total
+    {
+      mark_maxmarkMaxMax++;
+    }
+    beep4();
+    if (mark_currentPostion > 0)
+    {                                                 // ยังไม่เกิน
+      gt_Line = mark_MarkerPage[mark_currentPostion]; // กระโดดไปยังบรรทัดของ mark
+      mark_currentPostion--;
+    }
+    printf("prevoius mark (%d)\r\n", gt_Line);
+    gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+    gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+    read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+    read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+    readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+    queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
+  }
+  // printf("keycode %d\r\n",keyCode);
   if (strlen(read.strTemp) != 0)
   {
     printf("string:%s\r\n", read.strTemp);
@@ -2596,7 +2624,6 @@ void slidText2Displayv2()
   }
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
 }
-
 // เก็บค่า 0x0c เป็นตัวแบ่งหน้าในไฟล์ต่างๆ โดยจะชี้ไปที่บรรทัดนั้นๆ
 void StoreLine()
 {
@@ -2609,7 +2636,6 @@ void StoreLine()
     read.totalLine += read.lineInsector[i]; // เก็บทรรทัดทั้งหมด
   }
 }
-
 void StoreLineClear()
 {
   for (i = 0; i < sizeof(read.lineInsector) / sizeof(uint16_t); i++)
@@ -2617,7 +2643,6 @@ void StoreLineClear()
     read.lineInsector[i] = '\0';
   }
 }
-
 // อ่านค่าจาก Sector โดยการใส่ตำแหน่ง sector *4096
 // จะเก็บค่าไว้ที่ตัวแปร SST25_buffer
 void readSecter(int sector_)
@@ -2804,7 +2829,6 @@ void prepareSD_Card()
       delay_ms(45);
       preStatus = 0;
     }
-
     /* else if (command_ == 4)
     {
       SendCH370(setAllName, sizeof(setAllName));
@@ -2906,7 +2930,6 @@ int getMuteStatus()
 void notepad_main()
 {
   //status for do something n notepad mode
-
   while (doing) // do in notepad notepad0
   {
     notepad_readKey();       // key recieve
@@ -2976,8 +2999,8 @@ void notepad_main()
           if (notepad_countLinewithOutLNsign(Notepad.buffer_string[Notepad.currentLine]) > 20)
             Notepad.displayFirst = true;
         }
-      }                        // จบส่วนของ key control
-      else if (keyCode == 659) // save key (space + s) // save file
+      }                                      // จบส่วนของ key control
+      else if (keyCode == NOTEPAD_SAVE_FILE) // save key (space + s) // save file
       {
         // save
         // บันทึกไฟล์ หลังจากทำการพิมพ์ในโหมด Notepad
@@ -2987,7 +3010,8 @@ void notepad_main()
           printf("\r\n-----------Save:------------\r\n");
         saveName();
       }
-      else if (keyCode == 623) // exit (space + e)
+      // exit (space + e)
+      else if (keyCode == CLOSE_FILE)
       {
         // ออกจากโหมด notepad โดยจะยังไม่เคลียค่าที่พิมพ์
         printf("exit \r\n");
@@ -3390,7 +3414,6 @@ int notepad_checkEnterSignInLine(char *str)
     {
       if (str[cc] == enterSign)
       {
-        // '-
         st = 1;
         break;
       }
@@ -3399,8 +3422,8 @@ int notepad_checkEnterSignInLine(char *str)
   }
   return st;
 }
-/**
- * -count line don't count enter sign--
+/*
+ * 
  * 
  * 
  * 
@@ -3457,7 +3480,6 @@ int notepad_getnullPostion(char *str)
   }
   return cc_m;
 }
-
 void notepad_readKey()
 {
   if (USART_GetITStatus(USART2, USART_IT_RXNE))
@@ -3510,19 +3532,19 @@ int keyMapping(int a, int b, int c)
   //-----------------------joyRight--------------------------------
   if (a == 0x00 && b == 0x00 && c == 0x04)
   {
-    keyCode__ = 37; // ArrowLeft
+    keyCode__ = ARROW_LEFT; // ArrowLeft
   }
   else if (a == 0x00 && b == 0x00 && c == 0x10)
   {
-    keyCode__ = 38; // ArrowUp
+    keyCode__ = ARROW_UP; // ArrowUp
   }
   else if (a == 0x00 && b == 0x00 && c == 0x08)
   {
-    keyCode__ = 39; // ArrowRight
+    keyCode__ = ARROW_RIGHT; // ArrowRight
   }
   else if (a == 0x00 && b == 0x00 && c == 0x20)
   {
-    keyCode__ = 40; // ArrowDown
+    keyCode__ = ARROW_DOWN; // ArrowDown
   }
   //---------------------------joyleft------------------------------
   else if (a == 0x00 && b == 0x20 && c == 0x00)
@@ -3553,7 +3575,7 @@ int keyMapping(int a, int b, int c)
 
   else if (a == 0x40 && b == 0x00 && c == 0x00) // enter button 7
   {
-    keyCode__ = 13;
+    keyCode__ = KEY_ENTER;
   }
   //-----------------on read sector----------------
   //
@@ -3574,46 +3596,60 @@ int keyMapping(int a, int b, int c)
   }*/
   else if (a == 0x1b && isSpaceKey(b) && c == 0x00)
   {
-    //space + g
-    keyCode__ = 660;
+    // go to line
+    // space + g
+    keyCode__ = SHORTCUT_KEY_GOTO_LINE;
   }
   else if (a == 0x0e && isSpaceKey(b) && c == 0x00)
   {
-    //space + s
-    keyCode__ = 659;
+    // space + s
+    keyCode__ = NOTEPAD_SAVE_FILE;
   }
   // on read Mx0dmode set mark
   else if (a == 0x0d && isSpaceKey(b) == true && c == 0x00)
   { // set mark 1-3-4 + spaces
     // space + m
-    keyCode__ = 620;
+    keyCode__ = MARK_SET_MARK;
   }
   else if (a == 0x1a && isSpaceKey(b) == true && c == 0x00)
-  { // jump
+  { // jump  to Mark (Space + j; 2-4-5 + Space) next
     // space + j
-    keyCode__ = 621;
-  }
-  else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
-  { // jump
-    // space + enter + d
-    keyCode__ = 622;
+    // space + 2 + 4 + 5
+    keyCode__ = MARK_JUMP_TO_MARK;
   }
   else if (a == 0x11 && isSpaceKey(b) == true && c == 0x00)
-  { // close space + e
-    keyCode__ = 623;
+  {
+    // (Close) space + e
+    keyCode__ = CLOSE_FILE;
   }
-  //next page in read mode
+  else if (a == 0x9a && isSpaceKey(b) == true && c == 0x00)
+  {
+    // Space + Enter + j
+    // 2-4-5 + space + enter
+    keyCode__ = MARK_JUMP_NEXT;
+  }
+  else if (a == 0x5a && isSpaceKey(b) == true && c == 0x00)
+  {
+    // Space + Backspace + j
+    keyCode__ = MARK_JUMP_PREVOIUS;
+  }
+   else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
+  {
+    // Space + Backspace + j
+    keyCode__ = MARK_DELETE_MARK;
+  }
+  // next page in read mode
   else if ((a == 0x00 && b == 0x41 && c == 0x00) || (a == 0x00 && b == 0x42 && c == 0x00) || (a == 0x00 && b == 0x43 && c == 0x00))
   {
-    keyCode__ = 701;
+    keyCode__ = SHORTCUT_KEY_NEXT_PAGE;
   }
-  //previous page
+  // previous page
   else if ((a == 0x00 && b == 0x21 && c == 0x00) || (a == 0x00 && b == 0x22 && c == 0x00) || (a == 0x00 && b == 0x23 && c == 0x00))
   {
-    keyCode__ = 702;
+    keyCode__ = SHORTCUT_KEY_PREVOIUS_PAGE;
   }
   // debug shortcut key next and prevoious pages
-  else if ((a == 0x00 && b == 0x11 && c == 0x00)) //test
+  else if ((a == 0x00 && b == 0x11 && c == 0x00)) //tclearest
   {
     keyCode__ = 703;
   }
@@ -3625,7 +3661,6 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 789;
   }
-
   return keyCode__;
 }
 bool isSpaceKey(int a)
@@ -3635,8 +3670,7 @@ bool isSpaceKey(int a)
   else
     return false;
 }
-
-/*======================manage key =====================
+/*====================== manage key ==================
 //
 //
 //
@@ -3652,7 +3686,7 @@ void keyRead()
     uart2Buffer = USART_ReceiveData(USART2); //-
     if (uart2Buffer == 0xff && SeeHead == 0)
     {
-      //-
+
       SeeHead = 1;  //-
       countKey = 0; //-
     }               //-
@@ -3665,7 +3699,7 @@ void keyRead()
       //-
       bufferKey3digit[countKey - 4] = uart2Buffer; //-
     }
-    if (countKey == 2) //checkKeyError
+    if (countKey == 2) // checkKeyError
     {
       checkKeyError = uart2Buffer;
     }
@@ -3898,13 +3932,13 @@ void keyRead()
         ------------โยกจอยทางซ้าย ย้อนกลับออกจาก directory-----
         ====================================================
       */
-      if (keyCode == 37) // left joy <-
+      if (keyCode == ARROW_LEFT) // left joy <-
       {
         printf("exit\r\n");
         maxFile = 0;
         printf("pathD: %d\r\n", ex_countPath(Dirpath));
-        printf("dir past :%s \r\n", Dirpath);
-        if (ex_countPath(Dirpath) == 1) // ถ้าเป็น root
+        printf("dir path :%s \r\n", Dirpath);
+        if (ex_countPath(Dirpath) == 0) // ถ้าเป็น root ก่อนหน้าเป็น 1 งงเลย
         {
           maxFile = 0;
           for (i = 0; i < maxfileListBuffer; i++) // reset value in fileLists
@@ -4156,8 +4190,8 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           // เก็บบรรทัด
           // จำนวน sector และตัวเศษ
           initSlidingMode();
-
           readSecter(0);
+          mark_currentPostion = 0; // set mark position at 0
           while (ROMR.endReadFile == true)
           {
             // query string-
@@ -4347,7 +4381,7 @@ void searchFile2()
         nextAgain = 1;
         DataForWrite[0] = 42;
       }
-      else if (i1 == 0x42 && countFileLegth == 0) // จบการค้นหาไฟล์
+      else if (i1 == 0x42 && countFileLegth == 0) // จบการค���นหาไฟล์
       {
         //ABCCCCC = 0; //fix bug
         SendCH370(FileClose0, sizeof(FileClose0));
@@ -5281,6 +5315,11 @@ void copy_string(char *target, char *source)
 ////////////////////////////////////////////////////////////////////
 void writeFlash(int address)
 {
+  printf("-----------------------------------------------------\r\n");
+  printf(">>>>>>%d address \r\n", address);
+  printf("-----------------------------------------------------\r\n");
+  printf("-----------------------------------------------------\r\n");
+  printf("-----------------------------------------------------\r\n");
   SPI_DISPLAY_CS_LOW(); //
   configFlash();
   SPI_FLASH_CS_LOW();

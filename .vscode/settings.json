@@ -6,5 +6,6 @@
         "PARA_HW.C": "cpp"
     },
     "editor.fontFamily": "SOV_monomon, 'Courier New', monospace",
-    "C_Cpp.errorSquiggles": "Disabled"
+    "C_Cpp.errorSquiggles": "Disabled",
+    "python.pythonPath": "C:\\Users\\SurasakSincharoen\\.platformio\\python27\\python.exe"
 }

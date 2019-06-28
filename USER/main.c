@@ -515,7 +515,10 @@ int mark_findIndexOfArray(int target);       // find index of line
 int mark_RemoveArrayAtIndex(int position);
 int mark_findIndexForInsert(int value);
 int mark_insertMark(int);
-int mark_sizeOfList();
+int mark_sizeOfList();           // หาขนาด List
+void mark_readFormROM();         //อ่านค่าจาก ROM
+void mark_init();                //กำหนดค่าเริ่มต้น
+int mark_findListTotalInArray(); //ค่า สูงสุด ใน อาเรย์
 
 void mark_printfPageOfMarker(char *); // print lst
 void mark_insertLine(char *, int);
@@ -845,6 +848,34 @@ int main(void)
   //printf("file size %d byte\r\n", ch376_status);
   //getLongName("/avccc~1.txt", "test");
   //readConfigFileFormSD();
+}
+int mark_findListTotalInArray()
+{
+  int acce = 0;
+  int count_maxMark = 0;
+  for (acce = 0; mark_MarkerPage[acce] != NULL; acce++) // find total
+  {
+    count_maxMark++;
+  }
+  return count_maxMark;
+}
+void mark_init()
+{
+  mark_currentPostion = 0;
+}
+void mark_readFormROM()
+{
+  memset(SST25_buffer, 0, strlen(SST25_buffer));
+  readSecter(4096 * 999);
+  printf("data:%s\r\n", SST25_buffer);
+  if (mark_CreateMarkFileConfig(fileLists[fileSelect])) //สร้างสำเร็จ
+  {
+    mark_insertLine(fileLists[fileSelect], read.currentLine + 1);
+  }
+  else // หรือมีไฟล์อยู่แล้ว
+  {
+    mark_insertLine(fileLists[fileSelect], read.currentLine + 1);
+  }
 }
 /******************************************
  * 0-15 store name 
@@ -2553,6 +2584,7 @@ void slidText2Displayv2()
     printf("clear all\r\n");
     writeFlash(4096 * 999); //16777216
     memset(mark_MarkerPage, 0, sizeof(mark_MarkerPage));
+    mark_currentPostion = 0;
     /*readSecter(read.currentSector * sector);
     read.MainCurrentLine += read.currentLine;
     read.currentLine = 0;
@@ -2563,47 +2595,43 @@ void slidText2Displayv2()
     // (1-4-5-8 + Space),
     // mark_MarkerPage
     //  printf("file :%s\r\n",fileLists[fileSelect]);
-    for (i = 0; mark_MarkerPage[i] != NULL; i++)
-    {
-      mark_maxmarkMaxMax++;
-      // printf("line :%d\r\n",mark_MarkerPage[i]);
-    }
+    mark_maxmarkMaxMax = mark_findListTotalInArray();
     //printf("----------------- list of marker --------------");
-    beep4();
+
     if (mark_currentPostion < mark_maxmarkMaxMax)
     {                                                 // ยังไม่เกิน
       gt_Line = mark_MarkerPage[mark_currentPostion]; // กระโดดไปยังบรรทัดของ mark
       mark_currentPostion++;
+      beep4();
+      //gt_Line = mark_MarkerPage[0]; // edit hear
+      printf("next mark (%d)\r\n", gt_Line);
+      gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+      read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
     }
-    //gt_Line = mark_MarkerPage[0]; // edit hear
-    printf("next mark (%d)\r\n", gt_Line);
-    gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
-    gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
-    read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
-    read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
-    readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
-    queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
   }
   else if (keyCode == MARK_JUMP_PREVOIUS)
-  {                                              // mark previous
-    for (i = 0; mark_MarkerPage[i] != NULL; i++) // find total
-    {
-      mark_maxmarkMaxMax++;
-    }
-    beep4();
+  { // mark previous
+    // mark_maxmarkMaxMax = mark_findListTotalInArray();
     if (mark_currentPostion > 0)
     {                                                 // ยังไม่เกิน
       gt_Line = mark_MarkerPage[mark_currentPostion]; // กระโดดไปยังบรรทัดของ mark
+      // if (mark_currentPostion >= 0)                   // ไม่หมด
       mark_currentPostion--;
+      beep4();
+      printf("prevoius mark (%d)\r\n", gt_Line);
+      gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+      read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
     }
-    printf("prevoius mark (%d)\r\n", gt_Line);
-    gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
-    gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
-    read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
-    read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
-    readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
-    queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
   }
+  printf(" mark position (%d) page: (%d)\r\n", mark_currentPostion, mark_MarkerPage[mark_currentPostion]);
   // printf("keycode %d\r\n",keyCode);
   if (strlen(read.strTemp) != 0)
   {
@@ -2620,7 +2648,7 @@ void slidText2Displayv2()
         {
           printf("0x%x,", bufferQueryLine[i]);
         }*/
-    printf("string (%d) :%s\r\n", read.currentLine, bufferQueryLine);
+    printf("Line (%d) :%s\r\n", read.currentLine, bufferQueryLine);
   }
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
 }
@@ -3633,7 +3661,7 @@ int keyMapping(int a, int b, int c)
     // Space + Backspace + j
     keyCode__ = MARK_JUMP_PREVOIUS;
   }
-   else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
+  else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
   {
     // Space + Backspace + j
     keyCode__ = MARK_DELETE_MARK;
@@ -4189,16 +4217,19 @@ int readFileFromCH376sToFlashRom(char *fileName___)
           //----------------------------------
           // เก็บบรรทัด
           // จำนวน sector และตัวเศษ
+
+          mark_init(); // set mark position at 0
+          mark_readFormROM();
           initSlidingMode();
           readSecter(0);
-          mark_currentPostion = 0; // set mark position at 0
+
           while (ROMR.endReadFile == true)
           {
             // query string-
             // menu_s();
             keyRead();
-            //printf("9999999999999999srwetre\r\n");
-            //readFileStatus___
+            // printf("9999999999999999srwetre\r\n");
+            // readFileStatus___
           }
 
         } // ทดสอบ

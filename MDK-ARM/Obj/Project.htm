@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Jun 28 15:31:01 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Wed Jul 10 11:09:25 2019
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -300,8 +300,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 </UL>
 
-<P><STRONG><a name="[10a]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<P><STRONG><a name="[10c]"></a>__aeabi_memmove</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memmovea.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
 </UL>
 
 <P><STRONG><a name="[4e]"></a>__aeabi_memset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, memseta.o(.text))
@@ -313,9 +313,9 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
-<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getFileSize
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PrepareText
@@ -324,12 +324,12 @@ Global Symbols
 <P><STRONG><a name="[ca]"></a>__aeabi_memclr4</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, memseta.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFile4096
 <LI><a href="#[89]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;substringRemoveEnter2
-<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fileName
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
@@ -341,9 +341,9 @@ Global Symbols
 
 <P><STRONG><a name="[8a]"></a>strcat</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strcat.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_CreateMarkFileConfig
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_EnterLine
@@ -355,38 +355,38 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[c4]"></a>strstr</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, strstr.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<BR><BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_hasFileConfig
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_checkFileType
 </UL>
 
-<P><STRONG><a name="[f1]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<P><STRONG><a name="[f2]"></a>strncpy</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, strncpy.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
 </UL>
 
 <P><STRONG><a name="[83]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFile4096
-<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeDataInFileTemp
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
-<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
-<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_getEndSign
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_getEndSign
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_CreateMarkFileConfig
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_openDir
@@ -395,19 +395,19 @@ Global Symbols
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MainPrograme
 </UL>
 
-<P><STRONG><a name="[10b]"></a>strcmp</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, strcmp.o(.text))
+<P><STRONG><a name="[10d]"></a>strcmp</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, strcmp.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeDataInFileTemp
 </UL>
 
 <P><STRONG><a name="[82]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeDataInFileTemp
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_CreateMarkFileConfig
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_EnterLine
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ex_savePath
@@ -418,7 +418,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strtol
 <LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_errno_addr
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_filterPageToArray
+<BR>[Called By]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_filterPageToArray
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_EnterLine
 </UL>
 
@@ -593,11 +593,11 @@ Global Symbols
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wen
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sect_clr
-<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
-<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
@@ -612,11 +612,11 @@ Global Symbols
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wen
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sect_clr
-<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
-<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
@@ -710,7 +710,7 @@ Global Symbols
 <P><STRONG><a name="[8b]"></a>SPI_Flash_ReadByte</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, spi_flash.o(i.SPI_Flash_ReadByte))
 <BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_SendByte
 </UL>
-<BR>[Called By]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<BR>[Called By]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
 </UL>
 
@@ -723,7 +723,7 @@ Global Symbols
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wen
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sect_clr
-<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_ReadByte
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
@@ -772,7 +772,7 @@ Global Symbols
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 </UL>
-<BR>[Called By]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 </UL>
 
 <P><STRONG><a name="[6]"></a>SVC_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.SVC_Handler))
@@ -917,7 +917,7 @@ Global Symbols
 <P><STRONG><a name="[5b]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;waitRespon
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
@@ -953,7 +953,7 @@ Global Symbols
 <P><STRONG><a name="[5c]"></a>USART_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ReceiveData))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;waitRespon
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
 <LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyboardMode
@@ -992,9 +992,9 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[5d]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
-<BR><BR>[Called By]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<BR><BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
-<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
@@ -1002,18 +1002,18 @@ Global Symbols
 <LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFileWrite
 <LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFileLength
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeDataInFileTemp
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_CreateMarkFileConfig
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
@@ -1040,7 +1040,7 @@ Global Symbols
 
 <P><STRONG><a name="[d7]"></a>__2sprintf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0sprintf$5))
 <BR><BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_EnterLine
 </UL>
@@ -1089,7 +1089,7 @@ Global Symbols
 <P><STRONG><a name="[62]"></a>cell_sentdata</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.cell_sentdata))
 <BR><BR>[Calls]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
@@ -1107,8 +1107,8 @@ Global Symbols
 <LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_EnterLine
 </UL>
@@ -1135,7 +1135,7 @@ Global Symbols
 <P><STRONG><a name="[b2]"></a>configFlash</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.configFlash))
 <BR><BR>[Calls]<UL><LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Init
 </UL>
-<BR>[Called By]<UL><LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
@@ -1166,7 +1166,7 @@ Global Symbols
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SendCH370
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PrepareText
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 </UL>
 
 <P><STRONG><a name="[b9]"></a>delay_init</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, systick.o(i.delay_init))
@@ -1182,9 +1182,9 @@ Global Symbols
 <LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_GetFlagStatus
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysTick_CounterCmd
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
@@ -1387,11 +1387,11 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
-<P><STRONG><a name="[10d]"></a>gotoLine_getLine</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, main.o(i.gotoLine_getLine))
+<P><STRONG><a name="[10f]"></a>gotoLine_getLine</STRONG> (Thumb, 60 bytes, Stack size 0 bytes, main.o(i.gotoLine_getLine))
 <BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
-<P><STRONG><a name="[10c]"></a>gotoLine_getSectorInline</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.gotoLine_getSectorInline))
+<P><STRONG><a name="[10e]"></a>gotoLine_getSectorInline</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.gotoLine_getSectorInline))
 <BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
@@ -1489,7 +1489,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[d3]"></a>malloc</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, malloc.o(i.malloc))
-<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
+<BR><BR>[Called By]<UL><LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getBluetoothName
 </UL>
 
@@ -1507,33 +1507,40 @@ Global Symbols
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
 </UL>
 
-<P><STRONG><a name="[e7]"></a>mark_filterPageToArray</STRONG> (Thumb, 120 bytes, Stack size 0 bytes, main.o(i.mark_filterPageToArray))
+<P><STRONG><a name="[e7]"></a>mark_RemoveArrayAtIndex</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.mark_RemoveArrayAtIndex))
+<BR><BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_sizeOfList
+</UL>
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+</UL>
+
+<P><STRONG><a name="[e9]"></a>mark_filterPageToArray</STRONG> (Thumb, 120 bytes, Stack size 0 bytes, main.o(i.mark_filterPageToArray))
 <BR><BR>[Calls]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;atoi
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
 </UL>
 
-<P><STRONG><a name="[e8]"></a>mark_findIndexForInsert</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.mark_findIndexForInsert))
-<BR><BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_sizeOfList
+<P><STRONG><a name="[ea]"></a>mark_findIndexForInsert</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.mark_findIndexForInsert))
+<BR><BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_sizeOfList
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
-</UL>
-
-<P><STRONG><a name="[ef]"></a>mark_findIndexOfArray</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.mark_findIndexOfArray))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
+<BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
 </UL>
 
-<P><STRONG><a name="[10e]"></a>mark_findListTotalInArray</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.mark_findListTotalInArray))
+<P><STRONG><a name="[f0]"></a>mark_findIndexOfArray</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.mark_findIndexOfArray))
+<BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
+</UL>
+
+<P><STRONG><a name="[110]"></a>mark_findListTotalInArray</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.mark_findListTotalInArray))
 <BR><BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
-<P><STRONG><a name="[ea]"></a>mark_getEndSign</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.mark_getEndSign))
+<P><STRONG><a name="[eb]"></a>mark_getEndSign</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.mark_getEndSign))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
 </UL>
 
 <P><STRONG><a name="[e6]"></a>mark_hasFileConfig</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, main.o(i.mark_hasFileConfig))
@@ -1542,77 +1549,84 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_CreateMarkFileConfig
 </UL>
 
-<P><STRONG><a name="[108]"></a>mark_init</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, main.o(i.mark_init))
+<P><STRONG><a name="[10a]"></a>mark_init</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, main.o(i.mark_init))
 <BR><BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
-<P><STRONG><a name="[eb]"></a>mark_insertLine</STRONG> (Thumb, 146 bytes, Stack size 0 bytes, main.o(i.mark_insertLine))
+<P><STRONG><a name="[ec]"></a>mark_insertLine</STRONG> (Thumb, 146 bytes, Stack size 0 bytes, main.o(i.mark_insertLine))
 <BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
-<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
-<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
-<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
+<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_str_replace
+<LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_searchName
+<LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
 </UL>
 
-<P><STRONG><a name="[ed]"></a>mark_insertMark</STRONG> (Thumb, 88 bytes, Stack size 0 bytes, main.o(i.mark_insertMark))
-<BR><BR>[Calls]<UL><LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_sizeOfList
-<LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findIndexOfArray
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findIndexForInsert
+<P><STRONG><a name="[ee]"></a>mark_insertMark</STRONG> (Thumb, 88 bytes, Stack size 0 bytes, main.o(i.mark_insertMark))
+<BR><BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_sizeOfList
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findIndexOfArray
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findIndexForInsert
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 </UL>
 
-<P><STRONG><a name="[f0]"></a>mark_readFormROM</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, main.o(i.mark_readFormROM))
+<P><STRONG><a name="[f1]"></a>mark_readFormROM</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, main.o(i.mark_readFormROM))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_CreateMarkFileConfig
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
 </UL>
 
-<P><STRONG><a name="[ec]"></a>mark_searchName</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.mark_searchName))
+<P><STRONG><a name="[ed]"></a>mark_searchName</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.mark_searchName))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_getEndSign
-<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_filterPageToArray
+<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_getEndSign
+<LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_filterPageToArray
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 </UL>
 
-<P><STRONG><a name="[e9]"></a>mark_sizeOfList</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, main.o(i.mark_sizeOfList))
-<BR><BR>[Called By]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
-<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findIndexForInsert
+<P><STRONG><a name="[e8]"></a>mark_sizeOfList</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, main.o(i.mark_sizeOfList))
+<BR><BR>[Called By]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertMark
+<LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findIndexForInsert
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_RemoveArrayAtIndex
 </UL>
 
-<P><STRONG><a name="[ee]"></a>mark_str_replace</STRONG> (Thumb, 182 bytes, Stack size 0 bytes, main.o(i.mark_str_replace))
+<P><STRONG><a name="[f3]"></a>mark_sortPageAndStore</STRONG> (Thumb, 42 bytes, Stack size 0 bytes, main.o(i.mark_sortPageAndStore))
+<BR><BR>[Calls]<UL><LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
+</UL>
+<BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
+</UL>
+
+<P><STRONG><a name="[ef]"></a>mark_str_replace</STRONG> (Thumb, 182 bytes, Stack size 0 bytes, main.o(i.mark_str_replace))
 <BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strstr
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
-<BR>[Called By]<UL><LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<BR>[Called By]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
 </UL>
 
 <P><STRONG><a name="[86]"></a>mode4</STRONG> (Thumb, 480 bytes, Stack size 0 bytes, main.o(i.mode4))
 <BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
-<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sendCommandtoAtmega
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
@@ -1627,90 +1641,90 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MainPrograme
 </UL>
 
-<P><STRONG><a name="[f3]"></a>notepad_append</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, main.o(i.notepad_append))
+<P><STRONG><a name="[f5]"></a>notepad_append</STRONG> (Thumb, 86 bytes, Stack size 0 bytes, main.o(i.notepad_append))
 <BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
-<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
 </UL>
 
-<P><STRONG><a name="[f4]"></a>notepad_checkEnterSignInLine</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_checkEnterSignInLine))
+<P><STRONG><a name="[f6]"></a>notepad_checkEnterSignInLine</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_checkEnterSignInLine))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 </UL>
 
-<P><STRONG><a name="[f5]"></a>notepad_checkMaxLine</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.notepad_checkMaxLine))
-<BR><BR>[Calls]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
+<P><STRONG><a name="[f7]"></a>notepad_checkMaxLine</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, main.o(i.notepad_checkMaxLine))
+<BR><BR>[Calls]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[f7]"></a>notepad_checkenterAndpush</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, main.o(i.notepad_checkenterAndpush))
-<BR><BR>[Calls]<UL><LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<P><STRONG><a name="[f9]"></a>notepad_checkenterAndpush</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, main.o(i.notepad_checkenterAndpush))
+<BR><BR>[Calls]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[fa]"></a>notepad_countEnterSign</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.notepad_countEnterSign))
-<BR><BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<P><STRONG><a name="[fc]"></a>notepad_countEnterSign</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, main.o(i.notepad_countEnterSign))
+<BR><BR>[Called By]<UL><LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 </UL>
 
-<P><STRONG><a name="[f9]"></a>notepad_countLinewithOutLNsign</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.notepad_countLinewithOutLNsign))
-<BR><BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<P><STRONG><a name="[fb]"></a>notepad_countLinewithOutLNsign</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.notepad_countLinewithOutLNsign))
+<BR><BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
 </UL>
 
-<P><STRONG><a name="[f6]"></a>notepad_countStr</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, main.o(i.notepad_countStr))
+<P><STRONG><a name="[f8]"></a>notepad_countStr</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, main.o(i.notepad_countStr))
 <BR><BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
-<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
 </UL>
 
-<P><STRONG><a name="[f8]"></a>notepad_fillEnterSign</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.notepad_fillEnterSign))
-<BR><BR>[Calls]<UL><LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
-<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countEnterSign
-<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<P><STRONG><a name="[fa]"></a>notepad_fillEnterSign</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, main.o(i.notepad_fillEnterSign))
+<BR><BR>[Calls]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countEnterSign
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[fb]"></a>notepad_getnullPostion</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.notepad_getnullPostion))
+<P><STRONG><a name="[fd]"></a>notepad_getnullPostion</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, main.o(i.notepad_getnullPostion))
 <BR><BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[fd]"></a>notepad_lineIsEnter</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_lineIsEnter))
+<P><STRONG><a name="[ff]"></a>notepad_lineIsEnter</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, main.o(i.notepad_lineIsEnter))
 <BR><BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
 <P><STRONG><a name="[7f]"></a>notepad_main</STRONG> (Thumb, 1986 bytes, Stack size 0 bytes, main.o(i.notepad_main))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
-<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringInLine
+<LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_readKey
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_lineIsEnter
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_getnullPostion
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
-<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
-<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
-<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
-<LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
-<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
+<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_lineIsEnter
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_getnullPostion
+<LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_fillEnterSign
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countStr
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkenterAndpush
+<LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkMaxLine
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_checkEnterSignInLine
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_append
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mapCursor
 <LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyMapping
 <LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearKeyValue
@@ -1729,15 +1743,15 @@ Global Symbols
 <LI><a href="#[b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;confirm_delete
 </UL>
 
-<P><STRONG><a name="[ff]"></a>notepad_removeEnterSign</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, main.o(i.notepad_removeEnterSign))
-<BR><BR>[Calls]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
-<LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
+<P><STRONG><a name="[101]"></a>notepad_removeEnterSign</STRONG> (Thumb, 26 bytes, Stack size 0 bytes, main.o(i.notepad_removeEnterSign))
+<BR><BR>[Calls]<UL><LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;removeChar
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_countLinewithOutLNsign
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[102]"></a>page_findNextPage</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, main.o(i.page_findNextPage))
-<BR><BR>[Calls]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sumLineInPreviousSec
+<P><STRONG><a name="[104]"></a>page_findNextPage</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, main.o(i.page_findNextPage))
+<BR><BR>[Calls]<UL><LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sumLineInPreviousSec
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
@@ -1749,20 +1763,20 @@ Global Symbols
 <LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
+<BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;displayPrepare
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;caseMenu
 </UL>
 
-<P><STRONG><a name="[100]"></a>printStringInLine</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
+<P><STRONG><a name="[102]"></a>printStringInLine</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, main.o(i.printStringInLine))
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
-<P><STRONG><a name="[104]"></a>printStringLR</STRONG> (Thumb, 94 bytes, Stack size 0 bytes, main.o(i.printStringLR))
+<P><STRONG><a name="[106]"></a>printStringLR</STRONG> (Thumb, 94 bytes, Stack size 0 bytes, main.o(i.printStringLR))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
@@ -1770,14 +1784,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
-<P><STRONG><a name="[105]"></a>queryLine</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, main.o(i.queryLine))
+<P><STRONG><a name="[107]"></a>queryLine</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, main.o(i.queryLine))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 </UL>
 
-<P><STRONG><a name="[106]"></a>rdsr</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, spi_flash.o(i.rdsr))
+<P><STRONG><a name="[108]"></a>rdsr</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, spi_flash.o(i.rdsr))
 <BR><BR>[Calls]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_SendByte
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_Flash_ReadByte
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
@@ -1790,12 +1804,12 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;setFilename
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
-<LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_init
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
+<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_init
 <LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initSlidingMode
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;configFlash
@@ -1815,34 +1829,35 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_sortPageAndStore
+<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_readFormROM
 <LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
 </UL>
 
 <P><STRONG><a name="[99]"></a>readmode_countLineInOneSector</STRONG> (Thumb, 98 bytes, Stack size 0 bytes, main.o(i.readmode_countLineInOneSector))
-<BR><BR>[Calls]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sumLineInSector
+<BR><BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sumLineInSector
 </UL>
 <BR>[Called By]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;StoreLine
 </UL>
 
-<P><STRONG><a name="[fe]"></a>removeChar</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.removeChar))
+<P><STRONG><a name="[100]"></a>removeChar</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.removeChar))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
+<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memmove
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
+<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_removeEnterSign
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 </UL>
 
 <P><STRONG><a name="[e0]"></a>removeDataInFileTemp</STRONG> (Thumb, 288 bytes, Stack size 0 bytes, main.o(i.removeDataInFileTemp))
 <BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
-<LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
+<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcmp
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;keyRead
 </UL>
 
-<P><STRONG><a name="[fc]"></a>saveName</STRONG> (Thumb, 642 bytes, Stack size 0 bytes, main.o(i.saveName))
+<P><STRONG><a name="[fe]"></a>saveName</STRONG> (Thumb, 642 bytes, Stack size 0 bytes, main.o(i.saveName))
 <BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
@@ -1942,23 +1957,26 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DeleteFolder
 </UL>
 
-<P><STRONG><a name="[df]"></a>slidText2Displayv2</STRONG> (Thumb, 1868 bytes, Stack size 0 bytes, main.o(i.slidText2Displayv2))
+<P><STRONG><a name="[df]"></a>slidText2Displayv2</STRONG> (Thumb, 1950 bytes, Stack size 0 bytes, main.o(i.slidText2Displayv2))
 <BR><BR>[Calls]<UL><LI><a href="#[82]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcat
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr
-<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
+<LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
-<LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
-<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
-<LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;page_findNextPage
-<LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
-<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findListTotalInArray
+<LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;queryLine
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;page_findNextPage
+<LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_sortPageAndStore
+<LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_insertLine
+<LI><a href="#[110]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findListTotalInArray
+<LI><a href="#[f0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_findIndexOfArray
+<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_RemoveArrayAtIndex
 <LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mark_CreateMarkFileConfig
-<LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_getSectorInline
-<LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_getLine
+<LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_getSectorInline
+<LI><a href="#[10f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_getLine
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_EnterLine
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_CurrentLine
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;findPreviousPage
@@ -1977,12 +1995,12 @@ Global Symbols
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<BR>[Called By]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
 <LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;slidText2Displayv2
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readFileFromCH376sToFlashRom
-<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
+<LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printStringLR
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;notepad_main
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mainMenuDisplayMode4
@@ -2001,14 +2019,14 @@ Global Symbols
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
-<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
+<BR>[Called By]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gotoLine_EnterLine
 </UL>
 
-<P><STRONG><a name="[101]"></a>subStringLanR</STRONG> (Thumb, 146 bytes, Stack size 0 bytes, main.o(i.subStringLanR))
+<P><STRONG><a name="[103]"></a>subStringLanR</STRONG> (Thumb, 146 bytes, Stack size 0 bytes, main.o(i.subStringLanR))
 <BR><BR>[Calls]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
-<LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
+<LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strncpy
 <LI><a href="#[ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
@@ -2023,15 +2041,15 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PrepareText
 </UL>
 
-<P><STRONG><a name="[103]"></a>sumLineInPreviousSec</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.sumLineInPreviousSec))
-<BR><BR>[Called By]<UL><LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;page_findNextPage
+<P><STRONG><a name="[105]"></a>sumLineInPreviousSec</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, main.o(i.sumLineInPreviousSec))
+<BR><BR>[Called By]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;page_findNextPage
 </UL>
 
-<P><STRONG><a name="[109]"></a>sumLineInSector</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.sumLineInSector))
+<P><STRONG><a name="[10b]"></a>sumLineInSector</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.sumLineInSector))
 <BR><BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readmode_countLineInOneSector
 </UL>
 
-<P><STRONG><a name="[f2]"></a>testCell</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, main.o(i.testCell))
+<P><STRONG><a name="[f4]"></a>testCell</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, main.o(i.testCell))
 <BR><BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
@@ -2082,7 +2100,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[93]"></a>wip</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, spi_flash.o(i.wip))
-<BR><BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
+<BR><BR>[Calls]<UL><LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rdsr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wsr
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wdis
@@ -2098,7 +2116,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;createFileAndWrite
 </UL>
 
-<P><STRONG><a name="[107]"></a>writeFlash</STRONG> (Thumb, 78 bytes, Stack size 0 bytes, main.o(i.writeFlash))
+<P><STRONG><a name="[109]"></a>writeFlash</STRONG> (Thumb, 78 bytes, Stack size 0 bytes, main.o(i.writeFlash))
 <BR><BR>[Calls]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits

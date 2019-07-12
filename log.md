@@ -42,3 +42,4 @@ int sizeOfList();
 [https://gist.github.com/moomdate/21493fa674fd59244e16adb14f5a6476](https://gist.github.com/moomdate/21493fa674fd59244e16adb14f5a6476)
 ## Mat 4, 2019 
   1. ฟังก์ชั่นจัดการMarkลงโค้ดหลัก
+## 

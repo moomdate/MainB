@@ -8,6 +8,8 @@
 #include "stm32f10x_spi.h"
 #include "CH376_Comm.h"
 #include "keyCode.h"
+
+#define markSector 999
 //------------------------ typedef boolean------------------------
 //================================================================
 typedef uint8_t bool;
@@ -513,6 +515,7 @@ int mark_currentPostion = 0;                 // current mark position
 int mark_maxmarkMaxMax = 0;                  // maximum page of mark
 int mark_findIndexOfArray(int target);       // find index of line
 int mark_RemoveArrayAtIndex(int position);
+void mark_sortPageAndStore();
 int mark_findIndexForInsert(int value);
 int mark_insertMark(int);
 int mark_sizeOfList();           // หาขนาด List
@@ -910,10 +913,10 @@ int mark_CreateMarkFileConfig(char *filename)
 {
   int range = 0;
   char fileTemp[15];
-  if (!mark_hasFileConfig(filename))
-  { //not found
-    range = strlen(SST25_buffer);
-    strcpy(fileTemp, filename);
+  if (!mark_hasFileConfig(filename)) // มีไฟล์่ชื้อนี้ยัง ถ้ายัง
+  {                                  // not found
+    range = strlen(SST25_buffer);    //หาความยาว
+    strcpy(fileTemp, filename);      //เก็บ
     strcat(fileTemp, "/:");
     if (range == 0)
     {
@@ -927,13 +930,16 @@ int mark_CreateMarkFileConfig(char *filename)
     printf("%s", SST25_buffer);
     return 1;
   }
-  else
+  else // มีไฟล์ชื่อนี้แล้ว
   {
     //printf("ee"); // has
     return 0;
   }
 }
-
+//==============================================
+// fn:releace string
+// origin,rex,new text
+//==============================================
 char *mark_str_replace(char *orig, char *rep, char *with)
 {
   char *result;  // the return string
@@ -982,7 +988,10 @@ char *mark_str_replace(char *orig, char *rep, char *with)
   strcpy(tmp, orig);
   return result;
 }
-
+//---------------------------------------------------------------
+//
+//
+//---------------------------------------------------------------
 int mark_searchName(char *fileName)
 {
   int pos;
@@ -995,7 +1004,6 @@ int mark_searchName(char *fileName)
   {
     startPos = ptr - SST25_buffer; // find start index
     start2 = startPos;
-
     startPos = strlen(fileName) + startPos;
     EndPos = mark_getEndSign(startPos); // find end index
     //printf("%d\r\n",strlen(data));
@@ -1066,6 +1074,14 @@ void mark_filterPageToArray(int pStart, int pEnd)
   countDigit = 0;
   //printf("start %c, end %c",data[pStart],data[pEnd]);
 }
+void mark_sortPageAndStore()
+{ //remove page and store to rom
+  readSecter(4096*markSector);
+  for (j = 0; mark_MarkerPage[j] != NULL; j++) //วนหลูปตามจำนวน page
+  {
+
+  }
+}
 int mark_RemoveArrayAtIndex(int position)
 {
   int c;
@@ -1103,7 +1119,6 @@ int mark_findIndexForInsert(int value)
   cc = mark_sizeOfList() - 1;
   while (cc >= 0)
   {
-
     if (value > mark_MarkerPage[cc])
       break;
     cc--;
@@ -1121,14 +1136,13 @@ int mark_insertMark(int line)
   position = mark_findIndexForInsert(line); // find
   printf("index %d,position %d, n %d\r\n", index, position, n);
   //printf("n = %d index %d---------\r\n",n,index);
-
   if (index != n)
   {
     return 0; //error;
   }
   else
   {
-    for (cc = n - 1; cc >= position - 1; cc--)
+    for (cc = n - 1; cc >= position - 1; cc--) 
       mark_MarkerPage[cc + 1] = mark_MarkerPage[cc];
     mark_MarkerPage[position] = line;
     return 1;
@@ -1144,6 +1158,13 @@ void mark_printfPageOfMarker(char *filename)
     cc++;
   }
 }
+/***************************************************************************
+*
+*         เพิ่มตำแหน่งหน้าไปยังชุด string abx.txt1/2/6 ที่อยู่ในตัวแปร SST25_buffer 
+* ที่อ่านมาสำหรับเก็บค่า page ใน rom หลังจากใช้ฟังก์ชั่นนี้ค่าใน SST25_buffer จะมีการเปลี่ยนแปลง
+* เช่นอ่านไฟล์อยู่ หรือกำลังพิมพ์ 
+....
+*/
 void mark_insertLine(char *filename, int line)
 {
   char temp__[30];
@@ -1152,22 +1173,23 @@ void mark_insertLine(char *filename, int line)
   printf("insert (%d)\r\n", line);
   if (mark_searchName(filename))
   { // found file
-    if (mark_insertMark(line))
+    if (mark_insertMark(line)) //ถ้าเพิ่ม Mark ไปยัง array global ได้สำเร็จ
     {
-      strcpy(temp__, filename); // store file name
-      while (mark_MarkerPage[cc] != NULL)
+      //----------------เก็บ buffer สำหรับ repleace file name และหน้า page
+      strcpy(temp__, filename);           // store file name to `temp__`
+      while (mark_MarkerPage[cc] != NULL) //ต่อหน้า /xxx/xxx
       {
-        sprintf(numStr, "%d", mark_MarkerPage[cc]);
-        strcat(temp__, numStr);
-        strcat(temp__, "/");
+        sprintf(numStr, "%d", mark_MarkerPage[cc]); // num to string
+        strcat(temp__, numStr);                     // เอา string ที่ได้มา ต่อท้าย
+        strcat(temp__, "/");                        // / ต่อท้ายstring
         cc++;
       }
       //printf("data temp -> %s\r\n",temp__);
-      strcpy(data2, mark_str_replace(SST25_buffer, data_temp, temp__));
+      strcpy(data2, mark_str_replace(SST25_buffer, data_temp, temp__)); // แทนที่ ใหม่ แทน เกา xxx/xxx -> xxx/xxx/xxx
       //free(SST25_buffer);
       //SST25_buffer = malloc(sizeof(data2));
-      memset(SST25_buffer, 0x0, strlen(SST25_buffer));
-      strcpy(SST25_buffer, data2);
+      memset(SST25_buffer, 0x0, strlen(SST25_buffer)); //ลบค่าใน SST25_buffer
+      strcpy(SST25_buffer, data2);                     // เก็บค่าเดิม
       printf("->>>>%s\r\n", SST25_buffer);
       //memset(data,0,sizeof(data));
       //strcpy(data,data2);
@@ -2166,7 +2188,6 @@ void mode4()
         {
           status____ = getMuteStatus();
         }
-
         if ((bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 2) || (bufferKey3digit[0] == 0 && bufferKey3digit[1] == 0x10 && bufferKey3digit[2] == 0))
         {
           if (status____ == 1)
@@ -2482,10 +2503,10 @@ void slidText2Displayv2()
     }
     else
     {
-      read.DisplayLine = 1; //read digit 0-19
+      read.DisplayLine = 1; // read digit 0-19
     }
   }
-  else if (keyCode == 1) //printf left
+  else if (keyCode == 1) // printf left
   {
     if (read.DisplayLine == 0)
     {
@@ -2559,11 +2580,11 @@ void slidText2Displayv2()
   }
   else if (keyCode == MARK_SET_MARK) // set mark 1-3-4
   {
-    printf("keycode testing marker line (%d)\r\n", read.currentLine + 1);
-    printf("file name:%s\r\n", fileLists[fileSelect]);
+    printf("keycode testing marker line (%d)\r\n", read.currentLine + 1); // แสดง บรรทัดปัจจุบัน
+    printf("file name:%s\r\n", fileLists[fileSelect]);                    // แสดงชื่อไฟล์
     //printf("data:%s\r\n", SST25_buffer);
-    memset(SST25_buffer, 0, strlen(SST25_buffer));
-    readSecter(4096 * 999);
+    memset(SST25_buffer, 0, strlen(SST25_buffer)); // เคลียค่าใน SST25_buffer
+    readSecter(4096 * markSector);                        // อ่านค่าใน sector
     printf("data:%s\r\n", SST25_buffer);
     if (mark_CreateMarkFileConfig(fileLists[fileSelect])) //สร้างสำเร็จ
     {
@@ -2573,9 +2594,9 @@ void slidText2Displayv2()
     {
       mark_insertLine(fileLists[fileSelect], read.currentLine + 1);
     }
-    printf("data SST:%s\r\n", SST25_buffer);
-    writeFlash(4096 * 999); // ทดสอบ
-    readSecter(read.currentSector * sector);
+    printf("data SST:%s\r\n", SST25_buffer); //แสดง mark
+    writeFlash(4096 * markSector);                  // ทดสอบ
+    readSecter(read.currentSector * sector); //อ่านไฟล์บรรทัดกลับมา
   }
   else if (keyCode == MARK_JUMP_TO_MARK)
   {
@@ -2597,7 +2618,6 @@ void slidText2Displayv2()
     //  printf("file :%s\r\n",fileLists[fileSelect]);
     mark_maxmarkMaxMax = mark_findListTotalInArray();
     //printf("----------------- list of marker --------------");
-
     if (mark_currentPostion < mark_maxmarkMaxMax)
     {                                                 // ยังไม่เกิน
       gt_Line = mark_MarkerPage[mark_currentPostion]; // กระโดดไปยังบรรทัดของ mark
@@ -2613,8 +2633,8 @@ void slidText2Displayv2()
       queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
     }
   }
-  else if (keyCode == MARK_JUMP_PREVOIUS)
-  { // mark previous
+  else if (keyCode == MARK_JUMP_PREVOIUS) // mark previous
+  {
     // mark_maxmarkMaxMax = mark_findListTotalInArray();
     if (mark_currentPostion > 0)
     {                                                 // ยังไม่เกิน
@@ -2629,6 +2649,16 @@ void slidText2Displayv2()
       read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
       readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
       queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
+    }
+  }
+  else if (keyCode == MARK_DELETE_MARK) // 1-4-5-8 + Space
+  {
+    if (mark_RemoveArrayAtIndex(mark_findIndexOfArray(read.currentLine))) // ลบ ตำแหน่ง mark ออกจาก mark_MarkerPage และทำการเลื่อนข้อมูลเข้า
+    {
+      mark_sortPageAndStore();
+      for (k = 0; mark_MarkerPage[k] != NULL; k++)
+        printf("page->%d\r\n", mark_MarkerPage[k]); // แสดงค่า page ของ mark
+      // ลบข้อมูลใน mark_MarkerPage
     }
   }
   printf(" mark position (%d) page: (%d)\r\n", mark_currentPostion, mark_MarkerPage[mark_currentPostion]);
@@ -2647,7 +2677,7 @@ void slidText2Displayv2()
     /*for (i = 0; i < sizeof(bufferQueryLine) / 2; i++)
         {
           printf("0x%x,", bufferQueryLine[i]);
-        }*/
+      }*/
     printf("Line (%d) :%s\r\n", read.currentLine, bufferQueryLine);
   }
   printf("sector:(%d) total Sector (%d)\r\n", read.currentSector, read.TotalSector);
@@ -2661,6 +2691,7 @@ void StoreLine()
     read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
     //StorePage(i);
     // printf("Line (%d) : %d\r\n",i,read.lineInsector[i]);
+    
     read.totalLine += read.lineInsector[i]; // เก็บทรรทัดทั้งหมด
   }
 }
@@ -3652,19 +3683,18 @@ int keyMapping(int a, int b, int c)
   }
   else if (a == 0x9a && isSpaceKey(b) == true && c == 0x00)
   {
-    // Space + Enter + j
-    // 2-4-5 + space + enter
+    // 2-4-5-8 + Space
     keyCode__ = MARK_JUMP_NEXT;
-  }
-  else if (a == 0x5a && isSpaceKey(b) == true && c == 0x00)
-  {
-    // Space + Backspace + j
-    keyCode__ = MARK_JUMP_PREVOIUS;
   }
   else if (a == 0x99 && isSpaceKey(b) == true && c == 0x00)
   {
-    // Space + Backspace + j
+    // 1-4-5-8 +Space
     keyCode__ = MARK_DELETE_MARK;
+  }
+  else if (a == 0x5a && isSpaceKey(b) == true && c == 0x00)
+  {
+    // 2-4-5-7+ Space
+    keyCode__ = MARK_JUMP_PREVOIUS;
   }
   // next page in read mode
   else if ((a == 0x00 && b == 0x41 && c == 0x00) || (a == 0x00 && b == 0x42 && c == 0x00) || (a == 0x00 && b == 0x43 && c == 0x00))
@@ -5904,7 +5934,7 @@ void BluetoothMode()
       }
     }
   }
-  else
+  else // หลังจากเชื่อมต่อ
   {
     sendUart(1);
     if (pushToDisplay == 1)
@@ -5913,9 +5943,8 @@ void BluetoothMode()
       Delay(0x55F);
       for (j = 20; j >= 0; j--)
       {
-        cell_sentdata(0xff); //clear
+        cell_sentdata(0xff); // clear
       }
-
       Delay(0x55F);
       for (j = 23; j >= 0; j--)
       {
@@ -5934,7 +5963,7 @@ void BluetoothMode()
           if (hexPrep != 0xff && hexPrep != 0xa3 && hexPrep != 0x14)
           {
             //ff ff 3a
-            cell_sentdata(~hexPrep);
+            cell_sentdata(~hexPrep); // ~กลับบิต
           }
         }
       }

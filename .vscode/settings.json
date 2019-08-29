@@ -3,7 +3,9 @@
         "stdio.h": "c",
         "CH376HFT.C": "cpp",
         "FILE_SYS.C": "cpp",
-        "PARA_HW.C": "cpp"
+        "PARA_HW.C": "cpp",
+        "stm32f10x_spi.h": "c",
+        "stm32f10x_usart.h": "c"
     },
     "editor.fontFamily": "SOV_monomon, 'Courier New', monospace",
     "C_Cpp.errorSquiggles": "Disabled",

@@ -219,7 +219,7 @@ int ex_countPath(char *pathSource);
 void saveName(void);
 int maxFile = 0;
 int fileSelect = 0;
-
+// read text to rom
 int readFileFromCH376sToFlashRom(char *filename);
 
 char Dirpath[30] = "";
@@ -803,9 +803,15 @@ uint8_t tempLL[14];
 char rootBuffer[20];
 char fileByte[20];
 
+//--------22/7/2562--------
+void readTextFileToMemmory(char *fileName);
+//void prerpare_edit_notepad();
+int raedingProcess = 0; // edit ch376
+bool Editing = false;
+void editFile(void);
+void prepareEditor(void);
 int main(void)
 {
-
   Notepad.cursorPosition = 0;
   Notepad.currentLine = 0;
   Notepad.displayFirst = false;
@@ -852,6 +858,247 @@ int main(void)
   //getLongName("/avccc~1.txt", "test");
   //readConfigFileFormSD();
 }
+//-------------- เอาไฟล์ที่อ่านใน ROM เก็บเข้า Array เพื่อแก้ไขต่อไป ----------------
+
+void editFile()
+{
+  printf("Editing ----------------\r\n");
+}
+void prepareEditor()
+{
+  /*
+  AmountSector
+  AmountSectorT
+  */
+  // Sector ที่ได้จะได้ไม่เกิน 4096 byte
+  printf("sector = %d & %d\r\n", AmountSector, AmountSectorT);
+}
+/* 
+Function:  readTextFileToMemmory(char *fileName)
+---------------------------------------
+-> อ่านไฟล์จาก SD Card ไปยัง ROM และทำการอ่าานมาแก้ไขใน memory
+->
+RETURN :  ถ้าไฟล์น้อยกว่า 4k อ่านได้ || ถ้ามากกว่าให้รีเทิร์น error
+987
+*/
+void readTextFileToMemmory(char *fileName____)
+{
+  readFileStatus___ = 1;    //ค่าเริ่มต้นการอ่าน เพื่อให้ติดหลูปการอ่านไฟล์
+  ROMR.endReadFile = false; //จบการอ่่าน
+  ROMR.countdata_Temp512 = 0;
+  ROMR.lastAscii = 0;
+  ROMR.addressWriteFlashTemp = 0;
+  addressSector = 0;
+  countSector512 = 0;
+  countSector4096 = 0;
+  countSector = 0;
+  // stringToUnicodeAndSendToDisplay("Reading....");
+  // SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
+  // printf("reading............ all\r\n");
+  delay_ms(10);
+  command_ = 4;
+  while (readFileStatus___ == 1)
+  {
+    if (command_ == 4)
+    {
+      setFilename(fileName____);                     // ใช้คำสั่ง set ชื่อไฟล์
+      printf("opening file (%s)\r\n", fileName____); // กำลังเปิดไฟล์ ชื่อไฟล์
+      command_++;                                    // 5
+      delay_ms(45);
+    }
+    else if (command_ == 5)
+    {
+      SendCH370(FileOpen, sizeof(FileOpen));
+      command_++; //6
+      printf("openfile %s status  \r\n", fileName____);
+      delay_ms(45);
+    }
+    else if (command_ == 6)
+    {
+      SendCH370(SetByteRead, sizeof(SetByteRead));
+      printf("SetByteRead 3\r\n");
+      //result 1D can read
+      //0x1d สามารถอ่านไฟล์ได้
+      command_ = 99;
+      delay_ms(30);
+    }
+    else if (command_ == 95)
+    {
+      //left (prevois line)
+      printf("continueRead 4\r\n");
+      SendCH370(continueRead, sizeof(continueRead));
+      command_++; //96
+    }
+    else if (command_ == 98)
+    {
+      //printf("reading 5\r\n");
+      //right (next line)
+      command_ = 6;
+    }
+    else if (command_ == 99)
+    {
+      printf("read data 6\r\n");
+      SendCH370(ReadData, sizeof(ReadData));
+      command_++;
+    }
+
+    //menu_s();
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      // printf("a");
+      i1 = USART_ReceiveData(USART3);
+      //printf("command = %d ,%x", i1,command_); //ปริ้นแล้วอ่านไม่ทัน
+      if (command_ == 96 && i1 == 0x14)
+      {
+        command_ = 6;
+      }
+      if (i1 == 0x80 || i1 == 0x14)
+      {
+        // printf("funk\r\n");
+      }
+      else if (command_ == 100 && countSector512 < 4 && ROMR.countdata_Temp512 < 512)
+      {
+        if (i1 == '\0')
+        {
+          // printf("End of File\r\n");-
+        }
+        else if (ROMR.countdata_Temp512 < ((128) * (countSector512 + 1)) - 1)
+        {
+          //------------------------------128 byte----------------------------
+          // เก็บcharactor 128 byte
+          ////////////////////////////////////////////////////////////////////
+          ROMR.dataTemp512[ROMR.countdata_Temp512] = i1;
+          ROMR.countdata_Temp512++;
+
+          ROMR.waitEnd = 0;
+          ROMR.lastAscii = i1;
+        }
+        else
+        {
+          //-----------------------------------------------------------------
+          // ข้อมูลที่่อ่านครบ 128*4 = 512
+          // ทำการเพิ่มคัวแปร countSector512
+          ///////////////////////////////////////////////////////////////////
+
+          countSector512++;
+          ROMR.dataTemp512[ROMR.countdata_Temp512] = i1;
+          ROMR.countdata_Temp512++;
+          if (countSector512 >= 4)
+          {
+            //printf("store \r\n");
+            //---------------------------512 byte-----------------------------
+            //  เอาข้อมูล 512 เก็บลง buffer ยาว [4096] จนครบ
+            //
+            //////////////////////////////////////////////////////////////////
+            command_ = 95;
+            for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
+            {
+
+              SST25_buffer[i - (sector * countSector)] = ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp];
+              ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp] = '\0'; //clear buffer
+              // printf("92 2\r\n");
+            }
+            // printf("store 2\r\n");
+            //  ทำการเพิ่มจำนวนตัวแปรที่นับ sector:countSector4096
+            countSector4096++;
+            //writeFlash(ROMR.addressWriteFlashTemp);
+            ROMR.addressWriteFlashTemp += ROMR.countdata_Temp512;
+            if (countSector4096 >= 8)
+            {
+              //---------------------------4096 byte---------------------------
+              // ข้อมูลครบ 512*8 = 4096 ----> 1 sector
+              // push (string 4096 charactor) to flash rom.
+              //
+              //////////////////////////////////////////////////////////////////
+              //use variable:SST25_W_BLOCK //4096
+              // stringToUnicodeAndSendToDisplay("Reading....");
+              writeFlash(addressSector); //1*4096
+              //clearUnsignChar();
+
+              //Delay(0xff);
+              stringToUnicodeAndSendToDisplay("On read file Reading....");
+              addressSector += sector;
+              countSector4096 = 0;
+              //--------------------------------------------------------------------------------------------
+              //check this value `ROMR.addressWriteFlashTemp`--
+              //--------------------------------------------------------------------------------------------
+              countSector++;
+            }
+            //--- reset temp sector---//
+            ROMR.countdata_Temp512 = 0;
+            countSector512 = 0;
+          }
+          else
+          {
+            command_ = 6;
+          }
+        }
+      }
+    }
+    else
+    {
+      if (ROMR.lastAscii == i1)
+      {
+        ROMR.waitEnd++;
+        //กำหนดระยะเวลา หากไม่มีข้อมูลแล้ว จะเข้าในเงื่อนไขนี้
+        if (ROMR.waitEnd == 100 * 100) // end of file check time out
+        {
+          SendCH370(FileClose0, sizeof(FileClose0));
+          beepError();
+          for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
+          {
+            SST25_buffer[i - (sector * countSector)] = ROMR.dataTemp512[i - ROMR.addressWriteFlashTemp];
+          }
+          configFlash();
+          writeFlash(addressSector);
+
+          ROMR.addressWriteFlashTemp += ROMR.countdata_Temp512;
+          ROMR.waitEnd++;
+          //----------------------store last sector to flash rom-----------------------
+          //
+          /////////////////////////////////////////////////////////////////////////////
+          // readSecter(0);
+          //printf("string** : %s \r\nEND**", SST25_buffer);
+          /*SPI_FLASH_CS_LOW();
+                    SST25_R_BLOCK(0, SST25_buffer, sector);
+                    SPI_FLASH_CS_HIGH();
+                    Delay(0xffff);
+                    convert_text2_buffer(SST25_buffer);*/
+
+          readFileStatus___ = 0; //exit read text
+
+          AmountSector = ROMR.addressWriteFlashTemp / sector;  // ---- จำนวน sector ----
+          AmountSectorT = ROMR.addressWriteFlashTemp % sector; // ---- เศษ ที่เหลือของ sector ---
+
+          //----------------------------------
+          // เก็บบรรทัด
+          // จำนวน sector และตัวเศษ
+          /*
+          mark_init(); // set mark position at 0
+          mark_readFormROM();
+          initSlidingMode();
+          readSecter(0);
+          */
+          /* while (Editing == true)
+          {
+            // query string-
+            // menu_s();
+            keyRead();
+            // printf("9999999999999999srwetre\r\n");
+            // readFileStatus___
+          }*/
+
+        } // ทดสอบ
+      }
+    }
+  }
+  //return 0;
+}
+/*
+void prerpare_edit_notepad()
+{
+
+}*/
 int mark_findListTotalInArray()
 {
   int acce = 0;
@@ -1076,10 +1323,9 @@ void mark_filterPageToArray(int pStart, int pEnd)
 }
 void mark_sortPageAndStore()
 { //remove page and store to rom
-  readSecter(4096*markSector);
+  readSecter(4096 * markSector);
   for (j = 0; mark_MarkerPage[j] != NULL; j++) //วนหลูปตามจำนวน page
   {
-
   }
 }
 int mark_RemoveArrayAtIndex(int position)
@@ -1142,7 +1388,7 @@ int mark_insertMark(int line)
   }
   else
   {
-    for (cc = n - 1; cc >= position - 1; cc--) 
+    for (cc = n - 1; cc >= position - 1; cc--)
       mark_MarkerPage[cc + 1] = mark_MarkerPage[cc];
     mark_MarkerPage[position] = line;
     return 1;
@@ -1172,7 +1418,7 @@ void mark_insertLine(char *filename, int line)
   int cc = 0;
   printf("insert (%d)\r\n", line);
   if (mark_searchName(filename))
-  { // found file
+  {                            // found file
     if (mark_insertMark(line)) //ถ้าเพิ่ม Mark ไปยัง array global ได้สำเร็จ
     {
       //----------------เก็บ buffer สำหรับ repleace file name และหน้า page
@@ -1280,7 +1526,7 @@ void MainPrograme()
     keyRead(); // mode = 0; เลื่อนเมนู enter, exit
     while (mode == MODE_NOTEPAD)
     {
-      doing = 1;
+      doing = 1; //ตัวแปร global สำหรับทำงาน notepad :D
       printf("--------------------------reg-------------\r\n");
       notepad_main();
     }
@@ -1349,7 +1595,7 @@ int CH376_GetFileSize()
 
   }*/
   printf("%d %d %d %d\r\n", filesize__[0], filesize__[1], filesize__[2], filesize__[3]);
-  return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256));
+  return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256)); // คำนวณขนาดไฟล์ https://arduinobasics.blogspot.com/2015/05/ch376s-usb-readwrite-module.html
 }
 // function
 uint8_t CH376_FileClose()
@@ -1394,7 +1640,6 @@ int getLongName(char *origiName, char *bufferLong)
 {
   //ex. origin name "avccc~1.txt"
   int timeOut = 3000;
-
   int tt = 0;
   command_ = 0;
   while (timeOut)
@@ -2372,9 +2617,10 @@ void QueryLineWithCommand(int line)
       }
     }*/
 }
-/*------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
 ฟังก์ชั่นสำหรับแสดงผลไฟล์ที่อ่านลงรอม โดยฟังก์ชั่นนี้ทำหน้าที่อ่านข้อมูลจาก Rom มาแสดงที่ Display ทีละ sector
---------------------------------------------------------------------------*/
+-------------------------------------------------------------------------------------*/
 void slidText2Displayv2()
 {
   //clearUnsignChar();
@@ -2584,7 +2830,7 @@ void slidText2Displayv2()
     printf("file name:%s\r\n", fileLists[fileSelect]);                    // แสดงชื่อไฟล์
     //printf("data:%s\r\n", SST25_buffer);
     memset(SST25_buffer, 0, strlen(SST25_buffer)); // เคลียค่าใน SST25_buffer
-    readSecter(4096 * markSector);                        // อ่านค่าใน sector
+    readSecter(4096 * markSector);                 // อ่านค่าใน sector
     printf("data:%s\r\n", SST25_buffer);
     if (mark_CreateMarkFileConfig(fileLists[fileSelect])) //สร้างสำเร็จ
     {
@@ -2595,7 +2841,7 @@ void slidText2Displayv2()
       mark_insertLine(fileLists[fileSelect], read.currentLine + 1);
     }
     printf("data SST:%s\r\n", SST25_buffer); //แสดง mark
-    writeFlash(4096 * markSector);                  // ทดสอบ
+    writeFlash(4096 * markSector);           // ทดสอบ
     readSecter(read.currentSector * sector); //อ่านไฟล์บรรทัดกลับมา
   }
   else if (keyCode == MARK_JUMP_TO_MARK)
@@ -2691,7 +2937,7 @@ void StoreLine()
     read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
     //StorePage(i);
     // printf("Line (%d) : %d\r\n",i,read.lineInsector[i]);
-    
+
     read.totalLine += read.lineInsector[i]; // เก็บทรรทัดทั้งหมด
   }
 }
@@ -3154,6 +3400,7 @@ void notepad_main()
         }
         notepad_checkenterAndpush(Notepad.buffer_string[Notepad.currentLine]); //-----บัค
       }
+      // ถ้าคีย์ที่กดเป็น router keys
       else if (seeCur == 1) // cursor key
       {
         Notepad.cursorPosition = mapCursor(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
@@ -3177,14 +3424,14 @@ void notepad_main()
           Notepad.multiplyCursor = 0;
         }
         //   printf("cursor set at:%d\r\n", Notepad.cursorPosition + Notepad.multiplyCursor);
-      }
+      } // end router keys
       else if (seeCur != 1)
       {
         // เก็บข้อความที่พิมพ์ตรงนี้
         keyCode = unicode_to_ASCII(bufferKey3digit[0]);
         if (keyCode > 127)
-          keyCode = ~bufferKey3digit[0];
-        if (keyCode == 0) //space bar edit in unicode table
+          keyCode = ~bufferKey3digit[0]; //One's Complement
+        if (keyCode == 0)                //space bar edit in unicode table
           keyCode = 32;
         if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1)
         {
@@ -3234,6 +3481,7 @@ void notepad_main()
       clearKeyValue(); // clear key buffer
     }                  //end key event
     d_Time++;
+    //กระพริบ cursor
     if (d_Time >= delayCur) //blink cursor
     {
       //blink cu
@@ -3253,13 +3501,14 @@ void notepad_main()
         subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
       }
       d_Time = 0;
-    }                            // end blink cursor
+    } // end blink cursor
+    //กดออก
     if (doing == 0 && mode == 0) // after exit form notepad mode display 'notepad'
     {
       // หลังจากออกจากโหมด notepad โดยการกด key+e ให้แสดงข้อความ notepad
       stringToUnicodeAndSendToDisplay("notepad");
     }
-  }
+  } //end while loop
 }
 //-------------------------check maxline--------------------
 //
@@ -3719,6 +3968,10 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 789;
   }
+  else if ((a == 0x0d && b == 0x00 && c == 0x00))
+  { // [test] edit file (1+3+4 + space)
+    keyCode__ = 987;
+  }
   return keyCode__;
 }
 bool isSpaceKey(int a)
@@ -3844,6 +4097,10 @@ void keyRead()
     {
       slidText2Displayv2();
     }
+    if (mode == MODE_READ && Editing == true) //edit
+    {
+      editFile();
+    }
     /*
     ============================================================
     โหมด 2 ก่อนอ่านไฟล์
@@ -3911,12 +4168,12 @@ void keyRead()
        * ------------------------โยกจอยทางขวา เข้าอ่านอไฟล์ หรือเปิดโฟลเดอร์
        *==============================================================
        */
-      if (keyCode == 39)
+      if (keyCode == 39) //เปิด folder of file
       {
         // enter // right joy
         // command_ = 16;
         printf("Opening %s\r\n", fileLists[fileSelect]);
-        printf("type:%d\r\n", ex_checkFileType(fileLists[fileSelect]));
+        printf("type:%d\r\n", ex_checkFileType(fileLists[fileSelect])); // เช็คประเภทไฟล์
         /* =============================================
          * ------------------ถ้าเป็นโฟลเดอร์
          * =============================================
@@ -3954,15 +4211,43 @@ void keyRead()
          * */
         else if (ex_checkFileType(fileLists[fileSelect]) == 1 || ex_checkFileType(fileLists[fileSelect]) == 2 || ex_checkFileType(fileLists[fileSelect]) == 3)
         {
+          // read text to rom
           readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์ open file
         }
       }
-      if (keyCode == 2) // ยังไม่เสร็จ 787 display file size
+      if (keyCode == 987) // แก้ไขไฟล์ (1+3+4 + space) edit
+      {                   // test edit file
+        printf("====================================================\r\n");
+        printf("---------------------Edit file----------------------\r\n");
+        printf("====================================================\r\n");
+        readTextFileToMemmory(fileLists[fileSelect]); // อ่านไฟล์จาก sd card  ,อ่���นเข้า ROM for edit
+        printf("end read %d\r\n", readFileStatus___);
+        prepareEditor(); //เตรียมแก้ไขไฟล์ อ่านข้อมูลจาก ROM เข้าแรม
+        while (1)
+        {
+          doing = 1; // enable notepad mode
+          printf("--------------------------reg-------------\r\n");
+          notepad_main();
+        }
+        //editFile();
+        /*  getFileSize(fileLists[fileSelect]);        // เปิดไฟล์
+        ch376_status = CH376_GetFileSize();        // อ่านขนาดไฟล์
+        SendCH370(FileClose0, sizeof(FileClose0)); // ปิดไฟล์
+        ex_cdWithPath(Dirpath);                    // เข้า path ใหม่
+        if (ch376_status <= 4096)                  // ขนาดไฟล์ไม่ใหญ่เกินขนาดแรม
+        {
+          printf("file size: (%d)\r\n", ch376_status);  // แสดงขนาดไฟล์ห
+         
+          //prerpare_edit_notepad();                      // อ่านจาก ROM เข้า MEMMORY();
+          //notepad_main();                               // ใช้ notepad เดิม ไม่ต้องแก้เพิ่ม
+        }*/
+      }
+      if (keyCode == 2) // 787 display file size
       {
         getFileSize(fileLists[fileSelect]);        // เปิดไฟล์
         ch376_status = CH376_GetFileSize();        // อ่านขนาดไฟล์
         SendCH370(FileClose0, sizeof(FileClose0)); // ปิดไฟล์
-        if (ch376_status >= 1000)
+        if (ch376_status >= 1000)                  // แปลงแบบย่อ
         {
           sprintf(fileByte, "%d", ch376_status / 1000);
           strcat(fileByte, " Kbytes");
@@ -3974,7 +4259,7 @@ void keyRead()
         }
         printf("file size %s byte\r\n", fileByte); // แสดง
         stringToUnicodeAndSendToDisplay(fileByte); // ex. 1000 bytes
-        ex_cdWithPath(Dirpath);                    // เข้าพาทใหม่
+        ex_cdWithPath(Dirpath);                    // เข้าพาทใหม่ เพราะถูก รีเซ็ทจากการอ่าน File size
         //========================
         //ch376_status = CH376_FileClose();
         //printf("file close status %d \r\n", ch376_status);
@@ -4052,7 +4337,9 @@ void keyRead()
 /*==========================================================================
 -------------readFileFromCH376sToFlashRom-----------------------------------
  อ่านข้อมูลจาก SD Card โดยใช้ chip CH376 ลง Flash rom
-=============================================================================*/
+ read text to rom
+ 789
+============================================================================*/
 int readFileFromCH376sToFlashRom(char *fileName___)
 {
   readFileStatus___ = 1;    //ค่าเริ่มต้นการอ่าน เพื่อให้ติดหลูปการอ่านไฟล์
@@ -4089,7 +4376,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     else if (command_ == 6)
     {
       SendCH370(SetByteRead, sizeof(SetByteRead));
-      //printf("reading 3\r\n");
+      printf("SetByteRead 3\r\n");
       //result 1D can read
       //0x1d สามารถอ่านไฟล์ได้
       command_ = 99;
@@ -4098,7 +4385,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     else if (command_ == 95)
     {
       //left (prevois line)
-      //printf("reading 4\r\n");
+      printf("continueRead 4\r\n");
       SendCH370(continueRead, sizeof(continueRead));
       command_++; //96
     }
@@ -4110,7 +4397,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     }
     else if (command_ == 99)
     {
-      // printf("reading 6\r\n");
+      printf("read data 6\r\n");
       SendCH370(ReadData, sizeof(ReadData));
       command_++;
     }
@@ -4120,7 +4407,7 @@ int readFileFromCH376sToFlashRom(char *fileName___)
     {
       // printf("a");
       i1 = USART_ReceiveData(USART3);
-      // printf("command = %d ,%x", i1,command_);
+      //printf("command = %d ,%x", i1,command_); //ปริ้นแล้วอ่านไม่ทัน
       if (command_ == 96 && i1 == 0x14)
       {
         command_ = 6;
@@ -4217,7 +4504,6 @@ int readFileFromCH376sToFlashRom(char *fileName___)
         if (ROMR.waitEnd == 100 * 100) // end of file check time out
         {
           SendCH370(FileClose0, sizeof(FileClose0));
-
           beepError();
           for (i = ROMR.addressWriteFlashTemp; i < ROMR.addressWriteFlashTemp + 512; i++)
           {
@@ -5403,7 +5689,7 @@ void clearSector(int address)
 //
 ////////////////////////////////////////////////////////////////////
 
-void ex_OpenDir()
+void ex_OpenDifr()
 {
   //readf
   //printf("ex_OpenDir....\r\n");
@@ -6013,7 +6299,7 @@ void SendCommandToBLE2(int data)
   }
 }
 //---------------------------send command to ch376s---------------------------
-//
+// ส่งคำสั่งไปยัง ch376
 //
 //////////////////////////////////////////////////////////////////////////////
 void SendCH370(uint8_t data[], uint8_t sizeOfData)

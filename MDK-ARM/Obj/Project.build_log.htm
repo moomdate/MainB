@@ -21,7 +21,7 @@ Target DLL:      UL2CM3.DLL V1.160.12.0
 Dialog DLL:      TARMSTM.DLL V1.66.0.0
  
 <h2>Project:</h2>
-E:\backup desktop2\HY-smart stm32\HY-Smart 2012.2.25\ADC+USART\ADC+DMA\MDK-ARM\Project.uvproj
+D:\backup desktop2\HY-smart stm32\HY-Smart 2012.2.25\ADC+USART\ADC+DMA\MDK-ARM\Project.uvproj
 Project File Date:  05/07/2019
 
 <h2>Output:</h2>
@@ -72,73 +72,73 @@ compiling main.c...
   int CH376_GetFileSize();
 ..\USER\main.c(798): warning:  #1295-D: Deprecated declaration testGetFileSize - give arg types
   void testGetFileSize();
-..\USER\main.c(871): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1118): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     memset(SST25_buffer, 0, strlen(SST25_buffer));
-..\USER\main.c(902): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1149): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     ptr = (int *)strstr(SST25_buffer, filename);
-..\USER\main.c(918): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1165): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       range = strlen(SST25_buffer);    //หาความยาว
-..\USER\main.c(924): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(1171): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcpy(SST25_buffer, fileTemp);
-..\USER\main.c(928): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(1175): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcat(SST25_buffer, fileTemp);
-..\USER\main.c(965): warning:  #1293-D: assignment in condition
+..\USER\main.c(1212): warning:  #1293-D: assignment in condition
     for (count = 0; tmp = strstr(ins, rep); ++count)
-..\USER\main.c(1000): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1247): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     ptr = strstr(SST25_buffer, fileName);
-..\USER\main.c(1005): warning:  #42-D: operand types are incompatible ("char *" and "unsigned char *")
+..\USER\main.c(1252): warning:  #42-D: operand types are incompatible ("char *" and "unsigned char *")
       startPos = ptr - SST25_buffer; // find start index
-..\USER\main.c(1005): warning:  #993-D: subtraction of pointer types "char *" and "unsigned char *" is nonstandard
+..\USER\main.c(1252): warning:  #993-D: subtraction of pointer types "char *" and "unsigned char *" is nonstandard
       startPos = ptr - SST25_buffer; // find start index
-..\USER\main.c(1011): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
+..\USER\main.c(1258): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
       strncpy(data_temp, SST25_buffer + start2, EndPos - start2);
-..\USER\main.c(997): warning:  #177-D: variable "pos"  was declared but never referenced
+..\USER\main.c(1244): warning:  #177-D: variable "pos"  was declared but never referenced
     int pos;
-..\USER\main.c(1028): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1275): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     DataSize = strlen(SST25_buffer);
-..\USER\main.c(1188): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(1434): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
         strcpy(data2, mark_str_replace(SST25_buffer, data_temp, temp__)); // แทนที่ ใหม่ แทน เกา xxx/xxx -> xxx/xxx/xxx
-..\USER\main.c(1191): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1437): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
         memset(SST25_buffer, 0x0, strlen(SST25_buffer)); //ลบค่าใน SST25_buffer
-..\USER\main.c(1192): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(1438): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcpy(SST25_buffer, data2);                     // เก็บค่าเดิม
-..\USER\main.c(1657): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
+..\USER\main.c(1902): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
     int compareInLine = findCurrentPageInArr();
-..\USER\main.c(1659): warning:  #177-D: variable "ccg"  was declared but never referenced
+..\USER\main.c(1904): warning:  #177-D: variable "ccg"  was declared but never referenced
     int ccg = 0;
-..\USER\main.c(1682): warning:  #177-D: variable "cnc"  was declared but never referenced
+..\USER\main.c(1927): warning:  #177-D: variable "cnc"  was declared but never referenced
     int cnc = 0;
-..\USER\main.c(2017): warning:  #68-D: integer conversion resulted in a change of sign
+..\USER\main.c(2262): warning:  #68-D: integer conversion resulted in a change of sign
           Line = -1;
-..\USER\main.c(2093): warning:  #68-D: integer conversion resulted in a change of sign
+..\USER\main.c(2338): warning:  #68-D: integer conversion resulted in a change of sign
     if (Line == -1)
-..\USER\main.c(2302): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2546): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     length__ = strlen(SST25_buffer);
-..\USER\main.c(2587): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2832): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       memset(SST25_buffer, 0, strlen(SST25_buffer)); // เคลียค่าใน SST25_buffer
-..\USER\main.c(2605): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2850): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       memset(SST25_buffer, 0, strlen(SST25_buffer));
-..\USER\main.c(2692): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(2937): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
       read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
-..\USER\main.c(3141): warning:  #186-D: pointless comparison of unsigned integer with zero
+..\USER\main.c(3387): warning:  #186-D: pointless comparison of unsigned integer with zero
             while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0)
-..\USER\main.c(4637): warning:  #9-D: nested comment is not allowed
+..\USER\main.c(4923): warning:  #9-D: nested comment is not allowed
   //////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(4718): warning:  #9-D: nested comment is not allowed
+..\USER\main.c(5004): warning:  #9-D: nested comment is not allowed
   //////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(4735): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(5021): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
     writeFile4096(fname, SST25_buffer);
-..\USER\main.c(4750): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5036): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, buffer_afterRemove);
-..\USER\main.c(4751): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5037): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, "\r\n"); // ใส่ \r\n
-..\USER\main.c(5495): warning:  #9-D: nested comment is not allowed
+..\USER\main.c(5781): warning:  #9-D: nested comment is not allowed
   //////////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(5644): warning:  #1166-D: returning pointer to local variable
+..\USER\main.c(5930): warning:  #1166-D: returning pointer to local variable
     return DataForWrite_aftersort;
 ..\USER\main.c: 54 warnings, 0 errors
 linking...
-Program Size: Code=28212 RO-data=768 RW-data=804 ZI-data=24980  
+Program Size: Code=29700 RO-data=768 RW-data=812 ZI-data=24980  
 FromELF: creating hex file...
 ".\Obj\Project.axf" - 0 Error(s), 54 Warning(s).
 Build Time Elapsed:  00:00:03

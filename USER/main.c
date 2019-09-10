@@ -145,7 +145,7 @@ int readFileStatus___ = 0;
 int countFileLegth = 0;
 
 int command_ = 0;
-
+int command2_ = 0;
 int d_Time = 0;
 int toggleCur = 0;
 
@@ -158,7 +158,7 @@ int ABCCCCC = 1; // ใช้แทน readStatus
 
 ///------------------------------------spi---------------------------------//
 void keyboardMode(void);
-void SendCommandToBLE2(int);
+
 void Init_SPI(void);
 void delay_SPI(void);
 void sentdata_cell(int data);
@@ -185,7 +185,7 @@ void clearDot(void);
 void menu_s(void);
 void menu_CH376(void); //for ch376s
 void caseMenu(int);
-void copy_string(char *target, char *source);
+//void copy_string(char *target, char *source);
 int fileWrite(int k, char *filename, char *string);
 void writeFile4096(char *fname, char *strSource);
 
@@ -285,7 +285,7 @@ void prepareSD_Card(void);
 #define scrapSize (notepad_Line * notepad_MaxinLine) - bufferMaxSize
 #define notepad_MaxinLine 40
 #define maxMenu 4
-int enterSign = 195; //escape
+int enterSign = '-'; //escape
 char buffAs[2];
 
 void notepad_main(void);
@@ -332,7 +332,7 @@ char keybuff[2] = "\0";
 
 //-------------------------------------------------------------
 //get name bluetooth
-void atName_(void);
+
 char *getBluetoothName(void);
 int atName[] = {0x41, 0x54, 0x2B, 0x4E, 0x41, 0x4D, 0x45, 0x3F};
 int sendStatus = 1;
@@ -652,8 +652,6 @@ void appendToSECTOR()
 void MainPrograme();
 int doing = 0;
 
-uint16_t page_findNextPage();
-uint16_t page_getCurrentPage();
 int sumLineInPreviousSec();
 typedef struct marker
 {
@@ -783,8 +781,7 @@ uint8_t CH376Init();
 uint8_t CH376_SetReadForm_SD();
 uint8_t CH376_Disk_Connect();
 uint8_t CH376_UsbDiskMount();
-uint8_t CH376_FileOpen();
-uint8_t CH376_FileClose();
+
 bool isSpaceKey(int);
 char tempp__[20];
 int filesize__[4];
@@ -795,7 +792,6 @@ int waitRespon(int);
 int timeOut_resp = 1000;
 int ch376_status;
 int preStatus = 1;
-void testGetFileSize();
 
 uint8_t loovar = 0;
 uint8_t tempLL[14];
@@ -810,6 +806,122 @@ int raedingProcess = 0; // edit ch376
 bool Editing = false;
 void editFile(void);
 void prepareEditor(void);
+bool useFEdit = 0;
+void saveNameEdit(void);
+//void createFileAndWrite_hisPath(char *);
+int createFile2(char *name);
+void writeFile40962(char *fname, char *strSource);
+int fileWrite2(int k, char *filename, char *string__);
+
+void prepareForOpenDir()
+{
+  while (1)
+  {
+    if (command_ == 1)
+    {
+      SendCH370(checkConnection, sizeof(checkConnection));
+      command_++; //2
+      delay_ms(50);
+    }
+    else if (command_ == 2)
+    {
+      SendCH370(setSDCard, sizeof(setSDCard));
+      command_++; //4
+      delay_ms(50);
+    }
+    else if (command_ == 3)
+    {
+      SendCH370(USBDiskMount, sizeof(USBDiskMount));
+      command_++; //6
+      delay_ms(50);
+    }
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(USART3);
+      printf("0x%x \r\n");
+    }
+    if (command_ == 4 && i1 == 0x14)
+      break;
+  }
+}
+void prepareForOpenDir2(char *fileName)
+{
+  command_ = 5;
+  printf("----prepareForOpenDir2----------\r\n");
+  while (1)
+  {
+    if (command_ == 5)
+    {
+      setFilename(fileName); // ใช้คำสั่ง set ชื่อไฟล์
+      //printf("opening file (%s)\r\n", fileName____); // กำลังเปิดไฟล์ ชื่อไฟล์
+      command_++; // 5
+      delay_ms(45);
+    }
+    else if (command_ == 6)
+    {
+      SendCH370(FileOpen, sizeof(FileOpen));
+      command_++; //6
+      //printf("openfile %s status  \r\n", fileName____);
+      delay_ms(45);
+    }
+    if (USART_GetITStatus(USART3, USART_IT_RXNE))
+    {
+      i1 = USART_ReceiveData(USART3);
+      printf("0x%x \r\n");
+    }
+    if (command_ == 7 && i1 == 0x14)
+      break;
+  }
+}
+void createFileAndWrite_hisPath(char *fname)
+{
+  /*int count__a = 0;
+
+  //ex_exitOncePath();
+
+  //ex_exitOncePath();
+  //printf("dir path is %s -----------\r\n", Dirpath);
+  command_ = 1;
+  prepareForOpenDir();
+  ex_cdWithPath(Dirpath);
+  command_ = 0;
+  while (1)
+  {
+    if (createFile(fname) == 1) // สร้างไฟล์
+      break;
+  }
+
+  SendCH370(ResetAll, sizeof(ResetAll)); // reset all
+  delay_ms(200);
+  printf("file created \r\n");
+  prepareForOpenDir2(fname);
+  ex_cdWithPath(Dirpath);
+  command_ = 1;
+  prepareForOpenDir();    // open path
+  ex_cdWithPath(Dirpath); // open path
+  printf("\r\ncd path \r\n");
+  //prepareForOpenDir2(fname); // open file
+  delay_ms(100);
+  //command_ = 1;
+  PrepareText(); // เตรียมข้อความ ลบ Enter Sign add '\r\n'
+  printf("end prepare\r\n");
+  writeFile4096(fname, SST25_buffer); //เขียนไฟล์*/
+  //use
+  command_ = 0;
+  command_++;
+  while (1)
+  {
+    if (createFile(fname) == 1) // สร้างไฟล์
+      break;
+  }
+  SendCH370(ResetAll, sizeof(ResetAll)); // reset all
+  delay_ms(100);
+  command_ = 1;
+  PrepareText(); // เตรียมข้อความ ลบ Enter Sign add '\r\n'
+  //printf("all text :%s\r\n====================================================== ", str_test);
+  //fileWrite(0,fname,"test head \r\n my name is surasak");
+  writeFile4096(fname, SST25_buffer); //เขียนไฟล์
+}
 int main(void)
 {
   Notepad.cursorPosition = 0;
@@ -843,7 +955,7 @@ int main(void)
   //prepareSD_Card();
   MemSize();
 
-  printf("press enter\r\n");
+  //printf("press enter\r\n");
   // appendToSECTOR();
   //if(DeleteFile("D.TBT")) //ใช้ได้
   //getMarker("a.txt",5);
@@ -862,16 +974,69 @@ int main(void)
 
 void editFile()
 {
-  printf("Editing ----------------\r\n");
+  //printf("Editing ----------------\r\n");
 }
 void prepareEditor()
 {
+  int i__ = 0; // วนหลูป
+  int jjcopy = 0;
+  int last_line_break = 0;
+  int last_line_break_pre = 0;
+  int editor_currentLine = 0; // เลื่อนบรรทัด
+  int editor_position = 0;
+  int count_member_in_Line = 0;
+  int MaxInLine__ = 40;
+  uint8_t count_in_line = 0;
+  uint8_t fillEnterLine = 0;
+  uint8_t buffer_count_in_line = 0;
   /*
   AmountSector
   AmountSectorT
   */
   // Sector ที่ได้จะได้ไม่เกิน 4096 byte
-  printf("sector = %d & %d\r\n", AmountSector, AmountSectorT);
+  //printf("sector = %d & %d\r\n", AmountSector, AmountSectorT);
+  // store data to array
+  for (i__ = 0; i__ < AmountSectorT; i__++) // วนหลูปตามจำนาน
+  {
+    //printf("%c", SST25_buffer[i__]); // แสดงค่าที่อ่านมา อยู่ในตัวแปล SST25_bufferฃ
+    if (SST25_buffer[i__] == '\r')
+    { // check line break
+      // \r \n 0x0a
+      last_line_break = i__; // เก็บแค่ตัวหน้า ไม่เอา \r\n
+      //copy string hear;
+      printf("data is : ");
+      for (jjcopy = last_line_break_pre; jjcopy < last_line_break; jjcopy++) // copy str จนถึง \r\n หรือหมด
+      {
+        // copy charactor here
+        Notepad.buffer_string[Notepad.currentLine][count_in_line] = SST25_buffer[jjcopy];
+        //printf("%c", Notepad.buffer_string[Notepad.currentLine][count_in_line]);
+        count_in_line++; // นับว่า copy ไปกี่ตัวแล้ว เพราะจะเอาที่เหลือไปเติมเครื่องหมาย Enter or fill lin
+      }
+      //printStringInLine(Notepad.buffer_string[Notepad.currentLine]);
+      //printf("\r\n");
+      //printf("count_in_line copy is %d\r\n", count_in_line);
+      //fillEnterLine = strlen(Notepad.buffer_string[Notepad.currentLine]);
+      //printf("Fill (%d)\r\n", 40 - count_in_line);
+      for (jjcopy = 40; jjcopy >= count_in_line; jjcopy--)
+      {
+        //printf("|");
+        // Notepad.buffer_string
+        Notepad.buffer_string[Notepad.currentLine][jjcopy] = (char)enterSign;
+      }
+      /*for (i = 0; i < 40; i++)
+      {
+        printf("%c", Notepad.buffer_string[Notepad.currentLine][i]);
+      }*/
+      //printf("\r\n======================================================\r\n");
+      last_line_break_pre = last_line_break + 2; // เก็บค่าก่อนหน้า
+      //printf("last_line_break_pre is %d\r\n", last_line_break_pre);
+      Notepad.currentLine++; //เลื่อนบรรทัด
+      buffer_count_in_line = count_in_line;
+      count_in_line = 0; // ล้างนับจำนวนในบรรทัด
+    }
+  }
+  Notepad.cursorPosition = buffer_count_in_line; //เก็บตำแหน่ง Curser
+  //printf("-------------------------------------------------------end presents \r\n");
 }
 /* 
 Function:  readTextFileToMemmory(char *fileName)
@@ -901,22 +1066,22 @@ void readTextFileToMemmory(char *fileName____)
   {
     if (command_ == 4)
     {
-      setFilename(fileName____);                     // ใช้คำสั่ง set ชื่อไฟล์
-      printf("opening file (%s)\r\n", fileName____); // กำลังเปิดไฟล์ ชื่อไฟล์
-      command_++;                                    // 5
+      setFilename(fileName____); // ใช้คำสั่ง set ชื่อไฟล์
+      //printf("opening file (%s)\r\n", fileName____); // กำลังเปิดไฟล์ ชื่อไฟล์
+      command_++; // 5
       delay_ms(45);
     }
     else if (command_ == 5)
     {
       SendCH370(FileOpen, sizeof(FileOpen));
       command_++; //6
-      printf("openfile %s status  \r\n", fileName____);
+      //printf("openfile %s status  \r\n", fileName____);
       delay_ms(45);
     }
     else if (command_ == 6)
     {
       SendCH370(SetByteRead, sizeof(SetByteRead));
-      printf("SetByteRead 3\r\n");
+      //printf("SetByteRead 3\r\n");
       //result 1D can read
       //0x1d สามารถอ่านไฟล์ได้
       command_ = 99;
@@ -925,7 +1090,7 @@ void readTextFileToMemmory(char *fileName____)
     else if (command_ == 95)
     {
       //left (prevois line)
-      printf("continueRead 4\r\n");
+      //printf("continueRead 4\r\n");
       SendCH370(continueRead, sizeof(continueRead));
       command_++; //96
     }
@@ -937,7 +1102,7 @@ void readTextFileToMemmory(char *fileName____)
     }
     else if (command_ == 99)
     {
-      printf("read data 6\r\n");
+      //printf("read data 6\r\n");
       SendCH370(ReadData, sizeof(ReadData));
       command_++;
     }
@@ -1051,7 +1216,7 @@ void readTextFileToMemmory(char *fileName____)
           }
           configFlash();
           writeFlash(addressSector);
-
+          //SendCH370(ResetAll, sizeof(ResetAll));
           ROMR.addressWriteFlashTemp += ROMR.countdata_Temp512;
           ROMR.waitEnd++;
           //----------------------store last sector to flash rom-----------------------
@@ -1117,7 +1282,7 @@ void mark_readFormROM()
 {
   memset(SST25_buffer, 0, strlen(SST25_buffer));
   readSecter(4096 * 999);
-  printf("data:%s\r\n", SST25_buffer);
+  //printf("data:%s\r\n", SST25_buffer);
   if (mark_CreateMarkFileConfig(fileLists[fileSelect])) //สร้างสำเร็จ
   {
     mark_insertLine(fileLists[fileSelect], read.currentLine + 1);
@@ -1241,12 +1406,11 @@ char *mark_str_replace(char *orig, char *rep, char *with)
 //---------------------------------------------------------------
 int mark_searchName(char *fileName)
 {
-  int pos;
   int startPos, EndPos, start2;
   char *ptr;
   ptr = strstr(SST25_buffer, fileName);
   memset(data_temp, 0, sizeof(data_temp));
-  printf("file name :%s\r\n", fileName);
+  //printf("file name :%s\r\n", fileName);
   if (ptr != NULL)
   {
     startPos = ptr - SST25_buffer; // find start index
@@ -1254,7 +1418,7 @@ int mark_searchName(char *fileName)
     startPos = strlen(fileName) + startPos;
     EndPos = mark_getEndSign(startPos); // find end index
     //printf("%d\r\n",strlen(data));
-    printf("start %d end %d\r\n", startPos, EndPos);
+    //printf("start %d end %d\r\n", startPos, EndPos);
     strncpy(data_temp, SST25_buffer + start2, EndPos - start2);
     //printf("end :%c\r\n",data[EndPos]); // index
     //printf("file name %s\r\n",fileName);
@@ -1380,7 +1544,7 @@ int mark_insertMark(int line)
   n = mark_sizeOfList();
   index = mark_findIndexOfArray(line);
   position = mark_findIndexForInsert(line); // find
-  printf("index %d,position %d, n %d\r\n", index, position, n);
+  //printf("index %d,position %d, n %d\r\n", index, position, n);
   //printf("n = %d index %d---------\r\n",n,index);
   if (index != n)
   {
@@ -1416,7 +1580,7 @@ void mark_insertLine(char *filename, int line)
   char temp__[30];
   char numStr[7];
   int cc = 0;
-  printf("insert (%d)\r\n", line);
+  //printf("insert (%d)\r\n", line);
   if (mark_searchName(filename))
   {                            // found file
     if (mark_insertMark(line)) //ถ้าเพิ่ม Mark ไปยัง array global ได้สำเร็จ
@@ -1449,76 +1613,7 @@ void mark_insertLine(char *filename, int line)
 ===================================================================
 ===================================================================
 */
-void testGetFileSize()
-{
-  command_ = 1;
-  while (1)
-  {
-    if (command_ == 1)
-    {
-      printf("set file name \r\n");
-      SendCH370(setname1, sizeof(setname1));
-      //setFilename("222222~1.TXT");
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 2)
-    {
-      printf(" file open ");
-      SendCH370(FileOpen, sizeof(FileOpen));
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 3)
-    {
-      printf(" get file size  ");
-      SendCH370(FileSize, sizeof(FileSize));
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 4)
-    {
-      printf("  file close  ");
-      SendCH370(FileClose0, sizeof(FileClose0));
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 5)
-    {
-      printf("set file name \r\n");
-      SendCH370(setname2, sizeof(setname2));
-      // setFilename("111111~1.TXT");
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 6)
-    {
-      printf(" file open ");
-      SendCH370(FileOpen, sizeof(FileOpen));
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 7)
-    {
-      printf(" get file size  ");
-      SendCH370(FileSize, sizeof(FileSize));
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 8)
-    {
-      printf("  file close  ");
-      SendCH370(FileClose0, sizeof(FileClose0));
-      delay_ms(45);
-      command_++;
-    }
-    if (USART_GetITStatus(USART3, USART_IT_RXNE))
-    {
-      i1 = USART_ReceiveData(USART3);
-      printf("0x%x \r\n", i1);
-    }
-  }
-}
+
 void MainPrograme()
 {
   while (1)
@@ -1527,7 +1622,7 @@ void MainPrograme()
     while (mode == MODE_NOTEPAD)
     {
       doing = 1; //ตัวแปร global สำหรับทำงาน notepad :D
-      printf("--------------------------reg-------------\r\n");
+      //printf("--------------------------reg-------------\r\n");
       notepad_main();
     }
     while (mode == MODE_READ)
@@ -1598,27 +1693,7 @@ int CH376_GetFileSize()
   return (filesize__[0] + (filesize__[1] * 256) + (filesize__[2] * 256 * 256) + (filesize__[3] * 256 * 256 * 256)); // คำนวณขนาดไฟล์ https://arduinobasics.blogspot.com/2015/05/ch376s-usb-readwrite-module.html
 }
 // function
-uint8_t CH376_FileClose()
-{
-  int cc;
-  SendCH370(FileClose0, sizeof(FileClose0));
-  while (1)
-  {
-    if (USART_GetITStatus(USART3, USART_IT_RXNE))
-    {
-      cc = USART_ReceiveData(USART3);
-      break;
-      // printf("0x%x", i1);
-    }
-  }
-  return cc; //waitRespon(100000);
-}
 
-uint8_t CH376_FileOpen()
-{
-  SendCH370(FileOpen, sizeof(FileOpen));
-  return waitRespon(10000);
-}
 uint8_t CH376_Disk_Connect()
 {
   SendCH370(DiskConnect, sizeof(DiskConnect));
@@ -1636,55 +1711,6 @@ uint8_t CH376_SetReadForm_SD()
   return waitRespon(10000);
 }
 
-int getLongName(char *origiName, char *bufferLong)
-{
-  //ex. origin name "avccc~1.txt"
-  int timeOut = 3000;
-  int tt = 0;
-  command_ = 0;
-  while (timeOut)
-  {
-    if (command_ == 0)
-    {
-      setFilename(origiName);
-      delay_ms(45);
-      command_++;
-    }
-    else if (command_ == 1)
-    {
-      SendCH370(FileOpen, sizeof(FileOpen));
-      delay_ms(45);
-      command_++;
-      tt = waitRespon(0);
-      printf("res:%x \r\n", tt);
-    }
-    else if (command_ == 2)
-    {
-      SendCH370(FileSize, sizeof(FileSize));
-      delay_ms(45);
-      command_++;
-      // tt = waitRespon();
-      //printf("0x%x,", tt);
-    }
-    /* else if (command_ == 3)
-    {
-      SendCH370(ResetAll, sizeof(ResetAll));
-      
-      command_++;
-      tt = waitRespon();
-      printf("res:%x", tt);
-      delay_ms(500);
-    }*/
-    if (USART_GetITStatus(USART3, USART_IT_RXNE))
-    {
-      i1 = USART_ReceiveData(USART3);
-
-      printf("0x%x", i1);
-    }
-    // timeOut--;
-  }
-  return 0;
-}
 int waitRespon(int time)
 {
   int retur_;
@@ -1737,12 +1763,12 @@ int removeDataInFileTemp(char *fileRe)
   }
   else
   {
-    printf("delete on position %d \r\n", intdexPo);
+    //printf("delete on position %d \r\n", intdexPo);
     for (i = intdexPo - 1; i < lastIndex - 1; i++)
     {
       strcpy(fileLists[i], fileLists[i + 1]);
     }
-    printf("Resultant array:\n");
+    //printf("Resultant array:\n");
     for (i = 0; i < lastIndex - 1; i++)
     {
       printf("%s\n", fileLists[i]);
@@ -1839,18 +1865,7 @@ uint16_t page_getCurrentPage() // bug
   return k;
   //pages.page[i];
 }
-void printReadDetail()
-{
-  printf("------------------------------------------------------\r\n");
-  printf("------------------------------------------------------\r\n");
-  printf("\r\n");
-  printf("Current Sector :%d\r\n", read.currentSector);
-  printf("Current Line  :%d (with out line in sec)\r\n", read.currentLine);
 
-  printf("\r\n");
-  printf("------------------------------------------------------\r\n");
-  printf("------------------------------------------------------\r\n");
-}
 uint16_t get_CurrentLine()
 {
   int jCC = 0;
@@ -1901,7 +1916,6 @@ int findPreviousPage()
   int currentLine_ = get_CurrentLine();
   int compareInLine = findCurrentPageInArr();
   int start99 = pages.totalPage - 1;
-  int ccg = 0;
   //printf("----currentline -*-*-* %d \r\n", currentLine_);
   while (start99 > 0)
   {
@@ -1924,7 +1938,6 @@ int findCurrentPageInArr()
 {
   int currentLine_ = get_CurrentLine();
   int start99 = pages.totalPage - 1;
-  int cnc = 0;
   //printf("################################################################\r\n");
   while (start99 > 0)
   {
@@ -1955,34 +1968,6 @@ void upperASCII(char *str)
     str++;
   }
 }
-
-void intsertRoottoName(char *source)
-{
-  int strlen_ = 0;
-  char buff[2];
-  char buff2[2];
-  int a = 0;
-  strlen_ = strlen(source) + 1;
-
-  printf("strln: %d\r\n", strlen_);
-  while (a < strlen_)
-  {
-    buff[0] = source[a];
-    if (a == 0)
-    {
-      source[0] = '/';
-      buff2[0] = buff[0];
-    }
-    else
-    {
-      source[a] = buff2[0];
-      buff2[0] = buff[0];
-    }
-    printf("a %d strln %d char (%c)\r\n", a, strlen_, source[a]);
-    a++;
-  }
-}
-
 void getFileSize(char *filename)
 {
   // check root path
@@ -2009,7 +1994,7 @@ void getFileSize(char *filename)
     if (USART_GetITStatus(USART3, USART_IT_RXNE))
     {
       i1 = USART_ReceiveData(USART3);
-      printf("open status:%x\r\n", i1);
+      //printf("open status:%x\r\n", i1);
       break;
     }
   }
@@ -2034,7 +2019,7 @@ int DeleteFolder(char *name)
   int timeOut = 0;
   int status_delete = 0;
   command_ = 4;
-  printf("delete folder");
+  // printf("delete folder");
   while (1)
   {
 
@@ -2044,7 +2029,7 @@ int DeleteFolder(char *name)
       // convert uppercase to name
       upperASCII(name);
       setFoldername(buffascii);
-      printf(" file temp %s\r\n", buffascii);
+      //printf(" file temp %s\r\n", buffascii);
       command_++; //8
       delay_ms(50);
     }
@@ -2071,28 +2056,28 @@ int DeleteFolder(char *name)
       i1 = USART_ReceiveData(USART3);
       if (i1 == 0x41)
       {
-        printf("\r\n ERR_OPEN_DIR \r\n");
+        //printf("\r\n ERR_OPEN_DIR \r\n");
       }
       if (i1 == 0x82)
       {
-        printf("\r\n ERR_DISK_DISCON  \r\n");
+        //printf("\r\n ERR_DISK_DISCON  \r\n");
       }
       if (i1 == 0xa8)
       {
-        printf("\r\n CMD_CHECK_EXIST \r\n");
+        //printf("\r\n CMD_CHECK_EXIST \r\n");
       }
     }
 
     if (timeOut > 300)
     {
       status_delete = 0;
-      printf("\r\nError Folder Delete\r\n");
+      //printf("\r\nError Folder Delete\r\n");
       break;
     }
     if (command_ == 7 && i1 == 0x14)
     {
       status_delete = 1;
-      printf("\r\nFolder Delete complete\r\n");
+      //printf("\r\nFolder Delete complete\r\n");
       break;
     }
     if (command_ == 7 && i1 != 14)
@@ -2110,14 +2095,14 @@ int DeleteFile(char *name)
   int timeOut = 0;
   int status_delete = 0;
   command_ = 4;
-  printf("delete file");
+  //printf("delete file");
   while (1)
   {
     timeOut++;
     if (command_ == 4)
     {
       // ตั้งคือไฟล์สำหรับใช้งานคำสั่งต่อไป
-      printf("removing file %s\r\n", name);
+      //printf("removing file %s\r\n", name);
       setFilename(name);
       command_++; //8
       delay_ms(50);
@@ -2141,13 +2126,13 @@ int DeleteFile(char *name)
       switch (i1)
       {
       case 0x41:
-        printf("\r\n ERR_OPEN_DIR \r\n");
+        //printf("\r\n ERR_OPEN_DIR \r\n");
         break;
       case 0x82:
-        printf("\r\n ERR_DISK_DISCON  \r\n");
+        //printf("\r\n ERR_DISK_DISCON  \r\n");
         break;
       case 0xa8:
-        printf("\r\n CMD_CHECK_EXIST \r\n");
+        //printf("\r\n CMD_CHECK_EXIST \r\n");
         break;
       }
     }
@@ -2155,13 +2140,13 @@ int DeleteFile(char *name)
     if (timeOut > 300)
     {
       status_delete = 0;
-      printf("\r\nError file Delete\r\n");
+      //printf("\r\nError file Delete\r\n");
       break;
     }
     if (command_ == 7 && i1 == 0x14)
     {
       status_delete = 1;
-      printf("\r\ffile Delete complete\r\n");
+      //printf("\r\ffile Delete complete\r\n");
       break;
     }
     if (command_ == 7 && i1 != 14)
@@ -2335,7 +2320,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
       d_Time = 0;
     }
   }
-  if (Line == -1)
+  if (Line == (-1))
     clearDot();
   return Line;
 }
@@ -3041,7 +3026,7 @@ char *substringRemoveEnter(char *string, int position, int length)
   char *pointer;
   int c;
   int cc = 0;
-  while (cc < notepad_MaxinLine)
+  while (cc < notepad_MaxinLine) 
   {
     if (string[cc] != enterSign)
       cc++;
@@ -3234,6 +3219,7 @@ int getMuteStatus()
 */
 void notepad_main()
 {
+  char nameBuff2[15];
   //status for do something n notepad mode
   while (doing) // do in notepad notepad0
   {
@@ -3313,15 +3299,52 @@ void notepad_main()
         // ไฟล์ที่ได้จะเป็นไฟล์ .TBT
         if (debug)
           printf("\r\n-----------Save:------------\r\n");
-        saveName();
+
+        if (useFEdit) //มาจาก edit file
+        {
+          //saveNameEdit();
+          //ex_cdWithPath(Dirpath); // go to curretn directorie
+          strcpy(nameBuff2, fileLists[fileSelect]); // ตั้งชื่อไฟล์ไว้ที่ตัวแปร nameBuff2
+          printf("Saving file name %s\r\n", fileLists[fileSelect]);
+          createFileAndWrite_hisPath(nameBuff2);
+          printf("-----------------Deleted file and save -----------------\r\n");
+        }
+        else // มาจาก notepad
+        {
+          saveName();
+        }
       }
       // exit (space + e)
       else if (keyCode == CLOSE_FILE)
       {
         // ออกจากโหมด notepad โดยจะยังไม่เคลียค่าที่พิมพ์
         printf("exit \r\n");
-        doing = 0;
+        //SendCH370(ResetAll,sizeof(ResetAll));
+
+        if (useFEdit) //มาจาก edit file
+        {
+          useFEdit = 0;
+          memset(Dirpath, 0, sizeof(Dirpath));
+
+          ROMR.endReadFile = false;
+          readFileStatus___ = 0;
+          /* SendCH370(ResetAll,sizeof(ResetAll));
+        printf("resetall\r\n");*/
+          keyCode = 0;
+
+          maxFile = 0;
+          for (i = 0; i < maxfileListBuffer; i++)
+            memset(fileLists[i], 0, sizeof(filelist[i]));
+          memset(Dirpath, 0, sizeof(Dirpath)); //clear path
+          // delay_ms(5000);
+          //prepareSD_Card();
+          printf("reset all \r\n");
+          mode = 0;
+          ABCCCCC = 0;
+          beep4();
+        }
         mode = 0;
+        doing = 0; // ออกจาก notepad
       }
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) // enter
       {
@@ -3363,6 +3386,7 @@ void notepad_main()
         }
         if (debug)
           printf("cca aateaasd at :%d\r\n", Notepad.cursorPosition + Notepad.multiplyCursor);
+
         if (notepad_countStr(Notepad.buffer_string[Notepad.currentLine]) < notepad_MaxinLine / 2) //กันบัค cursor
           Notepad.multiplyCursor = 0;
         //  printf("remove char %d %c\r\n", Notepad.cursorPosition, Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition + Notepad.multiplyCursor]);
@@ -3384,9 +3408,8 @@ void notepad_main()
               printf("---------------line is enter all -----------------");
           }
           // printf("\r\n--------------------remove enter------------------------\r\n");
-          while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0)
+          while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0) //ยังเจอสัญลักษณ์ Enter จะลบไปจนถึง 0
           {
-
             removeChar(Notepad.buffer_string[Notepad.currentLine], Notepad.cursorPosition);
             if (Notepad.cursorPosition > 0)
               Notepad.cursorPosition--;
@@ -3424,23 +3447,23 @@ void notepad_main()
           Notepad.multiplyCursor = 0;
         }
         //   printf("cursor set at:%d\r\n", Notepad.cursorPosition + Notepad.multiplyCursor);
-      } // end router keys
-      else if (seeCur != 1)
+      }                     // end router keys
+      else if (seeCur != 1) // keyที่รับมา ไม่ใช่ cursor key
       {
         // เก็บข้อความที่พิมพ์ตรงนี้
-        keyCode = unicode_to_ASCII(bufferKey3digit[0]);
+        keyCode = unicode_to_ASCII(bufferKey3digit[0]); // แปลง keyboard เป็น code
         if (keyCode > 127)
           keyCode = ~bufferKey3digit[0]; //One's Complement
         if (keyCode == 0)                //space bar edit in unicode table
           keyCode = 32;
-        if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1)
+        if (notepad_checkEnterSignInLine(Notepad.buffer_string[Notepad.currentLine]) == 1) //เ ช็คเครื่องหมาย enter
         {
-          notepad_removeEnterSign(Notepad.buffer_string[Notepad.currentLine]);
+          notepad_removeEnterSign(Notepad.buffer_string[Notepad.currentLine]); // ลบเครื่องหมาย Enter ออก
         }
-        keybuff[0] = (char)keyCode;
-        //printf("current po at %d \r\n", Notepad.cursorPosition);
-        // enter ตัวสุดท้ายจะถูกเบียดลง จะเกิน max ผมจะไม่ให้มันเบียด
-        //printf("///////////////////Notepad.cursorPosition:%d Notepad.multiplyCursor:%d //////////////////\r\n", Notepad.cursorPosition, Notepad.multiplyCursor);
+        keybuff[0] = (char)keyCode; //แปลง Char เป็นสตริงยาว 1  Ex. [?],[\0]
+        // printf("current po at %d \r\n", Notepad.cursorPosition);
+        // เครื่องหมาย enterตัวสุดท้ายจะถูกเบียดลง จะเกิน max แต่จะไม่ให้มันเบียด
+        // printf("///////////////////Notepad.cursorPosition:%d Notepad.multiplyCursor:%d //////////////////\r\n", Notepad.cursorPosition, Notepad.multiplyCursor);
         notepad_append(Notepad.buffer_string[Notepad.currentLine], keybuff, Notepad.cursorPosition + Notepad.multiplyCursor);
 
         if (Notepad.cursorPosition >= notepad_MaxinLine) //เลื่อนบรรทัดอัตโนมัติ
@@ -3747,6 +3770,8 @@ int notepad_countLinewithOutLNsign(char *str)
   }
   return cc;
 }
+//--------------
+// แทรกสตริง (Stringต้นทาง, char arry, ตำแหน่งที่แทรก)
 void notepad_append(char subject[], const char insert[], int pos)
 {
   char buf[bufferMaxSize] = {0}; // 100 so that it's big enough. fill with zeros
@@ -3968,8 +3993,8 @@ int keyMapping(int a, int b, int c)
   {
     keyCode__ = 789;
   }
-  else if ((a == 0x0d && b == 0x00 && c == 0x00))
-  { // [test] edit file (1+3+4 + space)
+  else if ((a == 0x91 && isSpaceKey(b) == true && c == 0x00))
+  { // [test] edit file (1+5+8 + space)
     keyCode__ = 987;
   }
   return keyCode__;
@@ -4097,10 +4122,11 @@ void keyRead()
     {
       slidText2Displayv2();
     }
-    if (mode == MODE_READ && Editing == true) //edit
+    /*if (mode == MODE_READ && useFEdit == true) //edit useFEdit Editing
     {
+      printf("editor\r\n");
       editFile();
-    }
+    }*/
     /*
     ============================================================
     โหมด 2 ก่อนอ่านไฟล์
@@ -4185,7 +4211,7 @@ void keyRead()
           delay_ms(45);
           if (ex_openDir(fileLists[fileSelect]))
           {
-            if (strstr(fileLists[fileSelect], "..") != NULL)
+            if (strstr(fileLists[fileSelect], "..") != NULL) //ถ้าเป็น .. ไม่ต้องบันทึกเส้นทาง
             {
               if (ex_countPath(Dirpath) > 0)
               {
@@ -4197,7 +4223,7 @@ void keyRead()
             else
             {
               //save path
-              ex_savePath(fileLists[fileSelect]);
+              ex_savePath(fileLists[fileSelect]); // บันทึกเส้นทาง
             }
             fileSelect = 0;
             //printf("seach all file sucess \r\n");
@@ -4217,23 +4243,35 @@ void keyRead()
       }
       if (keyCode == 987) // แก้ไขไฟล์ (1+3+4 + space) edit
       {                   // test edit file
+        useFEdit = 1;     // ตั้งค่าสถานะบอก notepad ว่าเข้าใช้จากโหมด edit file
+
         printf("====================================================\r\n");
         printf("---------------------Edit file----------------------\r\n");
         printf("====================================================\r\n");
         readTextFileToMemmory(fileLists[fileSelect]); // อ่านไฟล์จาก sd card  ,อ่���นเข้า ROM for edit
         printf("end read %d\r\n", readFileStatus___);
-        prepareEditor(); //เตรียมแก้ไขไฟล์ อ่านข้อมูลจาก ROM เข้าแรม
-        while (1)
+        Notepad.cursorPosition = 0;
+        Notepad.currentLine = 0;
+        Notepad.displayFirst = false;
+        prepareEditor(); // เตรียมแก้ไขไฟล์ อ่านข้อมูลจาก ROM เข้าแรม
+                         /*if (USART_GetITStatus(USART2, USART_IT_RXNE))
+          i = USART_ReceiveData(USART2);*/
+        bufferKey3digit[0] = 0;
+        bufferKey3digit[1] = 0;
+        bufferKey3digit[2] = 0;
+        //mode = 5;
+        while (useFEdit)
         {
           doing = 1; // enable notepad mode
           printf("--------------------------reg-------------\r\n");
           notepad_main();
         }
+
         //editFile();
         /*  getFileSize(fileLists[fileSelect]);        // เปิดไฟล์
         ch376_status = CH376_GetFileSize();        // อ่านขนาดไฟล์
         SendCH370(FileClose0, sizeof(FileClose0)); // ปิดไฟล์
-        ex_cdWithPath(Dirpath);                    // เข้า path ใหม่
+        ex_cdWithPath(Dirpath);                    // เข้า path ใหม่ เพราะถูกรีเซ็ทจาก CH376_GetFileSize
         if (ch376_status <= 4096)                  // ขนาดไฟล์ไม่ใหญ่เกินขนาดแรม
         {
           printf("file size: (%d)\r\n", ch376_status);  // แสดงขนาดไฟล์ห
@@ -4259,7 +4297,8 @@ void keyRead()
         }
         printf("file size %s byte\r\n", fileByte); // แสดง
         stringToUnicodeAndSendToDisplay(fileByte); // ex. 1000 bytes
-        ex_cdWithPath(Dirpath);                    // เข้าพาทใหม่ เพราะถูก รีเซ็ทจากการอ่าน File size
+        printf("path is %s\r\n", Dirpath);
+        ex_cdWithPath(Dirpath); // เข้าพาทใหม่ เพราะถูก รีเซ็ทจากการอ่าน File size
         //========================
         //ch376_status = CH376_FileClose();
         //printf("file close status %d \r\n", ch376_status);
@@ -4794,6 +4833,8 @@ void searchFile2()
 //----------------------------- open directory ------------------------------
 // [ex_openDir] use for open directory with ch376 module
 // เปิดโฟลเดอร์ โดยจะเช็ค root ด้วย
+// * เป็นการค้นหา
+// .. ย้อนกลับ
 //////////////////////////////////////////////////////////////////////////////
 int ex_openDir(char *dirPath__)
 {
@@ -4818,7 +4859,7 @@ int ex_openDir(char *dirPath__)
         setFilename(buff2); // open in root
         printf("print file name:%s\r\n", buff2);
       }
-      else if (strlen(buff) > 1) //not root
+      else if (strlen(buff) > 1) // not root
       {
         setFilename(buff);
       }
@@ -4919,8 +4960,8 @@ void ex_exitOncePath()
 /*------------------------------open dir with path --------------------------
  ex. path = "abc/def"
  ex_cdWithPath(path);
- เปิดพาท ตัวอย่าว a/b/c เป็นสตริง
-//////////////////////////////////////////////////////////////////////////////*/
+ เปิดพาท ตัวอย่าง a/b/c เป็นสตริง
+*/
 void ex_cdWithPath(char *path)
 {
   //used
@@ -4997,6 +5038,43 @@ int ex_checkSlash(char *pathName)
   }
   return seeS;
 }
+// เหมือน createFileAndWrite แต่จะเก็บเส้นทาง
+// ex_cdWithPath(Dirpath);
+
+int createFile2(char *name)
+{
+  int status_create = 0;
+  if (command_ == 4)
+  {
+    setFilename(name);
+    printf("set filename \r\n");
+    command_++; //8
+    delay_ms(50);
+  }
+  else if (command_ == 5)
+  {
+    printf("file create \r\n");
+    SendCH370(FileCreate, sizeof(FileCreate));
+    delay_ms(80);
+    command_++; //10
+  }
+  else if (command_ == 6)
+  {
+    printf("file close \r\n");
+    SendCH370(FileClose, sizeof(FileClose));
+    command_++; //18
+    delay_ms(50);
+  }
+  if (USART_GetITStatus(USART3, USART_IT_RXNE))
+  {
+    i1 = USART_ReceiveData(USART3);
+    printf("%x\r\n", i1);
+  }
+  if (command_ == 7 && i1 == 0x14)
+    status_create = 1;
+
+  return status_create;
+}
 /*-------------------------- Create and write file()------------------------
 // สร้างไฟล์ และเขียนไฟล์
 //
@@ -5009,20 +5087,21 @@ void createFileAndWrite(char *fname)
   command_++;
   while (1)
   {
-    if (createFile(fname) == 1)
+    if (createFile(fname) == 1) // สร้างไฟล์
       break;
   }
-  SendCH370(ResetAll, sizeof(ResetAll));
+  SendCH370(ResetAll, sizeof(ResetAll)); // reset all
   delay_ms(100);
   command_ = 1;
-  PrepareText();
+  PrepareText(); // เตรียมข้อความ ลบ Enter Sign add '\r\n'
   //printf("all text :%s\r\n====================================================== ", str_test);
   //fileWrite(0,fname,"test head \r\n my name is surasak");
-  writeFile4096(fname, SST25_buffer);
+  writeFile4096(fname, SST25_buffer); //เขียนไฟล์
 }
 /*====================================================
  * ลบเครื่องหมาย enter sign
- * */
+ * เติม \r\n
+ *  */
 void PrepareText()
 {
   int c;
@@ -5097,6 +5176,57 @@ void writeFile4096(char *fname, char *strSource)
     }
   }
 }
+void writeFile40962(char *fname, char *strSource)
+{
+  //use
+  int maxSize = 0, sizeWrite = 128;
+  int loop255 = 0;
+  int Sloop255 = 0;
+  int iL = 0, pp = 0;
+  char buffForWrite[128], buffForWrite2[128];
+  int WF = 0; //write before
+  memset(buffForWrite2, 0, 256);
+  maxSize = strlen(strSource);
+  loop255 = maxSize / sizeWrite;
+  Sloop255 = maxSize % sizeWrite;
+  while (iL < loop255)
+  {
+    //
+    buffForWrite[pp - iL * sizeWrite] = strSource[pp];
+    pp++;
+    if (pp % sizeWrite == 0)
+    {
+      command_ = 4;
+      while (1)
+      {
+        //save 255
+        if (fileWrite2(WF, fname, buffForWrite) == 1)
+        {
+          iL++;
+          if (iL == 0)
+            WF = 0;
+          else
+            WF = 1;
+          break;
+        }
+      }
+    }
+  }
+  while ((pp - iL * sizeWrite) < Sloop255)
+  {
+    buffForWrite2[pp - iL * sizeWrite] = strSource[pp];
+    pp++;
+  }
+  command_ = 4;
+  while (1)
+  {
+    //save 255
+    if (fileWrite2(WF, fname, buffForWrite2) == 1)
+    {
+      break;
+    }
+  }
+}
 //------------------------------       -------------------------------------
 //
 //////////////////////////////////////////////////////////////////////////////
@@ -5134,6 +5264,156 @@ int checkBit(int input)
   }
   return i;
 }
+
+void saveNameEdit()
+{
+  int saving = 1;
+  char nameBuff[15];
+  char bufferDisplay[20]; // Name:/
+  int cc = 1;
+
+  memset(bufferDisplay, 0, 20);
+  strcpy(bufferDisplay, "Name:/");
+  memset(nameBuff, 0, 15);
+  nameBuff[0] = '/';
+  countKey = 0;
+  keyCode = 0;
+  seeCur = 0;
+  clearDot();
+  while (saving == 1)
+  {
+    if (USART_GetITStatus(USART2, USART_IT_RXNE))
+    {
+      //----------------------------- uart to key--------------------------------
+      uart2Buffer = USART_ReceiveData(USART2); //-
+      if (uart2Buffer == 0xff && SeeHead == 0)
+      {
+        //-
+        SeeHead = 1;  //-
+        countKey = 0; //-
+      }
+      if (countKey == 2 && uart2Buffer == 0xa4)
+      {
+        // if cursor
+        seeCur = 1;
+      }
+      if (countKey >= 4 && countKey <= 6)
+      {
+        //-
+        bufferKey3digit[countKey - 4] = uart2Buffer; //-
+      }
+
+      if (countKey == 2)
+      {
+        checkKeyError = uart2Buffer;
+      }
+      countKey++;
+
+      if (countKey >= maxData)
+      {
+        seeHead = 0;
+        if (checkKeyError == 0xff)
+        {
+          //check error key
+          //printf("Key Error");
+          countKey = 0;
+          SeeHead = 0;
+        }
+        if ((bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x20 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x04))
+        {
+          //back to notepad
+          saving = 0;
+        }
+        if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
+        {
+          keyCode = 8; // ลบ
+        }
+        if (bufferKey3digit[2] == 2 || bufferKey3digit[1] == 0x10)
+        {
+          // save file
+          printf("\r\n enter \r\n");
+          i = 0;
+          while (nameBuff[i] != '\0')
+          {
+            if (nameBuff[i] >= 97)
+            {
+              nameBuff[i] = nameBuff[i] - 32;
+            }
+            i++;
+          }
+          strcat(nameBuff, ".TBT"); // tbt file
+          //printf("\r\nSaving file :%s\r\n", nameBuff);
+          //createFileAndWrite_hisPath(nameBuff);
+          stringToUnicodeAndSendToDisplay("Success......");
+          delay_ms(1000);
+          saving = 0;
+        }
+        if (keyCode == 8)
+        {
+          // delete file name
+          if (cc > 1)
+          {
+            // steel save root /
+            cc--;
+            nameBuff[cc] = '\0';
+            //printf("Delete:%s \r\n", nameBuff);
+          }
+          else if (cc == 1)
+          {
+            // last cha
+            nameBuff[cc] = '\0';
+            //printf("delete 22 \r\n");
+          }
+        }
+        else // enter file name
+        {
+          // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+          for (i = 0; i < 255; i++)
+          {
+            if (bufferKey3digit[0] == unicodeTable[(char)i])
+            {
+              break;
+            }
+          }
+          if (i >= 33 && i < 126 && cc <= 10)
+          {
+            // name length less than 10
+            nameBuff[cc] = i;
+            //printf("Filename:%s\r\n", nameBuff);
+            cc++; // เก็บค่า
+          }
+        }
+        memset(bufferDisplay, 0, 20);    //clear buffer
+        strcpy(bufferDisplay, "Name:");  // copy string
+        strcat(bufferDisplay, nameBuff); // ต่อสตริง
+        //stringToUnicodeAndSendToDisplay(bufferDisplay);
+        // useFEdit
+        stringToUnicodeAndSendToDisplayC(bufferDisplay, cc + 5);
+        /*-----------------------
+                  print file name here
+                  -----------------------*/
+        countKey = 0;
+        keyCode = 0;
+        seeCur = 0;
+      }
+    }
+    d_Time++;
+    if (d_Time >= delayCur) //blink cursor
+    {
+      //blink cu
+      if (toggleCur == 0)
+        toggleCur = 1;
+      else
+        toggleCur = 0;
+      if (!toggleCur)
+        stringToUnicodeAndSendToDisplay(bufferDisplay);
+      else
+        stringToUnicodeAndSendToDisplayC(bufferDisplay, cc + 5);
+      d_Time = 0;
+    }
+  }
+}
+
 //-----------------------------------save file name---------------------------
 //
 //
@@ -5218,7 +5498,7 @@ void saveName()
           //printf("\r\nSaving file :%s\r\n", nameBuff);
           createFileAndWrite(nameBuff);
           stringToUnicodeAndSendToDisplay("Success......");
-          delay_ms(600);
+          delay_ms(1000);
           saving = 0;
         }
         if (keyCode == 8)
@@ -5257,9 +5537,9 @@ void saveName()
             cc++;
           }
         }
-        memset(bufferDisplay, 0, 20);
-        strcpy(bufferDisplay, "Name:");
-        strcat(bufferDisplay, nameBuff);
+        memset(bufferDisplay, 0, 20);    //clear buffer
+        strcpy(bufferDisplay, "Name:");  // copy string
+        strcat(bufferDisplay, nameBuff); // ต่อสตริง
         //stringToUnicodeAndSendToDisplay(bufferDisplay);
         stringToUnicodeAndSendToDisplayC(bufferDisplay, cc + 5);
         /*-----------------------
@@ -5271,7 +5551,7 @@ void saveName()
       }
     }
     d_Time++;
-    if (d_Time >= delayCur)
+    if (d_Time >= delayCur) //blink cursor
     {
       //blink cu
       if (toggleCur == 0)
@@ -5531,7 +5811,7 @@ void setFileLength(char *str___)
   FileLength222[4] = jjr;
   if (debug)
   {
-    printf("\r\n str length2 in set file length:%d \r\n", FileLength222[4]);
+    printf("\r\n str length in set file length:%d \r\n", FileLength222[4]);
   }
   SendCH370(FileLength222, sizeof(FileLength222));
 }
@@ -5637,6 +5917,77 @@ int fileWrite(int k, char *filename, char *string__)
 
   return status;
 }
+//------------------------write string to ch376s--------------------
+//
+//
+////////////////////////////////////////////////////////////////////
+int fileWrite2(int k, char *filename, char *string__)
+{
+  int status = 0;
+  if (command_ == 4)
+  {
+    setFilename(filename);
+    // printf("Set File Name\r\n");
+    command_++; //8
+    delay_ms(50);
+  }
+  else if (command_ == 5)
+  {
+    SendCH370(FileOpen, sizeof(FileOpen));
+    // printf("File Open\r\n");
+    command_++; //10
+    delay_ms(50);
+  }
+  else if (command_ == 6)
+  {
+    if (k == 0) // head
+      SendCH370(FilePointer, sizeof(FilePointer));
+    else
+      SendCH370(FilePointerend, sizeof(FilePointerend));
+    // printf("Pointer\n");
+    command_++; //12
+    delay_ms(50);
+  }
+  else if (command_ == 7)
+  {
+    //FileLength
+
+    setFileLength(string__);
+    //  printf("File Length--\r\n");
+    command_++; //14
+    delay_ms(50);
+  }
+  else if (command_ == 8)
+  {
+    setFileWrite(string__);
+    // printf("File Write\r\n");
+    command_++; //16
+    delay_ms(50);
+  }
+  else if (command_ == 9)
+  {
+    SendCH370(FileUpdate, sizeof(FileUpdate));
+    // printf("File Update\r\n");
+    command_++; //18
+    delay_ms(50);
+  }
+  else if (command_ == 10)
+  {
+    SendCH370(FileClose, sizeof(FileClose));
+    //  printf("File Closed\r\n");
+    command_++; //20
+    delay_ms(50);
+  }
+  if (USART_GetITStatus(USART3, USART_IT_RXNE))
+  {
+    i1 = USART_ReceiveData(USART3);
+    if (i1 == 0x14 && command_ == 11)
+    {
+      status = 1;
+    }
+  }
+  return status;
+}
 //--------------------search file first version---------------------
 //
 //
@@ -5646,6 +5997,7 @@ int fileWrite(int k, char *filename, char *string__)
 //
 //
 ////////////////////////////////////////////////////////////////////
+/*
 void copy_string(char *target, char *source)
 {
   while (*source)
@@ -5655,7 +6007,7 @@ void copy_string(char *target, char *source)
     target++;
   }
   *target = '\0';
-}
+}*/
 //----------------------write string to flash rom-------------------
 //max address ‭0x1000000‬ ~16mbit || 16777216
 //last sector at 0xffbf6a because	 minus with sector (4096 byte)
@@ -5684,71 +6036,6 @@ void clearSector(int address)
   SPI_FLASH_CS_HIGH();
 }
 
-//------------------------read file ยังไม่ได้ Optimize-----------------
-//
-//
-////////////////////////////////////////////////////////////////////
-
-void ex_OpenDifr()
-{
-  //readf
-  //printf("ex_OpenDir....\r\n");
-  command_ = 0;
-  //SendCH370(ResetAll, sizeof(ResetAll)); //reset chip
-  // printf("reset all\r\n");
-  delay_ms(45);
-  command_++;
-  while (ex_openDirStatus == 1)
-  {
-    if (command_ == 1)
-    {
-      SendCH370(checkConnection, sizeof(checkConnection));
-      command_++; //2
-      delay_ms(45);
-      // printf("Check Connection str %d\r\n",myFunction());
-    }
-    else if (command_ == 2)
-    {
-      SendCH370(setSDCard, sizeof(setSDCard));
-      printf("Set SD Card Mode\r\n");
-      command_++; //3
-      delay_ms(45);
-    }
-    else if (command_ == 3)
-    {
-      SendCH370(USBDiskMount, sizeof(USBDiskMount));
-      printf("USB Disk Mount\r\n");
-      command_++; //4
-      delay_ms(50);
-    }
-    else if (command_ == 4)
-    {
-      SendCH370(DirName, sizeof(DirName));
-      printf("Set file Name\r\n");
-      command_++; //5
-      delay_ms(50);
-    }
-    else if (command_ == 5)
-    {
-      ///FileOpen
-      SendCH370(FileOpen, sizeof(FileOpen));
-      printf("File Open\r\n");
-      command_++; //6
-      delay_ms(50);
-    }
-    // menu_s();
-    if (USART_GetITStatus(USART3, USART_IT_RXNE))
-    {
-      i1 = USART_ReceiveData(USART3);
-      printf("%x-%d\r\n", i1, i1);
-    }
-    //ex_OpenDir
-    if (command_ == 6 && i1 == 0x41)
-    {
-      ex_openDirStatus = 0;
-    }
-  }
-}
 /*---------------------------------------------------------------------------
 // ฟังก์ชั่น set ชื่อไฟล์สำหรับ CH376
 // ตั้งชื่อไฟล์ หรือโฟลเดอร์ที่จะเปิด อ้างอิงถึงคำสั่ง 0x57 0xab 0x2f .... ใสเอกสาร ch376
@@ -5778,7 +6065,8 @@ void setFilename(char *filename)
 /*-------------------------------create file in sd card --------------------------
 //return status:1
 //
-//////////////////////////////////////////////////////////////////////////////////*/
+*/
+
 int createFile(char *name)
 {
   int status_create = 0;
@@ -5802,6 +6090,8 @@ int createFile(char *name)
   }
   else if (command_ == 4)
   {
+    // ex_cdWithPath(Dirpath);
+    // delay_ms(300);
     setFilename(name);
     command_++; //8
     delay_ms(50);
@@ -6263,19 +6553,7 @@ void BluetoothMode()
 //
 //
 //////////////////////////////////////////////////////////////////////////////
-void atName_()
-{
-  int x = 0;
-  printf("send:");
-  while (x < sizeof(atName) / sizeof(int))
-  {
-    printf("%c", atName[x]);
-    USART_SendData(UART4, atName[x++]);
-    while (USART_GetFlagStatus(UART4, USART_FLAG_TC) == RESET)
-    {
-    }
-  }
-}
+
 void ConnectBLE()
 {
   int x = 0;
@@ -6291,13 +6569,7 @@ void ConnectBLE()
 //
 //
 //////////////////////////////////////////////////////////////////////////////
-void SendCommandToBLE2(int data)
-{
-  USART_SendData(UART4, data);
-  while (USART_GetFlagStatus(UART4, USART_FLAG_TC) == RESET)
-  {
-  }
-}
+
 //---------------------------send command to ch376s---------------------------
 // ส่งคำสั่งไปยัง ch376
 //

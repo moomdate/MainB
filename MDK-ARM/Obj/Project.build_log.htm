@@ -48,100 +48,96 @@ compiling main.c...
     notepad_append(SST25_buffer, shiftChar, 0);
 ..\USER\main.c(652): warning:  #1295-D: Deprecated declaration MainPrograme - give arg types
   void MainPrograme();
-..\USER\main.c(655): warning:  #1295-D: Deprecated declaration page_findNextPage - give arg types
-  uint16_t page_findNextPage();
-..\USER\main.c(656): warning:  #1295-D: Deprecated declaration page_getCurrentPage - give arg types
-  uint16_t page_getCurrentPage();
-..\USER\main.c(657): warning:  #1295-D: Deprecated declaration sumLineInPreviousSec - give arg types
+..\USER\main.c(655): warning:  #1295-D: Deprecated declaration sumLineInPreviousSec - give arg types
   int sumLineInPreviousSec();
-..\USER\main.c(719): warning:  #177-D: variable "fileName_"  was declared but never referenced
+..\USER\main.c(717): warning:  #177-D: variable "fileName_"  was declared but never referenced
     char *fileName_ = "data.dat";
-..\USER\main.c(782): warning:  #1295-D: Deprecated declaration CH376Init - give arg types
+..\USER\main.c(780): warning:  #1295-D: Deprecated declaration CH376Init - give arg types
   uint8_t CH376Init();
-..\USER\main.c(783): warning:  #1295-D: Deprecated declaration CH376_SetReadForm_SD - give arg types
+..\USER\main.c(781): warning:  #1295-D: Deprecated declaration CH376_SetReadForm_SD - give arg types
   uint8_t CH376_SetReadForm_SD();
-..\USER\main.c(784): warning:  #1295-D: Deprecated declaration CH376_Disk_Connect - give arg types
+..\USER\main.c(782): warning:  #1295-D: Deprecated declaration CH376_Disk_Connect - give arg types
   uint8_t CH376_Disk_Connect();
-..\USER\main.c(785): warning:  #1295-D: Deprecated declaration CH376_UsbDiskMount - give arg types
+..\USER\main.c(783): warning:  #1295-D: Deprecated declaration CH376_UsbDiskMount - give arg types
   uint8_t CH376_UsbDiskMount();
-..\USER\main.c(786): warning:  #1295-D: Deprecated declaration CH376_FileOpen - give arg types
-  uint8_t CH376_FileOpen();
-..\USER\main.c(787): warning:  #1295-D: Deprecated declaration CH376_FileClose - give arg types
-  uint8_t CH376_FileClose();
-..\USER\main.c(792): warning:  #1295-D: Deprecated declaration CH376_GetFileSize - give arg types
+..\USER\main.c(789): warning:  #1295-D: Deprecated declaration CH376_GetFileSize - give arg types
   int CH376_GetFileSize();
-..\USER\main.c(798): warning:  #1295-D: Deprecated declaration testGetFileSize - give arg types
-  void testGetFileSize();
-..\USER\main.c(1118): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(841): warning:  #224-D: the format string requires additional arguments
+        printf("0x%x \r\n");
+..\USER\main.c(870): warning:  #224-D: the format string requires additional arguments
+        printf("0x%x \r\n");
+..\USER\main.c(923): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+    writeFile4096(fname, SST25_buffer); //เขียนไฟล์
+..\USER\main.c(985): warning:  #177-D: variable "editor_currentLine"  was declared but never referenced
+    int editor_currentLine = 0; // เลื่อนบรรทัด
+..\USER\main.c(986): warning:  #177-D: variable "editor_position"  was declared but never referenced
+    int editor_position = 0;
+..\USER\main.c(987): warning:  #177-D: variable "count_member_in_Line"  was declared but never referenced
+    int count_member_in_Line = 0;
+..\USER\main.c(988): warning:  #177-D: variable "MaxInLine__"  was declared but never referenced
+    int MaxInLine__ = 40;
+..\USER\main.c(990): warning:  #177-D: variable "fillEnterLine"  was declared but never referenced
+    uint8_t fillEnterLine = 0;
+..\USER\main.c(1283): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     memset(SST25_buffer, 0, strlen(SST25_buffer));
-..\USER\main.c(1149): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1314): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     ptr = (int *)strstr(SST25_buffer, filename);
-..\USER\main.c(1165): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1330): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       range = strlen(SST25_buffer);    //หาความยาว
-..\USER\main.c(1171): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(1336): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcpy(SST25_buffer, fileTemp);
-..\USER\main.c(1175): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(1340): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcat(SST25_buffer, fileTemp);
-..\USER\main.c(1212): warning:  #1293-D: assignment in condition
+..\USER\main.c(1377): warning:  #1293-D: assignment in condition
     for (count = 0; tmp = strstr(ins, rep); ++count)
-..\USER\main.c(1247): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1411): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     ptr = strstr(SST25_buffer, fileName);
-..\USER\main.c(1252): warning:  #42-D: operand types are incompatible ("char *" and "unsigned char *")
+..\USER\main.c(1416): warning:  #42-D: operand types are incompatible ("char *" and "unsigned char *")
       startPos = ptr - SST25_buffer; // find start index
-..\USER\main.c(1252): warning:  #993-D: subtraction of pointer types "char *" and "unsigned char *" is nonstandard
+..\USER\main.c(1416): warning:  #993-D: subtraction of pointer types "char *" and "unsigned char *" is nonstandard
       startPos = ptr - SST25_buffer; // find start index
-..\USER\main.c(1258): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
+..\USER\main.c(1422): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
       strncpy(data_temp, SST25_buffer + start2, EndPos - start2);
-..\USER\main.c(1244): warning:  #177-D: variable "pos"  was declared but never referenced
-    int pos;
-..\USER\main.c(1275): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1439): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     DataSize = strlen(SST25_buffer);
-..\USER\main.c(1434): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(1598): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
         strcpy(data2, mark_str_replace(SST25_buffer, data_temp, temp__)); // แทนที่ ใหม่ แทน เกา xxx/xxx -> xxx/xxx/xxx
-..\USER\main.c(1437): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1601): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
         memset(SST25_buffer, 0x0, strlen(SST25_buffer)); //ลบค่าใน SST25_buffer
-..\USER\main.c(1438): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(1602): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcpy(SST25_buffer, data2);                     // เก็บค่าเดิม
-..\USER\main.c(1902): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
+..\USER\main.c(1917): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
     int compareInLine = findCurrentPageInArr();
-..\USER\main.c(1904): warning:  #177-D: variable "ccg"  was declared but never referenced
-    int ccg = 0;
-..\USER\main.c(1927): warning:  #177-D: variable "cnc"  was declared but never referenced
-    int cnc = 0;
-..\USER\main.c(2262): warning:  #68-D: integer conversion resulted in a change of sign
+..\USER\main.c(2247): warning:  #68-D: integer conversion resulted in a change of sign
           Line = -1;
-..\USER\main.c(2338): warning:  #68-D: integer conversion resulted in a change of sign
-    if (Line == -1)
-..\USER\main.c(2546): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2323): warning:  #68-D: integer conversion resulted in a change of sign
+    if (Line == (-1))
+..\USER\main.c(2531): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     length__ = strlen(SST25_buffer);
-..\USER\main.c(2832): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2817): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       memset(SST25_buffer, 0, strlen(SST25_buffer)); // เคลียค่าใน SST25_buffer
-..\USER\main.c(2850): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2835): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       memset(SST25_buffer, 0, strlen(SST25_buffer));
-..\USER\main.c(2937): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(2922): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
       read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
-..\USER\main.c(3387): warning:  #186-D: pointless comparison of unsigned integer with zero
-            while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0)
-..\USER\main.c(4923): warning:  #9-D: nested comment is not allowed
+..\USER\main.c(3411): warning:  #186-D: pointless comparison of unsigned integer with zero
+            while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0) //ยังเจอสัญลักษณ์ Enter จะลบไปจนถึง 0
+..\USER\main.c(5082): warning:  #9-D: nested comment is not allowed
   //////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(5004): warning:  #9-D: nested comment is not allowed
-  //////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(5021): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-    writeFile4096(fname, SST25_buffer);
-..\USER\main.c(5036): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5099): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+    writeFile4096(fname, SST25_buffer); //เขียนไฟล์
+..\USER\main.c(5115): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, buffer_afterRemove);
-..\USER\main.c(5037): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5116): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, "\r\n"); // ใส่ \r\n
-..\USER\main.c(5781): warning:  #9-D: nested comment is not allowed
-  //////////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(5930): warning:  #1166-D: returning pointer to local variable
+..\USER\main.c(6220): warning:  #1166-D: returning pointer to local variable
     return DataForWrite_aftersort;
-..\USER\main.c: 54 warnings, 0 errors
+..\USER\main.c: 52 warnings, 0 errors
 linking...
-Program Size: Code=29700 RO-data=768 RW-data=812 ZI-data=24980  
+Program Size: Code=29396 RO-data=768 RW-data=816 ZI-data=24976  
 FromELF: creating hex file...
-".\Obj\Project.axf" - 0 Error(s), 54 Warning(s).
-Build Time Elapsed:  00:00:03
+".\Obj\Project.axf" - 0 Error(s), 52 Warning(s).
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

@@ -62,79 +62,79 @@ compiling main.c...
   uint8_t CH376_UsbDiskMount();
 ..\USER\main.c(789): warning:  #1295-D: Deprecated declaration CH376_GetFileSize - give arg types
   int CH376_GetFileSize();
-..\USER\main.c(841): warning:  #224-D: the format string requires additional arguments
+..\USER\main.c(840): warning:  #224-D: the format string requires additional arguments
         printf("0x%x \r\n");
-..\USER\main.c(870): warning:  #224-D: the format string requires additional arguments
+..\USER\main.c(869): warning:  #224-D: the format string requires additional arguments
         printf("0x%x \r\n");
-..\USER\main.c(923): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-    writeFile4096(fname, SST25_buffer); //เขียนไฟล์
-..\USER\main.c(985): warning:  #177-D: variable "editor_currentLine"  was declared but never referenced
+..\USER\main.c(922): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+    writeFile4096(fname, SST25_buffer);                    //เขียนไฟล์
+..\USER\main.c(989): warning:  #177-D: variable "editor_currentLine"  was declared but never referenced
     int editor_currentLine = 0; // เลื่อนบรรทัด
-..\USER\main.c(986): warning:  #177-D: variable "editor_position"  was declared but never referenced
+..\USER\main.c(990): warning:  #177-D: variable "editor_position"  was declared but never referenced
     int editor_position = 0;
-..\USER\main.c(987): warning:  #177-D: variable "count_member_in_Line"  was declared but never referenced
+..\USER\main.c(991): warning:  #177-D: variable "count_member_in_Line"  was declared but never referenced
     int count_member_in_Line = 0;
-..\USER\main.c(988): warning:  #177-D: variable "MaxInLine__"  was declared but never referenced
+..\USER\main.c(992): warning:  #177-D: variable "MaxInLine__"  was declared but never referenced
     int MaxInLine__ = 40;
-..\USER\main.c(990): warning:  #177-D: variable "fillEnterLine"  was declared but never referenced
+..\USER\main.c(994): warning:  #177-D: variable "fillEnterLine"  was declared but never referenced
     uint8_t fillEnterLine = 0;
-..\USER\main.c(1283): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1287): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     memset(SST25_buffer, 0, strlen(SST25_buffer));
-..\USER\main.c(1314): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1318): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     ptr = (int *)strstr(SST25_buffer, filename);
-..\USER\main.c(1330): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1334): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       range = strlen(SST25_buffer);    //หาความยาว
-..\USER\main.c(1336): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
-        strcpy(SST25_buffer, fileTemp);
 ..\USER\main.c(1340): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+        strcpy(SST25_buffer, fileTemp);
+..\USER\main.c(1344): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcat(SST25_buffer, fileTemp);
-..\USER\main.c(1377): warning:  #1293-D: assignment in condition
+..\USER\main.c(1381): warning:  #1293-D: assignment in condition
     for (count = 0; tmp = strstr(ins, rep); ++count)
-..\USER\main.c(1411): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1415): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     ptr = strstr(SST25_buffer, fileName);
-..\USER\main.c(1416): warning:  #42-D: operand types are incompatible ("char *" and "unsigned char *")
+..\USER\main.c(1420): warning:  #42-D: operand types are incompatible ("char *" and "unsigned char *")
       startPos = ptr - SST25_buffer; // find start index
-..\USER\main.c(1416): warning:  #993-D: subtraction of pointer types "char *" and "unsigned char *" is nonstandard
+..\USER\main.c(1420): warning:  #993-D: subtraction of pointer types "char *" and "unsigned char *" is nonstandard
       startPos = ptr - SST25_buffer; // find start index
-..\USER\main.c(1422): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
+..\USER\main.c(1426): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *restrict"
       strncpy(data_temp, SST25_buffer + start2, EndPos - start2);
-..\USER\main.c(1439): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1443): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     DataSize = strlen(SST25_buffer);
-..\USER\main.c(1598): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(1602): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
         strcpy(data2, mark_str_replace(SST25_buffer, data_temp, temp__)); // แทนที่ ใหม่ แทน เกา xxx/xxx -> xxx/xxx/xxx
-..\USER\main.c(1601): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(1605): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
         memset(SST25_buffer, 0x0, strlen(SST25_buffer)); //ลบค่าใน SST25_buffer
-..\USER\main.c(1602): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(1606): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
         strcpy(SST25_buffer, data2);                     // เก็บค่าเดิม
-..\USER\main.c(1917): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
+..\USER\main.c(1921): warning:  #223-D: function "findCurrentPageInArr" declared implicitly
     int compareInLine = findCurrentPageInArr();
-..\USER\main.c(2247): warning:  #68-D: integer conversion resulted in a change of sign
+..\USER\main.c(2251): warning:  #68-D: integer conversion resulted in a change of sign
           Line = -1;
-..\USER\main.c(2323): warning:  #68-D: integer conversion resulted in a change of sign
+..\USER\main.c(2327): warning:  #68-D: integer conversion resulted in a change of sign
     if (Line == (-1))
-..\USER\main.c(2531): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2535): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
     length__ = strlen(SST25_buffer);
-..\USER\main.c(2817): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2837): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       memset(SST25_buffer, 0, strlen(SST25_buffer)); // เคลียค่าใน SST25_buffer
-..\USER\main.c(2835): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
+..\USER\main.c(2856): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "const char *"
       memset(SST25_buffer, 0, strlen(SST25_buffer));
-..\USER\main.c(2922): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(2946): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
       read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
-..\USER\main.c(3411): warning:  #186-D: pointless comparison of unsigned integer with zero
+..\USER\main.c(3437): warning:  #186-D: pointless comparison of unsigned integer with zero
             while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0) //ยังเจอสัญลักษณ์ Enter จะลบไปจนถึง 0
-..\USER\main.c(5082): warning:  #9-D: nested comment is not allowed
+..\USER\main.c(5108): warning:  #9-D: nested comment is not allowed
   //////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(5099): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(5125): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
     writeFile4096(fname, SST25_buffer); //เขียนไฟล์
-..\USER\main.c(5115): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5141): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, buffer_afterRemove);
-..\USER\main.c(5116): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5142): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, "\r\n"); // ใส่ \r\n
-..\USER\main.c(6220): warning:  #1166-D: returning pointer to local variable
+..\USER\main.c(6097): warning:  #1166-D: returning pointer to local variable
     return DataForWrite_aftersort;
 ..\USER\main.c: 52 warnings, 0 errors
 linking...
-Program Size: Code=29396 RO-data=768 RW-data=816 ZI-data=24976  
+Program Size: Code=29664 RO-data=768 RW-data=816 ZI-data=24976  
 FromELF: creating hex file...
 ".\Obj\Project.axf" - 0 Error(s), 52 Warning(s).
 Build Time Elapsed:  00:00:02

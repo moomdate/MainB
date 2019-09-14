@@ -807,7 +807,6 @@ bool Editing = false;
 void editFile(void);
 void prepareEditor(void);
 bool useFEdit = 0;
-void saveNameEdit(void);
 //void createFileAndWrite_hisPath(char *);
 int createFile2(char *name);
 void writeFile40962(char *fname, char *strSource);
@@ -920,8 +919,13 @@ void createFileAndWrite_hisPath(char *fname)
   PrepareText(); // เตรียมข้อความ ลบ Enter Sign add '\r\n'
   //printf("all text :%s\r\n====================================================== ", str_test);
   //fileWrite(0,fname,"test head \r\n my name is surasak");
-  writeFile4096(fname, SST25_buffer); //เขียนไฟล์
+  writeFile4096(fname, SST25_buffer);                    //เขียนไฟล์
+  stringToUnicodeAndSendToDisplay("Saved successfully"); //Saved successfully
+
+  beep4();
+  delay_ms(1300);
 }
+void beep(void);
 int main(void)
 {
   Notepad.cursorPosition = 0;
@@ -2263,7 +2267,7 @@ unsigned int gotoLine_EnterLine(int maxLine)
         }
         else
         {
-          state = 0;
+          state = 0; //exit
         }
       }
       else if (bufferKey3digit[0] == 0x40 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x00)
@@ -2615,8 +2619,23 @@ void slidText2Displayv2()
     //bool loopT = true;
     // printf("go to line 98 99 \r\n");
     gt_Line = gotoLine_EnterLine(read.totalLine); // รับค่าบรรทัดที่จะไป
-    // printf("return line is %d\r\n", gt_Line);
+   //printf("return line is %d\r\n", gt_Line);
 
+    if (gt_Line == 0)
+    {
+      beep2();
+    }
+    if (gt_Line > 0) //  != -1
+    {
+      beep4();
+      gt_Sector = gotoLine_getSectorInline(gt_Line);  // หาว่าบรรทัดที่จะไปอยู่ Sector ไหน
+      gt_Line = gotoLine_getLine(gt_Line, gt_Sector); // แล้วดูว่า Sector นั้นอยู่บรรทัดไหน
+      read.currentSector = gt_Sector;                 // ทำการเปลี่ยน Sector ที่จะอ่าน
+      read.currentLine = gt_Line;                     // ทำการเปลี่ยนบรรทัดไปยังบรรทัดนั้น
+      readSecter(read.currentSector * sector);        // ทำการอ่าน Sector นั้น
+      queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
+      //printf("current page is (%d) next page at line (%d)\r\n", page_getCurrentPage(), gt_Line);
+    }
     //printf("found Line in Sector (%d)\r\n", gt_Sector);
     //printf("In line %d\r\n", gt_Line);
   }
@@ -2811,6 +2830,7 @@ void slidText2Displayv2()
   }
   else if (keyCode == MARK_SET_MARK) // set mark 1-3-4
   {
+    printf("Set mark\r\n");
     printf("keycode testing marker line (%d)\r\n", read.currentLine + 1); // แสดง บรรทัดปัจจุบัน
     printf("file name:%s\r\n", fileLists[fileSelect]);                    // แสดงชื่อไฟล์
     //printf("data:%s\r\n", SST25_buffer);
@@ -2828,6 +2848,7 @@ void slidText2Displayv2()
     printf("data SST:%s\r\n", SST25_buffer); //แสดง mark
     writeFlash(4096 * markSector);           // ทดสอบ
     readSecter(read.currentSector * sector); //อ่านไฟล์บรรทัดกลับมา
+    beep();
   }
   else if (keyCode == MARK_JUMP_TO_MARK)
   {
@@ -2844,9 +2865,11 @@ void slidText2Displayv2()
   }
   else if (keyCode == MARK_JUMP_NEXT) // mark next 624
   {
-    // (1-4-5-8 + Space),
+    
+    // (1-4-5-8 + Space),2 4 5 8
     // mark_MarkerPage
     //  printf("file :%s\r\n",fileLists[fileSelect]);
+    printf("next mark \r\n");
     mark_maxmarkMaxMax = mark_findListTotalInArray();
     //printf("----------------- list of marker --------------");
     if (mark_currentPostion < mark_maxmarkMaxMax)
@@ -2864,8 +2887,9 @@ void slidText2Displayv2()
       queryLine(read.currentLine);                    // ทำการอ่านไฟล์ในบรรทัดนั้น
     }
   }
-  else if (keyCode == MARK_JUMP_PREVOIUS) // mark previous
+  else if (keyCode == MARK_JUMP_PREVOIUS) // mark previous 2 4 5 7
   {
+    printf("previous mark\r\n");
     // mark_maxmarkMaxMax = mark_findListTotalInArray();
     if (mark_currentPostion > 0)
     {                                                 // ยังไม่เกิน
@@ -3297,6 +3321,7 @@ void notepad_main()
         // บันทึกไฟล์ หลังจากทำการพิมพ์ในโหมด Notepad
         // หน้าจอ Braille Display จะแสดง Name:_
         // ไฟล์ที่ได้จะเป็นไฟล์ .TBT
+        stringToUnicodeAndSendToDisplay("Saving..");
         if (debug)
           printf("\r\n-----------Save:------------\r\n");
 
@@ -3346,6 +3371,7 @@ void notepad_main()
         mode = 0;
         doing = 0; // ออกจาก notepad
       }
+
       else if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0 && seeCur != 1) // enter
       {
         //enter key                                                                                                       // printf("New line \r\n");
@@ -4241,7 +4267,7 @@ void keyRead()
           readFileFromCH376sToFlashRom(fileLists[fileSelect]); //เปิดไฟล์ open file
         }
       }
-      if (keyCode == 987) // แก้ไขไฟล์ (1+3+4 + space) edit
+      if (keyCode == 987) // แก้ไขไฟล์ (1+5+8 + space) edit
       {                   // test edit file
         useFEdit = 1;     // ตั้งค่าสถานะบอก notepad ว่าเข้าใช้จากโหมด edit file
 
@@ -5264,156 +5290,6 @@ int checkBit(int input)
   }
   return i;
 }
-
-void saveNameEdit()
-{
-  int saving = 1;
-  char nameBuff[15];
-  char bufferDisplay[20]; // Name:/
-  int cc = 1;
-
-  memset(bufferDisplay, 0, 20);
-  strcpy(bufferDisplay, "Name:/");
-  memset(nameBuff, 0, 15);
-  nameBuff[0] = '/';
-  countKey = 0;
-  keyCode = 0;
-  seeCur = 0;
-  clearDot();
-  while (saving == 1)
-  {
-    if (USART_GetITStatus(USART2, USART_IT_RXNE))
-    {
-      //----------------------------- uart to key--------------------------------
-      uart2Buffer = USART_ReceiveData(USART2); //-
-      if (uart2Buffer == 0xff && SeeHead == 0)
-      {
-        //-
-        SeeHead = 1;  //-
-        countKey = 0; //-
-      }
-      if (countKey == 2 && uart2Buffer == 0xa4)
-      {
-        // if cursor
-        seeCur = 1;
-      }
-      if (countKey >= 4 && countKey <= 6)
-      {
-        //-
-        bufferKey3digit[countKey - 4] = uart2Buffer; //-
-      }
-
-      if (countKey == 2)
-      {
-        checkKeyError = uart2Buffer;
-      }
-      countKey++;
-
-      if (countKey >= maxData)
-      {
-        seeHead = 0;
-        if (checkKeyError == 0xff)
-        {
-          //check error key
-          //printf("Key Error");
-          countKey = 0;
-          SeeHead = 0;
-        }
-        if ((bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x20 && bufferKey3digit[2] == 0x00) || (bufferKey3digit[0] == 0x00 && bufferKey3digit[1] == 0x00 && bufferKey3digit[2] == 0x04))
-        {
-          //back to notepad
-          saving = 0;
-        }
-        if (bufferKey3digit[0] == 0x80 && bufferKey3digit[1] == 0 && bufferKey3digit[2] == 0)
-        {
-          keyCode = 8; // ลบ
-        }
-        if (bufferKey3digit[2] == 2 || bufferKey3digit[1] == 0x10)
-        {
-          // save file
-          printf("\r\n enter \r\n");
-          i = 0;
-          while (nameBuff[i] != '\0')
-          {
-            if (nameBuff[i] >= 97)
-            {
-              nameBuff[i] = nameBuff[i] - 32;
-            }
-            i++;
-          }
-          strcat(nameBuff, ".TBT"); // tbt file
-          //printf("\r\nSaving file :%s\r\n", nameBuff);
-          //createFileAndWrite_hisPath(nameBuff);
-          stringToUnicodeAndSendToDisplay("Success......");
-          delay_ms(1000);
-          saving = 0;
-        }
-        if (keyCode == 8)
-        {
-          // delete file name
-          if (cc > 1)
-          {
-            // steel save root /
-            cc--;
-            nameBuff[cc] = '\0';
-            //printf("Delete:%s \r\n", nameBuff);
-          }
-          else if (cc == 1)
-          {
-            // last cha
-            nameBuff[cc] = '\0';
-            //printf("delete 22 \r\n");
-          }
-        }
-        else // enter file name
-        {
-          // printf("See key %x,%x,%x\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
-          for (i = 0; i < 255; i++)
-          {
-            if (bufferKey3digit[0] == unicodeTable[(char)i])
-            {
-              break;
-            }
-          }
-          if (i >= 33 && i < 126 && cc <= 10)
-          {
-            // name length less than 10
-            nameBuff[cc] = i;
-            //printf("Filename:%s\r\n", nameBuff);
-            cc++; // เก็บค่า
-          }
-        }
-        memset(bufferDisplay, 0, 20);    //clear buffer
-        strcpy(bufferDisplay, "Name:");  // copy string
-        strcat(bufferDisplay, nameBuff); // ต่อสตริง
-        //stringToUnicodeAndSendToDisplay(bufferDisplay);
-        // useFEdit
-        stringToUnicodeAndSendToDisplayC(bufferDisplay, cc + 5);
-        /*-----------------------
-                  print file name here
-                  -----------------------*/
-        countKey = 0;
-        keyCode = 0;
-        seeCur = 0;
-      }
-    }
-    d_Time++;
-    if (d_Time >= delayCur) //blink cursor
-    {
-      //blink cu
-      if (toggleCur == 0)
-        toggleCur = 1;
-      else
-        toggleCur = 0;
-      if (!toggleCur)
-        stringToUnicodeAndSendToDisplay(bufferDisplay);
-      else
-        stringToUnicodeAndSendToDisplayC(bufferDisplay, cc + 5);
-      d_Time = 0;
-    }
-  }
-}
-
 //-----------------------------------save file name---------------------------
 //
 //
@@ -5497,8 +5373,9 @@ void saveName()
           strcat(nameBuff, ".TBT"); // tbt file
           //printf("\r\nSaving file :%s\r\n", nameBuff);
           createFileAndWrite(nameBuff);
-          stringToUnicodeAndSendToDisplay("Success......");
-          delay_ms(1000);
+          stringToUnicodeAndSendToDisplay("Saved successfully"); //Saved successfully
+          beep4();
+          delay_ms(1200);
           saving = 0;
         }
         if (keyCode == 8)

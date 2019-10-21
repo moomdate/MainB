@@ -285,7 +285,7 @@ void prepareSD_Card(void);
 #define scrapSize (notepad_Line * notepad_MaxinLine) - bufferMaxSize
 #define notepad_MaxinLine 40
 #define maxMenu 4
-int enterSign = '-'; //escape
+int enterSign = 255; //escape //'-'
 char buffAs[2];
 
 void notepad_main(void);
@@ -343,10 +343,10 @@ int str_cut(char *str, int begin, int len);
 
 uint8_t unicodeTable[] =
     {
-        0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+        0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //16
+        0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //32
         // !"#$%&'()*+,-./
-        0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x0c, //checked 8/6/2018
+        0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x30, //checked 8/6/2018
         /*0-9*/
         0x34, 0x02, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
         /*:  ;  */
@@ -359,7 +359,7 @@ uint8_t unicodeTable[] =
         0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
         0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
 
-        0x2a, 0x33, 0x3b, 0x18, 0xff /*{|}*/ //checked 8/6/2018
+        0x2a, 0x33, 0x3b, 0x18, 0xf1 /*{|}*/ //checked 8/6/2018
 };
 /** notepad  ยังไม่เสร็จ**/
 #define readmode_maxsizeInLine 41
@@ -967,6 +967,34 @@ int main(void)
   if (ch376_status != USB_INT_SUCCESS)
     printf("ch376 init error0");
   MainPrograme();
+ /* delay_ms(2000);
+  while(1){
+    beep4();
+    stringToUnicodeAndSendToDisplay("Synchrotron light");
+    delay_ms(2000);
+
+    beep4();
+    stringToUnicodeAndSendToDisplay("research institute");
+    delay_ms(2000);
+    
+    beep4();
+    stringToUnicodeAndSendToDisplay("ir}r(nun|*vod");
+    delay_ms(2000);
+
+    
+    beep4();
+    stringToUnicodeAndSendToDisplay("g*r<sd}pl,?*-s*:)y");
+    delay_ms(2000);
+    
+    
+    beep4();
+    stringToUnicodeAndSendToDisplay(")dsov #abcdefghi");
+    delay_ms(2000);
+    
+    beep4();
+    stringToUnicodeAndSendToDisplay("test #abcdefghi");
+    delay_ms(2000);
+  }*/
   //getFileSize("/AAAAAA~1.TXT");
   //printf("get file size \r\n");
   //ch376_status = CH376_GetFileSize();
@@ -3259,6 +3287,7 @@ void notepad_main()
         SeeHead = 0;
       }
       keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]); // รับค่า key
+      printf("========kyCode %d===========\r\n",keyCode);
       if ((bufferKey3digit[1] > 3 || bufferKey3digit[2] != 0) && seeCur != 1)           // key control ไม่ใช่  cursor
       {
         //--- เลื่อนบรรทัด ----
@@ -3382,7 +3411,7 @@ void notepad_main()
             notepad_append(Notepad.buffer_string[Notepad.currentLine], buffAs, Notepad.cursorPosition + Notepad.multiplyCursor);
             if (Notepad.cursorPosition + Notepad.multiplyCursor >= notepad_MaxinLine) //defualt 40 charactor
             {
-              //new line
+              // new line
               Notepad.currentLine++;
               Notepad.cursorPosition = 1;
             }
@@ -3477,7 +3506,16 @@ void notepad_main()
       else if (seeCur != 1) // keyที่รับมา ไม่ใช่ cursor key
       {
         // เก็บข้อความที่พิมพ์ตรงนี้
+        // 3508 text editor
+        printf("dec-> buf1(%d) buf2(%d) buf3(%d)\r\n",bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
         keyCode = unicode_to_ASCII(bufferKey3digit[0]); // แปลง keyboard เป็น code
+
+
+        printf("buffer Key 0x%x key code 0x%x\r\n",bufferKey3digit[0],keyCode);
+        /*
+          key 5-6 ได้จุด 2
+          keybuffer input - > (dec:48, Hex:30)
+        */
         if (keyCode > 127)
           keyCode = ~bufferKey3digit[0]; //One's Complement
         if (keyCode == 0)                //space bar edit in unicode table
@@ -3559,7 +3597,7 @@ void notepad_main()
     }
   } //end while loop
 }
-//-------------------------check maxline--------------------
+//-------------------- maxline--------------------
 //
 //
 ////////////////////////////////////////////////////////////
@@ -5451,11 +5489,11 @@ int unicode_to_ASCII(int key)
 {
   int asciT = 0;
   printf("\r\nkey B is (%d) \r\n", key);
-  for (asciT = 0; asciT < 255 && asciT < sizeof(unicodeTable); asciT++)
+  for (asciT = 0; asciT < 255 && asciT < sizeof(unicodeTable); asciT++) //วนหลูปตามจำนวนตาราง
   {
-    if (key == unicodeTable[asciT])
+    if (key == unicodeTable[asciT]) //ถ้าค่าาที่เช็คมีในตาราง
     {
-      asciT = asciT;
+      asciT = asciT; //ให้ส่งตำแหน่งนั้นออก
       break;
     }
   }

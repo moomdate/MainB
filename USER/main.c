@@ -346,7 +346,7 @@ uint8_t unicodeTable[] =
         0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //16
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //32
         // !"#$%&'()*+,-./
-        0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x30, //checked 8/6/2018
+        0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x38, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x30, //checked 8/6/2018
         /*0-9*/
         0x34, 0x02, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
         /*:  ;  */
@@ -967,7 +967,7 @@ int main(void)
   if (ch376_status != USB_INT_SUCCESS)
     printf("ch376 init error0");
   MainPrograme();
- /* delay_ms(2000);
+  /* delay_ms(2000);
   while(1){
     beep4();
     stringToUnicodeAndSendToDisplay("Synchrotron light");
@@ -2647,7 +2647,7 @@ void slidText2Displayv2()
     //bool loopT = true;
     // printf("go to line 98 99 \r\n");
     gt_Line = gotoLine_EnterLine(read.totalLine); // รับค่าบรรทัดที่จะไป
-   //printf("return line is %d\r\n", gt_Line);
+                                                  //printf("return line is %d\r\n", gt_Line);
 
     if (gt_Line == 0)
     {
@@ -2893,7 +2893,7 @@ void slidText2Displayv2()
   }
   else if (keyCode == MARK_JUMP_NEXT) // mark next 624
   {
-    
+
     // (1-4-5-8 + Space),2 4 5 8
     // mark_MarkerPage
     //  printf("file :%s\r\n",fileLists[fileSelect]);
@@ -3272,6 +3272,7 @@ int getMuteStatus()
 void notepad_main()
 {
   char nameBuff2[15];
+  clearDot(); //clear screen
   //status for do something n notepad mode
   while (doing) // do in notepad notepad0
   {
@@ -3287,8 +3288,8 @@ void notepad_main()
         SeeHead = 0;
       }
       keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]); // รับค่า key
-      printf("========kyCode %d===========\r\n",keyCode);
-      if ((bufferKey3digit[1] > 3 || bufferKey3digit[2] != 0) && seeCur != 1)           // key control ไม่ใช่  cursor
+      printf("========kyCode %d===========\r\n", keyCode);
+      if ((bufferKey3digit[1] > 3 || bufferKey3digit[2] != 0) && seeCur != 1) // key control ไม่ใช่  cursor
       {
         //--- เลื่อนบรรทัด ----
         notepad_checkMaxLine();
@@ -3507,11 +3508,10 @@ void notepad_main()
       {
         // เก็บข้อความที่พิมพ์ตรงนี้
         // 3508 text editor
-        printf("dec-> buf1(%d) buf2(%d) buf3(%d)\r\n",bufferKey3digit[0],bufferKey3digit[1],bufferKey3digit[2]);
+        printf("dec-> buf1(%d) buf2(%d) buf3(%d)\r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
         keyCode = unicode_to_ASCII(bufferKey3digit[0]); // แปลง keyboard เป็น code
 
-
-        printf("buffer Key 0x%x key code 0x%x\r\n",bufferKey3digit[0],keyCode);
+        printf("buffer Key 0x%x key code 0x%x\r\n", bufferKey3digit[0], keyCode);
         /*
           key 5-6 ได้จุด 2
           keybuffer input - > (dec:48, Hex:30)
@@ -3551,7 +3551,7 @@ void notepad_main()
       }
       // เช็คความยาว ตัดมาแสดง ไม่เกิน 20 ตัว
       //
-
+      subStringLanR(Notepad.buffer_string[Notepad.currentLine], Notepad.displayFirst, Notepad.cursorPosition + Notepad.multiplyCursor);
       if (debug)
       {
         printf("|////////////////////////////////////////////|\r\n");
@@ -3567,7 +3567,8 @@ void notepad_main()
       }
       clearKeyValue(); // clear key buffer
     }                  //end key event
-    d_Time++;
+
+    /*d_Time++;
     //กระพริบ cursor
     if (d_Time >= delayCur) //blink cursor
     {
@@ -3589,6 +3590,8 @@ void notepad_main()
       }
       d_Time = 0;
     } // end blink cursor
+    */
+
     //กดออก
     if (doing == 0 && mode == 0) // after exit form notepad mode display 'notepad'
     {
@@ -3794,7 +3797,7 @@ int notepad_countEnterSign(char *str)
 }
 void notepad_removeEnterSign(char *str)
 {
-  int indexSign = notepad_countLinewithOutLNsign(str);
+  int indexSign = notepad_countLinewithOutLNsign(str); //ไม่เต็มบรรทัด 40 ch
   if (indexSign != 39)
     removeChar(str, indexSign);
 }

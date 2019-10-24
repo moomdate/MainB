@@ -346,7 +346,7 @@ uint8_t unicodeTable[] =
         0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //16
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //32
         // !"#$%&'()*+,-./
-        0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x38, 0x04, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x30, //checked 8/6/2018
+        0x00, 0x2e, 0x10, 0x3c, 0x2b, 0x29, 0x2f, 0x2f, 0x37, 0x3e, 0x21, 0x2c, 0x20, 0x24, 0x28, 0x0c, //checked 8/6/2018
         /*0-9*/
         0x34, 0x02, 0x06, 0x12, 0x32, 0x22, 0x16, 0x36, 0x26, 0x14, //checked 8/6/2018
         /*:  ;  */
@@ -354,7 +354,7 @@ uint8_t unicodeTable[] =
         /*A-Z*/
         0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
         0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/, //checked 8/6/2018
-        0x77, 0x4c, 0x7e, 0x6e, 0x78, 0x1c, /*symbol*/                    //checked
+        0x2a, 0x33, 0x3b, 0x6e, 0x38, 0x1c, /*symbol*/                    //0x6e 0x1c 
 
         0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
         0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
@@ -3373,8 +3373,18 @@ void notepad_main()
       else if (keyCode == CLOSE_FILE)
       {
         // ออกจากโหมด notepad โดยจะยังไม่เคลียค่าที่พิมพ์
+        // clear data after exit
+        Notepad.cursorPosition = 0;
+        Notepad.currentLine = 0;
+        Notepad.displayFirst = false;
+        Notepad.multiplyCursor = 0;
+        printf("size of max line %d");
         printf("exit \r\n");
-        //SendCH370(ResetAll,sizeof(ResetAll));
+        for (i = 0; i < notepad_Line; i++)
+        {
+          memset(Notepad.buffer_string[i],0,sizeof(Notepad.buffer_string[i])); // clear data in line ;
+        }
+        //SendCH370(ResetAll,sizeof(ResetAll));[]
 
         if (useFEdit) //มาจาก edit file
         {
@@ -3453,7 +3463,7 @@ void notepad_main()
         else if (Notepad.currentLine > 0) // เป็น 0 และไม่ใช่บรรทัด 0
         {
           Notepad.cursorPosition = notepad_MaxinLine - 1;
-          Notepad.currentLine--;
+          Notepad.currentLine--;                                                         
         }
         //------------ถ้าเจอ enter ลบจนกว่าจะหมดไปใน line----------------------
         if (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign) //ลบ enter
@@ -4315,7 +4325,7 @@ void keyRead()
         printf("====================================================\r\n");
         printf("---------------------Edit file----------------------\r\n");
         printf("====================================================\r\n");
-        readTextFileToMemmory(fileLists[fileSelect]); // อ่านไฟล์จาก sd card  ,อ่���นเข้า ROM for edit
+        readTextFileToMemmory(fileLists[fileSelect]); // อ่านไฟล์จาก sd card  ,อ่านเข้า ROM for edit
         printf("end read %d\r\n", readFileStatus___);
         Notepad.cursorPosition = 0;
         Notepad.currentLine = 0;

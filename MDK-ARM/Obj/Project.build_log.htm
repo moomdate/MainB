@@ -120,24 +120,26 @@ compiling main.c...
       memset(SST25_buffer, 0, strlen(SST25_buffer));
 ..\USER\main.c(2974): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
       read.lineInsector[i] = readmode_countLineInOneSector(SST25_buffer, i); // เก็บบรรทัดที่นับได้จาก ROM
-..\USER\main.c(3467): warning:  #186-D: pointless comparison of unsigned integer with zero
+..\USER\main.c(3381): warning:  #224-D: the format string requires additional arguments
+          printf("size of max line %d");
+..\USER\main.c(3477): warning:  #186-D: pointless comparison of unsigned integer with zero
             while (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign && Notepad.cursorPosition >= 0) //ยังเจอสัญลักษณ์ Enter จะลบไปจนถึง 0
-..\USER\main.c(5149): warning:  #9-D: nested comment is not allowed
+..\USER\main.c(5159): warning:  #9-D: nested comment is not allowed
   //////////////////////////////////////////////////////////////////////////////*/
-..\USER\main.c(5166): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+..\USER\main.c(5176): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
     writeFile4096(fname, SST25_buffer); //เขียนไฟล์
-..\USER\main.c(5182): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5192): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, buffer_afterRemove);
-..\USER\main.c(5183): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
+..\USER\main.c(5193): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *restrict"
       strcat(SST25_buffer, "\r\n"); // ใส่ \r\n
-..\USER\main.c(6138): warning:  #1166-D: returning pointer to local variable
+..\USER\main.c(6148): warning:  #1166-D: returning pointer to local variable
     return DataForWrite_aftersort;
-..\USER\main.c: 52 warnings, 0 errors
+..\USER\main.c: 53 warnings, 0 errors
 linking...
-Program Size: Code=29708 RO-data=768 RW-data=816 ZI-data=24976  
+Program Size: Code=29792 RO-data=768 RW-data=816 ZI-data=24976  
 FromELF: creating hex file...
-".\Obj\Project.axf" - 0 Error(s), 52 Warning(s).
-Build Time Elapsed:  00:00:04
+".\Obj\Project.axf" - 0 Error(s), 53 Warning(s).
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

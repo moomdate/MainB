@@ -354,7 +354,7 @@ uint8_t unicodeTable[] =
         /*A-Z*/
         0x41, 0x43, 0x49, 0x59, 0x51, 0x4b, 0x5b, 0x53, 0x4a, 0x5a, 0x45, 0x47, 0x4d, 0x5d, 0x55, 0x4f,
         0x5f, 0x57, 0x4e, 0x5e, 0x65, 0x67, 0x7a, 0x6d, 0x7d, 0x75 /*Z*/, //checked 8/6/2018
-        0x2a, 0x33, 0x3b, 0x6e, 0x38, 0x08, /*symbol*/                    //0x6e 0x1c 
+        0x2a, 0x33, 0x3b, 0x6e, 0x38, 0x08, /*symbol*/                    //0x6e 0x1c
 
         0x01, 0x03, 0x09, 0x19, 0x11, 0x0b, 0x1b, 0x13, 0x0a, 0x1a, 0x05, 0x07, 0x0d, 0x1d, 0x15, 0x0f,
         0x1f, 0x17, 0x0e, 0x1e, 0x25, 0x27, 0x3a, 0x2d, 0x3d, 0x35, /*z*/ //checked 8/6/2018
@@ -926,6 +926,12 @@ void createFileAndWrite_hisPath(char *fname)
   delay_ms(1300);
 }
 void beep(void);
+uint8_t test_step1[] = {0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09, 0x09}; //14
+uint8_t test_step2[] = {0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12}; //25
+uint8_t test_step3[] = {0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24, 0x24}; //36
+uint8_t test_step4[] = {0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0, 0xc0}; //78
+uint8_t test_step5[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}; //ff
+int testing = 1;
 int main(void)
 {
   Notepad.cursorPosition = 0;
@@ -2361,15 +2367,88 @@ void testCell()
 {
   int i_ = 0;
   int dl = 0;
+  int step_testing = 1;
+  int countTime = 0;
+  int sw_blink = 0;
+  testing = 1;
   clearDot();
-  for (i_ = 0; i_ < 20; i_++)
+  printDot(test_step1, sizeof(test_step1));
+  while (testing == 1)
+  {
+    if (USART_GetITStatus(USART2, USART_IT_RXNE))
+    {
+      //----------------------------- uart to key--------------------------------
+      uart2Buffer = USART_ReceiveData(USART2); //-
+      if (uart2Buffer == 0xff && SeeHead == 0)
+      {
+        //-
+        SeeHead = 1;  //-
+        countKey = 0; //-
+      }
+
+      if (countKey >= 4 && countKey <= 6)
+      {
+        //-
+        bufferKey3digit[countKey - 4] = uart2Buffer; //-
+      }
+
+      if (countKey == 2)
+      {
+        checkKeyError = uart2Buffer;
+      }
+      countKey++;
+      if (countKey >= maxData)
+      {
+        seeHead = 0;
+        if (checkKeyError == 0xff)
+        {
+          //check error key
+          //printf("Key Error");
+          countKey = 0;
+          SeeHead = 0;
+        }
+        //keyCode = keyMapping(bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+        printf("keyCode %d %d %d \r\n", bufferKey3digit[0], bufferKey3digit[1], bufferKey3digit[2]);
+        if (bufferKey3digit[0] != 0 || bufferKey3digit[1] != 0 || bufferKey3digit[2] != 0) //enter
+        {
+          step_testing++;
+          if (step_testing >= 6)
+          {
+            testing = 0;
+          }
+          delay_ms(10);
+        }
+        countKey = 0;
+        keyCode = 0;
+        seeCur = 0;
+        if (step_testing == 2)
+        {
+          printDot(test_step2, sizeof(test_step2));
+        }
+        else if (step_testing == 3)
+        {
+          printDot(test_step3, sizeof(test_step3));
+        }
+        else if (step_testing == 4)
+        {
+          printDot(test_step4, sizeof(test_step4));
+        }
+        else if (step_testing == 5)
+        {
+          printDot(test_step5, sizeof(test_step5));
+        }
+      }
+    }
+  }
+  /*for (i_ = 0; i_ < 20; i_++)
   {
     SPI_DISPLAY_CS_LOW();
     cell_sentdata(~0xff);
     SPI_DISPLAY_CS_HIGH();
     dl++;
     delay_ms(200);
-  }
+  }*/
+
   clearDot();
   delay_ms(200);
   printDot(st_0, sizeof(st_0));
@@ -3382,7 +3461,7 @@ void notepad_main()
         printf("exit \r\n");
         for (i = 0; i < notepad_Line; i++)
         {
-          memset(Notepad.buffer_string[i],0,sizeof(Notepad.buffer_string[i])); // clear data in line ;
+          memset(Notepad.buffer_string[i], 0, sizeof(Notepad.buffer_string[i])); // clear data in line ;
         }
         //SendCH370(ResetAll,sizeof(ResetAll));[]
 
@@ -3463,7 +3542,7 @@ void notepad_main()
         else if (Notepad.currentLine > 0) // เป็น 0 และไม่ใช่บรรทัด 0
         {
           Notepad.cursorPosition = notepad_MaxinLine - 1;
-          Notepad.currentLine--;                                                         
+          Notepad.currentLine--;
         }
         //------------ถ้าเจอ enter ลบจนกว่าจะหมดไปใน line----------------------
         if (Notepad.buffer_string[Notepad.currentLine][Notepad.cursorPosition] == enterSign) //ลบ enter

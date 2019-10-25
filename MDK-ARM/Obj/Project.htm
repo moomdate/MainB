@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Oct 24 13:52:05 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Oct 24 15:51:29 2019
 <BR><P>
 <H3>Maximum Stack Usage =          0 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -598,7 +598,6 @@ Global Symbols
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
@@ -617,7 +616,6 @@ Global Symbols
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_W_BLOCK
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SST25_R_BLOCK
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
-<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[98]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readSecter
@@ -919,6 +917,7 @@ Global Symbols
 
 <P><STRONG><a name="[5b]"></a>USART_GetITStatus</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_GetITStatus))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;waitRespon
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
 <LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readTextFileToMemmory
@@ -956,6 +955,7 @@ Global Symbols
 
 <P><STRONG><a name="[5c]"></a>USART_ReceiveData</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, stm32f10x_usart.o(i.USART_ReceiveData))
 <BR><BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;waitRespon
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[80]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;searchFile2
 <LI><a href="#[102]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;saveName
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readTextFileToMemmory
@@ -1000,6 +1000,7 @@ Global Symbols
 <P><STRONG><a name="[5d]"></a>__2printf</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, printf5.o(i.__0printf$5))
 <BR><BR>[Called By]<UL><LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;writeFlash
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;unicode_to_ASCII
+<LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
 <LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;subStringLanR
 <LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
@@ -1100,8 +1101,7 @@ Global Symbols
 <P><STRONG><a name="[62]"></a>cell_sentdata</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, main.o(i.cell_sentdata))
 <BR><BR>[Calls]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sentdata_cell
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;testCell
-<LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
+<BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplayC
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;stringToUnicodeAndSendToDisplay
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
@@ -2109,13 +2109,13 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;readmode_countLineInOneSector
 </UL>
 
-<P><STRONG><a name="[f8]"></a>testCell</STRONG> (Thumb, 84 bytes, Stack size 0 bytes, main.o(i.testCell))
+<P><STRONG><a name="[f8]"></a>testCell</STRONG> (Thumb, 342 bytes, Stack size 0 bytes, main.o(i.testCell))
 <BR><BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
-<LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
-<LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
+<LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_ReceiveData
+<LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_GetITStatus
 <LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;printDot
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clearDot
-<LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cell_sentdata
+<LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mode4
 </UL>
